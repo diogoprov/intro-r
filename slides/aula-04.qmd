@@ -1,0 +1,111 @@
+---
+title: "Manuseio de dados com o tidyverse"
+subtitle: "Aula 04 · Introdução à Linguagem R"
+author: "Diogo B. Provete"
+institute: "PPG em Ecologia e Conservação · UFMS"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: true
+    preview-links: auto
+    history: false
+---
+
+## A estratégia *split-apply-combine*
+
+::: {.citacao}
+Wickham, H. (2011). The split-apply-combine strategy for data analysis.
+*Journal of Statistical Software* 40(1): 1–29.
+[doi:10.18637/jss.v040.i01](https://doi.org/10.18637/jss.v040.i01)
+:::
+
+## {.smaller}
+
+![Dividir os dados em grupos, aplicar uma função a cada grupo, recombinar os resultados.](img/a04-slide04-1.png)
+
+## {.smaller}
+
+![O mesmo raciocínio, com um exemplo de soma por país.](img/a04-slide05-1.png)
+
+## Visualizando o que cada verbo faz
+
+Para **ver a tabela se transformando** passo a passo:
+
+[tidydatatutor.com](https://tidydatatutor.com){.r-fit-text}
+
+## O ciclo da ciência de dados
+
+![](img/a04-slide07-1.png)
+
+::: {.citacao}
+Wickham, Çetinkaya-Rundel & Grolemund, *R for Data Science* (2ª ed.)
+:::
+
+## Onde estudar
+
+- [tidyverse.org](https://www.tidyverse.org) — documentação oficial dos pacotes
+- [R para Ciência de Dados](https://pt.r4ds.hadley.nz) — o livro, em português
+
+## Instalando e carregando
+
+```r
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+## Lógica do tidyverse
+
+- Principais **verbos** do `dplyr` e do `tidyr`
+- O que é um conjunto de dados ***tidy***?
+- Como converter dados em formatos não padrão para *tidy*
+- Trabalhar com *data frames*
+
+## Verbos do `dplyr`
+
+![](img/hex-dplyr.png){.absolute top=0 right=0 width=110}
+
+- **`mutate()`** cria novas variáveis que são funções de variáveis já existentes.
+- **`select()`** seleciona as variáveis com que se deseja trabalhar, criando um novo conjunto de dados.
+- **`filter()`** seleciona as linhas por um critério definido — o equivalente ao filtro do Excel.
+- **`summarise()`** gera valores-resumo de um agrupamento dos dados (média, quantis, etc.).
+- **`arrange()`** ordena as linhas de acordo com um critério.
+
+<!-- TODO (opcional): um exemplo executavel com um dos verbos.
+     Escreva o bloco de codigo com a cerca marcada entre chaves
+     (a forma de chunk do Quarto) em vez da marcacao estatica:
+     assim o codigo roda no render e a saida e gerada, em vez de
+     colada como imagem. Use um dado do livro Analises Ecologicas,
+     nao um dataset de exemplo generico. -->
+
+## Verbos do `tidyr`
+
+![](img/hex-tidyr.png){.absolute top=0 right=0 width=110}
+
+Reorganizar o formato da tabela:
+
+- **`pivot_longer()`** — de largo para longo
+- **`pivot_wider()`** — de longo para largo
+- **`separate()`** / **`unite()`** — dividir e juntar colunas
+- **`drop_na()`** / **`fill()`** / **`replace_na()`** — lidar com ausentes
+
+<!-- TODO: conferir se esta lista corresponde ao que voce cobre em
+     aula. Extrai do cheat sheet que estava no slide; pode estar
+     mais ampla ou mais estreita que o seu recorte. -->
+
+## Cheat sheets {.smaller}
+
+Sempre na versão mais recente, direto da fonte:
+
+- [Data transformation with `dplyr`](https://rstudio.github.io/cheatsheets/data-transformation.pdf)
+- [Data tidying with `tidyr`](https://rstudio.github.io/cheatsheets/tidyr.pdf)
+
+::: {.citacao}
+Posit Software, PBC · CC BY-SA
+:::
+
+## Exercícios {.smaller}
+
+No livro [*Análises Ecológicas no R*](https://analises-ecologicas.com), capítulo 5:
+
+- Ler o **tópico 5.6** ([`pivot_longer` e `pivot_wider`](https://analises-ecologicas.com/cap5.html#pivot_longer-e-pivot_wider))
+- Depois, do **5.7.6 ao 5.8.17**

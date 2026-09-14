@@ -1,0 +1,56 @@
+---
+title: "Rudimentos de programação"
+subtitle: "Aula 07 · Introdução à Linguagem R"
+author: "Diogo B. Provete"
+institute: "PPG em Ecologia e Conservação · UFMS"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: true
+    preview-links: auto
+    history: false
+---
+
+## Lógica de programação usando o R base
+
+Na apostila do **Prof. Victor Landeiro**:
+
+- Leiam e façam os exercícios das **páginas 36 a 41**.
+
+::: {.citacao}
+[Landeiro — *Introdução ao uso do programa R*](https://cran.r-project.org/doc/contrib/Landeiro-Introducao.pdf)
+:::
+
+## Programação na lógica do tidyverse
+
+[Introdução ao R — capítulo sobre `purrr`](https://pedropark99.github.io/Introducao_R/Cap%C3%ADtulos/18-purrr.html#introdu%C3%A7%C3%A3o)
+
+- Leiam do **tópico 16.1 ao 16.2**, e depois o **16.4**.
+- Façam os **exercícios 16.1 ao 16.3**.
+
+## Tirando vantagem de LLMs para programação científica
+
+## {.smaller}
+
+> **Harnessing large language models for coding, teaching and inclusion to
+> empower research in ecology and evolution**
+>
+> Cooper, N.; Clark, A.T.; Lecomte, N.; Qiao, H.; Ellison, A.M. (2024).
+> *Methods in Ecology and Evolution.*
+> [doi:10.1111/2041-210X.14325](https://doi.org/10.1111/2041-210X.14325)
+
+## Fluxo de trabalho com Gemini e ChatGPT {.smaller}
+
+**2 exercícios**
+
+1. Peguem um exemplo de manuseio de dados do livro
+   [*Análises Ecológicas no R*](https://analises-ecologicas.com) escrito em R
+   base e solicitem à IA:
+
+   > "Traduz este código para a sintaxe do tidyverse utilizando pipes
+   > (`%>%`) e as funções do `dplyr`."
+
+2. Utilizando o `ggplot2`, alterem um gráfico já feito para que o eixo X
+   tenha as etiquetas a 45 graus, use o tema `minimal` e mude a paleta de
+   cores para uma que seja amigável para daltônicos
+   (*colorblind-friendly*).

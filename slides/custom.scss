@@ -1,0 +1,26 @@
+/*-- scss:defaults --*/
+// Paleta herdada do site do laboratório (provetelab.org), para os slides
+// e o site lerem como a mesma família visual.
+
+$body-bg: #faf7f0;
+$body-color: #2d3748;
+$link-color: #1c6e8c;
+$link-color-hover: #144f64;
+$selection-bg: #f3eee3;
+
+$presentation-heading-color: #144f64;
+$presentation-heading-font-weight: 600;
+$code-block-bg: #ffffff;
+$code-block-border-color: #e3dccd;
+
+/*-- scss:rules --*/
+.reveal .slide blockquote {
+  border-left: 3px solid #1c6e8c;
+  background: #f3eee3;
+  padding: .6rem .9rem;
+  font-size: .9em;
+}
+.reveal .citacao {
+  font-size: .8em;
+  color: #6c757d;
+}
