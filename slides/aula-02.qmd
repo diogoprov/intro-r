@@ -1,0 +1,523 @@
+---
+title: "Curadoria de dados e boas práticas"
+subtitle: "Aula 02 · Introdução à Linguagem R"
+author: "Diogo B. Provete"
+institute: "PPG em Ecologia e Conservação · UFMS"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    logo: img/lsb-canto.png
+    slide-number: true
+    preview-links: auto
+    history: false
+    title-slide-attributes:
+      data-background-image: img/lsb-logo.png
+      data-background-size: 300px
+      data-background-position: 5% 86%
+mermaid:
+  theme: neutral
+---
+
+## Roteiro
+
+::: {.incremental}
+- Como nomear arquivos
+- Como organizar uma planilha de dados
+- Diretórios de trabalho e Projetos do RStudio
+- Metadados e publicação dos dados
+- Como escrever e organizar um script
+:::
+
+# Nomear arquivos
+
+## Melhores práticas para nomear arquivos
+
+::: {.incremental}
+- Faça algo **descritível**
+- Não seja **genérico**
+- Faça algo que tenha um **tamanho razoável**
+- Seja **consistente**
+:::
+
+::: {.citacao}
+Adaptado de slides de Rebekah Cummings
+:::
+
+## Quem arquivou melhor? {.smaller}
+
+. . .
+
+```
+MyData.xlsx
+```
+
+Genérico demais — daqui a seis meses, quais dados são esses?
+
+. . .
+
+```
+publiclibrarypartnershipsprojectevaluationdataworkshop22014CummingsHelenaMontana.xlsx
+```
+
+Descritivo, mas ilegível.
+
+. . .
+
+```
+PLPP_EvaluationData_Workshop2_2014.xlsx
+```
+
+Descritivo **e** de tamanho razoável.
+
+::: {.citacao}
+Adaptado de slides de Rebekah Cummings
+:::
+
+## Regras de nomenclatura {.smaller}
+
+::: {.incremental}
+- Use apenas **letras, números e sublinhados**
+- Sem caracteres especiais: `% @ # * ? !`
+- **Sem espaços**
+- Minúsculas, ou intercale minúsculas e maiúsculas (`LikeThis`)
+- Nem todo sistema é *case sensitive*: assuma que `isso`, `ISSO` e `iSsO`
+  são a mesma coisa
+:::
+
+::: {.citacao}
+Adaptado de slides de Rebekah Cummings
+:::
+
+## Datas e numeração {.smaller}
+
+**1. Comece com zeros para ganhar escala**
+
+```
+001   002   009   019   999
+```
+
+**2. Se usar datas, use o formato `AAAAMMDD`**
+
+| Escrito assim | Veredito |
+|---------------|----------|
+| `June2015`    | ruim |
+| `06-18-2015`  | ruim |
+| `20150618`    | ótimo |
+| `2015-06-18`  | também serve |
+
+::: {.citacao}
+Adaptado de slides de Rebekah Cummings · o formato de data é a norma ISO 8601
+:::
+
+## Quem arquivou melhor? {.smaller}
+
+. . .
+
+```
+July 24 2014_SoilSamples%_v6
+```
+
+Espaços, caractere especial, versão manual.
+
+. . .
+
+```
+SoilSamples_FINAL
+```
+
+"FINAL" nunca é final.
+
+. . .
+
+```
+20140724_NSF_SoilSamples_Cummings
+```
+
+Data ordenável, projeto, conteúdo, responsável.
+
+::: {.citacao}
+Adaptado de slides de Rebekah Cummings
+:::
+
+# Curadoria de dados
+
+## De onde vem esse roteiro
+
+::: {.citacao}
+Gotelli, N.J. & Ellison, A.M. **Princípios de Estatística em Ecologia.**
+Porto Alegre: Artmed. Capítulo 8 — *Gerenciamento e curadoria de dados*.
+:::
+
+O fluxograma a seguir é uma adaptação da Figura 8.7 desse capítulo.
+
+## O ciclo de curadoria {.smaller}
+
+```{mermaid}
+%%| fig-width: 11
+%%{init: {"flowchart": {"htmlLabels": false, "padding": 12, "nodeSpacing": 30, "rankSpacing": 45}, "themeVariables": {"fontSize": "15px"}}}%%
+flowchart LR
+  RAW["Dados brutos<br/>caderno de campo,<br/>instrumentos"] --> PLAN["Organize<br/>em planilhas"]
+  MET["Métodos<br/>detalhados"] --> MD0["Gere os<br/>metadados"]
+  PLAN --> DS(["Conjunto de dados<br/>documentado"])
+  MD0 --> DS
+  DS --> ARQ["Deposite uma versão<br/>em repositório com DOI"]
+  ARQ --> CHK{"Conferido?"}
+  CHK -- "não" --> QC["Marque os<br/>discrepantes"]
+  QC --> DOCQC["Documente o<br/>controle de qualidade"]
+  DOCQC --> DS
+  CHK -- "sim" --> AED(["Análise exploratória"])
+  AED --> TR{"Transformar?"}
+  TR -- "sim" --> TRA["Transforme e<br/>documente"]
+  TRA --> DS
+  TR -- "não" --> AN(["Analise os dados"])
+```
+
+::: {.citacao}
+Adaptado de Gotelli & Ellison, Figura 8.7 — com **uma atualização**: onde o
+livro diz "mídia permanente (papel, CD-ROM)", hoje se lê **repositório
+público com DOI**. Voltamos nesse ponto no fim da aula.
+:::
+
+<!-- TODO: no pptx original esse fluxograma reaparecia nos slides 11, 16 e 21
+     como marcador de "voce esta aqui". Se quiser recriar isso, basta duplicar
+     o bloco mermaid e usar `style NODE fill:#f3eee3` para destacar a etapa
+     da vez. -->
+
+## Primeiros passos {.smaller}
+
+Passar as informações do caderno de campo, do relatório de equipamentos etc.
+para o computador.
+
+**Organização de planilhas**
+
+::: {.incremental}
+- Cada **observação** numa linha — unidade amostral, ou pseudorréplica
+- Cada **variável** numa coluna
+- Cada **célula** um único valor
+:::
+
+. . .
+
+Essas três regras têm nome: **dados organizados** (*tidy data*). É o formato
+que o `tidyverse` inteiro pressupõe — guarde o termo, ele volta na aula 04.
+
+::: {.citacao}
+Wickham, H. (2014). **Tidy Data.** *Journal of Statistical Software* 59(10).
+[doi:10.18637/jss.v059.i10](https://doi.org/10.18637/jss.v059.i10)
+:::
+
+## Primeiros passos {.smaller}
+
+::: {.incremental}
+- Sempre mantenha **cópias extras** em fontes diferentes: outro computador,
+  ou armazenamento em nuvem
+- Dados faltantes? Use `NA` (*Not Available*)
+- Evite espaços; use `_` para separar palavras
+- Assim que terminar de planilhar, **confira novamente** e contraste com a
+  fonte original (p. ex., o caderno de campo)
+:::
+
+## O que nunca fazer {.smaller}
+
+::: {.incremental}
+- **NUNCA** faça gráficos junto com a planilha de dados
+- Evite usar mais de uma aba do Excel (ou de qualquer programa de planilhas)
+- Salve de preferência em `.txt` ou `.csv` — ou outro formato aberto.
+  Evite `.xls`: quem for abrir precisa ter o Excel instalado
+:::
+
+## Nomes e pastas {.smaller}
+
+| | |
+|---|---|
+| `Planilha de espécies.xls` | ✗ |
+| `20180108-Composicao_especies_cerradinho_UFMS.txt` | ✓ |
+
+::: {.incremental}
+- Separe os arquivos em **pastas para cada projeto**
+- Se possível, comece a usar **controle de versão** logo no início do projeto
+  (é o assunto da próxima aula)
+:::
+
+## Exercício — o que há de errado aqui? {.smaller}
+
+Em dupla, abram a planilha e **listem tudo o que está errado**, usando os
+critérios desta aula. Quinze minutos.
+
+[Baixar: `Planilha de dados FINAL v2 (1).xlsx`](../aula-02-curadoria-dados/Planilha%20de%20dados%20FINAL%20v2%20%281%29.xlsx)
+
+. . .
+
+Comecem pelo **nome do arquivo** — vocês já sabem contar pelo menos três
+erros antes de abrir.
+
+::: {.citacao}
+Dados fictícios, inventados para o exercício.
+:::
+
+::: {.notes}
+GABARITO — o que a planilha esconde, por bloco da aula.
+
+Nome do arquivo: espaços; parênteses; "FINAL" seguido de "v2" e "(1)";
+versionamento manual; nada indica projeto nem data.
+
+Estrutura da aba: título mesclado em A1 por cima dos dados; mais duas
+linhas de pseudo-cabeçalho; cabeçalho real só na linha 5; segunda linha
+de cabeçalho com as unidades (linha 6) — o R lê isso como dado; linhas
+em branco separando blocos; linha TOTAL misturada aos dados; fórmula
+=SUM() dentro da coluna de dados.
+
+Nomes de coluna: espaços ("Ponto de coleta"); caracteres especiais
+(N°, !, %, °C); unidade dentro do nome em vez de linha de metadados;
+"massa%" não é porcentagem nenhuma.
+
+Tipos: datas em cinco formatos diferentes (data real do Excel,
+12/03/2019, 12-mar, 2019.03.12, 13-mar-19); números gravados como texto
+("12,5", " 14.2" com espaço à frente); unidade dentro da célula
+("15,0 mm").
+
+Faltantes: seis convenções diferentes — célula vazia, "-", "n/a", "NA",
+"sem dados", "?", ".". Só NA (ou vazio) serve.
+
+Categorias: Cerradinho / cerradinho / "Cerradinho " / CERRADINHO;
+Cerradão / Cerradao; Mata de galeria / mata de galeria / Mata de Galeria.
+Sexo em seis codificações: M, F, m, f, macho, fêmea, 1, 2, ?.
+
+Espécies: Dendropsophus minutus / D. minutus / "Dendropsophus  minutus"
+(espaço duplo) / Dendrops. minutus. E Boana albopunctata convivendo com
+Hypsiboas albopunctatus — sinônimo antigo, mesma espécie, duas linhas.
+
+Linha duplicada: a observação de Mata de galeria 14/03 aparece duas vezes,
+idêntica.
+
+Informação fora dos dados: comentário de célula em C12; nota solta em L3
+("conferir com o caderno"); aba "notas" com informação de método que
+deveria estar em metadados — e uma senha, que não deveria estar em
+lugar nenhum.
+
+Cor: duas linhas destacadas em amarelo, sem legenda. O R não lê cor.
+Se a cor significa algo, vira coluna.
+
+Abas: quatro, sendo uma só de gráfico, uma de notas e uma vazia esquecida.
+Gráfico embutido na própria aba de dados.
+
+Formato: .xlsx em vez de .csv.
+
+Fecha perguntando: quantos desses erros o R avisaria? Quase nenhum —
+ele leria tudo como texto e seguiria em frente.
+:::
+
+## A referência canônica desta aula {.smaller}
+
+::: {.citacao}
+Broman, K.W. & Woo, K.H. (2018). **Data Organization in Spreadsheets.**
+*The American Statistician* 72(1): 2–10.
+[doi:10.1080/00031305.2017.1375989](https://doi.org/10.1080/00031305.2017.1375989)
+:::
+
+Doze páginas, acesso aberto, e cobre praticamente tudo o que vimos até aqui.
+Tem [site companheiro](https://kbroman.org/dataorg/) com os exemplos.
+
+# Diretórios de trabalho
+
+## O caminho absoluto quebra {.smaller}
+
+```r
+setwd("C:/Users/diogo/Documents/tese/cap2/dados")
+dados <- read.csv("anuros_cerrado.csv")
+```
+
+. . .
+
+Funciona na **sua** máquina, hoje.
+
+Falha na máquina do orientador, na do revisor, no computador do laboratório,
+e na sua daqui a dois anos quando você reorganizar as pastas.
+
+::: {.citacao}
+É o erro nº 1 em scripts compartilhados. E é o mais fácil de evitar.
+:::
+
+## O que um Projeto do RStudio resolve {.smaller}
+
+Um arquivo `.Rproj` na raiz da pasta do projeto. Ao abrir o projeto:
+
+::: {.incremental}
+- o **diretório de trabalho já vem definido** — nenhum `setwd()` no script
+- cada projeto ganha **sessão própria** do R, com seu histórico e suas abas
+- todo caminho passa a ser **relativo à raiz do projeto**
+:::
+
+. . .
+
+O script deixa de depender de onde a pasta está no computador.
+
+## Uma estrutura que funciona {.smaller}
+
+```
+anuros_cerrado/
+├── anuros_cerrado.Rproj
+├── README.md
+├── dados/
+│   ├── brutos/          <- somente leitura, nunca editar
+│   └── processados/     <- gerados pelo script, descartáveis
+├── scripts/
+│   ├── 01_limpeza.R
+│   ├── 02_exploratoria.R
+│   └── 03_modelos.R
+├── figuras/
+└── metadados/
+```
+
+. . .
+
+Os números nos scripts dizem a ordem de execução. `dados/brutos/` nunca é
+tocado à mão — tudo que muda, muda por script.
+
+## `here::here()` {.smaller}
+
+Mesmo dentro de um Projeto, o diretório de trabalho **muda** quando você
+renderiza um Quarto que está numa subpasta.
+
+```r
+library(here)
+
+here()
+#> "/Users/diogo/projetos/anuros_cerrado"
+
+dados <- read.csv(here("dados", "brutos", "anuros_cerrado.csv"))
+```
+
+. . .
+
+`here()` sempre devolve a raiz do projeto, **de onde quer que você chame**.
+Funciona no script, no Quarto e na máquina de quem clonar o repositório.
+
+# Metadados
+
+## Metadados
+
+Armazene **num arquivo separado**, na mesma pasta dos dados, os métodos que
+você usou para obtê-los.
+
+::: {.incremental}
+- Data de coleta
+- Coletor
+- Modelo e marca do equipamento
+- Unidades de medida de cada variável
+:::
+
+## Um padrão para metadados ecológicos {.smaller}
+
+**EML** — *Ecological Metadata Language* — é o padrão usado pela rede LTER e
+pelo repositório da EDI.
+
+**ezEML** é um editor online em formulário que gera EML sem que você precise
+escrever XML:
+
+::: {.incremental}
+- funciona como um assistente, passo a passo
+- checa o documento quanto a correção e completude
+- lê a tabela de dados e infere boa parte das características dela
+- exporta o EML pronto, ou envia direto para o repositório da EDI
+:::
+
+::: {.citacao}
+[ezEML](https://ezeml.edirepository.org/eml/) ·
+[EML](https://eml.ecoinformatics.org/) ·
+[Environmental Data Initiative](https://edirepository.org/)
+:::
+
+## ezEML na prática
+
+![O formulário do ezEML: cada item do sumário à esquerda é uma seção do documento de metadados.](img/a02-s18-ezeml.png)
+
+## Publicando os dados num repositório {.smaller}
+
+::: {.citacao}
+Vanderbilt, K.; Ide, J.; Gries, C.; Grossman-Clarke, S.; Hanson, P.;
+O'Brien, M.; Servilla, M.; Smith, C.; Waide, R.; Zollo-Venecek, K. (2022).
+**Publishing Ecological Data in a Repository: An Easy Workflow for Everyone.**
+*The Bulletin of the Ecological Society of America*.
+[doi:10.1002/bes2.2018](https://doi.org/10.1002/bes2.2018)
+:::
+
+Artigo de acesso aberto que descreve o caminho completo, do arquivo bruto ao
+DOI do conjunto de dados.
+
+# Análise exploratória
+
+## Análise exploratória de dados {.smaller}
+
+Importe os dados e **visualize os dados crus** para verificar discrepâncias.
+
+Plote usando o gráfico mais adequado ao tipo de dado:
+
+::: {.incremental}
+- *Scatter plot* — duas variáveis contínuas
+- *Boxplot* — um tratamento (preditora) e uma resposta contínua
+- Um **histograma** nunca é demais
+:::
+
+## Documente as alterações
+
+Faça e documente **qualquer** alteração nos dados usando o script.
+
+Evite mexer diretamente na planilha.
+
+::: {.citacao}
+Se a alteração está no script, ela é reproduzível e reversível.
+Se está na planilha, ela é invisível.
+:::
+
+# Organizando o script
+
+## Guias de estilo {.smaller}
+
+- [NiceR Code](https://nicercode.github.io/guide.html)
+- [Google R style guide](https://google.github.io/styleguide/Rguide.html)
+- [Tidyverse style guide](https://style.tidyverse.org)
+
+::: {.citacao}
+Qualquer um serve. O que não serve é não ter nenhum.
+:::
+
+## Melhores práticas em um script {.smaller}
+
+::: {.incremental}
+- Comece com a **data** e o **título do projeto**
+- **Carregue os pacotes** que vai usar, todos no começo
+- **Comente** as linhas dizendo *por que* está fazendo aquilo
+- **Separe** os elementos da linha de código com espaços
+- Use `<-` para atribuir, e não `=`
+- **Quebre a linha** se ela ficar muito longa
+- Evite dar a objetos nomes que já existem
+:::
+
+## Melhores práticas em um script {.smaller}
+
+::: {.incremental}
+- Escreva `TRUE` e `FALSE`, não `T` e `F`
+- Separe o código em **tópicos/partes**
+:::
+
+<!-- TODO: se quiser, mostre aqui um script de exemplo com o cabecalho
+     comentado e as secoes separadas por  # ---- nome da secao ----
+     que o RStudio transforma em sumario navegavel. -->
+
+## Para levar para o resto da semana {.smaller}
+
+Nada disto se aprende ouvindo. A partir de amanhã, **na prática**:
+
+::: {.incremental}
+- Todo código do curso roda dentro de um **Projeto do RStudio**
+- Nenhum `setwd()` em script nenhum — use `here()`
+- Os arquivos que vocês criarem seguem as regras de nome da aula de hoje
+- Se encontrarem na própria planilha algum erro da lista do exercício,
+  me contem: é o melhor exemplo possível
+:::
+
+. . .
+
+E anotem, com uma frase cada, o que faz cada função nova de hoje —
+`setwd()`, `here()`, `read.csv()`. Esse caderninho vale mais que o slide.

@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
-// Paleta herdada do site do laboratório (provetelab.org), para os slides
-// e o site lerem como a mesma família visual.
+// Identidade do Laboratório de Síntese em Biodiversidade (UFMS).
+// Paleta alinhada ao site provetelab.org; o âmbar e o verde vêm do logotipo.
 
 $body-bg: #faf7f0;
 $body-color: #2d3748;
@@ -10,17 +10,69 @@ $selection-bg: #f3eee3;
 
 $presentation-heading-color: #144f64;
 $presentation-heading-font-weight: 600;
+$presentation-title-slide-text-align: left;
+
 $code-block-bg: #ffffff;
 $code-block-border-color: #e3dccd;
 
 /*-- scss:rules --*/
+
+// --- Marca de canto -------------------------------------------------------
+// Usa a opção nativa `logo:` do revealjs (definida no YAML de cada deck).
+// Aqui só ajustamos tamanho e discrição, para não competir com o conteúdo.
+// O Quarto aplica um `max-height` próprio ao `.slide-logo`; sem anulá-lo,
+// o `height` abaixo é ignorado e a marca sai com ~35px.
+.reveal .slide-logo {
+  height: 90px !important;
+  width: auto !important;
+  max-height: none !important;
+  max-width: none !important;
+  opacity: .45;
+  right: 20px !important;
+  bottom: 12px !important;
+}
+
+// --- Slide de título ------------------------------------------------------
+// O logotipo por extenso entra pelo `title-slide-attributes` do YAML, como
+// imagem de fundo. Foi de propósito: o SCSS é compilado para dentro de
+// `<deck>_files/libs/revealjs/dist/theme/`, então qualquer `url("img/...")`
+// escrito aqui seria resolvido a partir DAQUELA pasta e quebraria.
+// Deixe os caminhos de imagem no .qmd, onde o Quarto os resolve e os copia.
+//
+// No slide de título a marca de canto seria redundante: o logotipo por
+// extenso já está lá. `.slide-logo` é um elemento único do deck, então
+// escondê-lo depende de qual slide está em tela.
+.reveal:has(#title-slide.present) .slide-logo { display: none; }
+
+// Com o logotipo no rodapé do slide de título, o bloco de texto sobe.
+#title-slide.quarto-title-block { padding-bottom: 5rem; }
+
+// --- Elementos recorrentes ------------------------------------------------
 .reveal .slide blockquote {
   border-left: 3px solid #1c6e8c;
   background: #f3eee3;
   padding: .6rem .9rem;
   font-size: .9em;
 }
+
 .reveal .citacao {
   font-size: .8em;
   color: #6c757d;
+}
+
+// Slide de encerramento (só na última aula do curso).
+.reveal .fim { text-align: center; }
+.reveal .fim img { max-width: 560px; margin: 0 auto 1.5rem; display: block; }
+.reveal .fim h2 { border: none; }
+
+// --- Diagramas mermaid ----------------------------------------------------
+// Por padrão o mermaid desenha os rótulos em `<foreignObject>` com HTML:
+// ele mede o texto com uma fonte e o revealjs o desenha com outra, mais
+// larga, e o rótulo sai cortado. A correção NÃO é de CSS — é passar
+// `"flowchart": {"htmlLabels": false}` no `%%{init:}%%` de cada diagrama,
+// o que faz o mermaid usar `<text>` nativo do SVG, medido e desenhado
+// pelo mesmo motor. Veja o bloco mermaid da aula 02 como modelo.
+.reveal .slide figure > div > svg.mermaid-js {
+  max-width: 100%;
+  height: auto;
 }

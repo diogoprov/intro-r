@@ -10,3 +10,6 @@ _site/
 .RData
 .Ruserdata
 *.DS_Store
+
+# pasta temporaria de inspecao de imagens do pptx
+_inspect/

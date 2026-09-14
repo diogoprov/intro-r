@@ -20,7 +20,11 @@ Como organizar planilhas e diretórios de projeto, nomenclatura de arquivos, pla
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+[{{< fa solid file-excel >}} `Planilha de dados FINAL v2 (1).xlsx`](Planilha%20de%20dados%20FINAL%20v2%20%281%29.xlsx)
+
+Planilha **deliberadamente mal feita**, usada no exercício em dupla da aula.
+Contém um erro para cada regra enunciada nos slides — a começar pelo próprio
+nome do arquivo. Os dados são **fictícios**, inventados para o exercício.
 
 ## Recursos externos
 

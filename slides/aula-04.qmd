@@ -6,9 +6,16 @@ institute: "PPG em Ecologia e Conservação · UFMS"
 format:
   revealjs:
     theme: [default, custom.scss]
+    logo: img/lsb-canto.png
     slide-number: true
     preview-links: auto
     history: false
+    title-slide-attributes:
+      data-background-image: img/lsb-logo.png
+      data-background-size: 300px
+      data-background-position: 5% 86%
+mermaid:
+  theme: neutral
 ---
 
 ## A estratégia *split-apply-combine*
