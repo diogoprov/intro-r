@@ -1,0 +1,522 @@
+---
+title: "Gramática dos gráficos com ggplot2"
+subtitle: "Aula 05 · Introdução à Linguagem R"
+author: "Diogo B. Provete"
+institute: "PPG em Ecologia e Conservação · UFMS"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    logo: img/lsb-canto.png
+    slide-number: true
+    preview-links: auto
+    history: false
+    title-slide-attributes:
+      data-background-image: img/lsb-logo.png
+      data-background-size: 300px
+      data-background-position: 5% 86%
+---
+
+## De onde vem a ideia {.smaller}
+
+::: {.citacao}
+Wilkinson, L. (2005). **The Grammar of Graphics.** 2ª ed. Springer.
+[doi:10.1007/0-387-28695-0](https://doi.org/10.1007/0-387-28695-0)
+:::
+
+::: {.citacao}
+Wickham, H. (2010). **A Layered Grammar of Graphics.**
+*Journal of Computational and Graphical Statistics* 19(1): 3–28.
+[doi:10.1198/jcgs.2009.07098](https://doi.org/10.1198/jcgs.2009.07098)
+:::
+
+. . .
+
+A tese dos dois: um gráfico não é um **tipo** que você escolhe de um menu.
+É uma **frase** que você monta com peças que se combinam.
+
+::: {.citacao}
+É por isso que o `ggplot2` não tem uma função `grafico_de_barras()`.
+:::
+
+## Onde aprender mais {.smaller}
+
+- [R for Data Science](https://r4ds.hadley.nz) — capítulos de visualização
+- [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org) — o livro do pacote
+- [Análises Ecológicas no R](https://analises-ecologicas.com/cap6.html) — capítulo 6, em português
+
+::: {.citacao}
+Boa parte desta aula é adaptada do curso de
+[Gustavo Paterno](https://paternogbc.github.io/disciplina-graficos-r/).
+:::
+
+# As três camadas
+
+## O que é um gráfico {.smaller}
+
+![](img/a05-camadas.png)
+
+::: {.incremental}
+- **Data** — a tabela
+- **Aesthetics** — o *mapeamento*: qual coluna vira qual propriedade visual
+- **Geometries** — a *representação*: que forma desenha cada observação
+:::
+
+::: {.citacao}
+Figura do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-graficos-r/)
+:::
+
+## Os dados do exemplo {.smaller}
+
+Vulnerabilidades registradas por aplicativo:
+
+| APPLICATION | TOTAL | HIGH | MEDIUM | LOW | SCORE |
+|---|--:|--:|--:|--:|--:|
+| Apple Safari | 81 | 2 | 71 | 8 | 413 |
+| Mozilla Firefox | 44 | 3 | 30 | 11 | 236 |
+| Google Chrome | 61 | 1 | 30 | 30 | 205 |
+| Microsoft Internet Explorer | 34 | 1 | 30 | 3 | 178 |
+| Adobe Flash Player | 34 | 0 | 34 | 0 | 170 |
+| Java Runtime Environment | 28 | 5 | 5 | 18 | 168 |
+
+::: {.citacao}
+Tabela do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-graficos-r/) · mostrando 6 de 15 linhas
+:::
+
+## Duas variáveis contínuas {.smaller}
+
+::: {.incremental}
+1. **Dados** — a tabela acima
+2. **Mapeamento** — `x = HIGH`, `y = TOTAL`
+3. **Geometria** — `point`
+4. **Gráfico** — um ponto por aplicativo
+:::
+
+. . .
+
+```r
+ggplot(dados, aes(x = HIGH, y = TOTAL)) +
+  geom_point()
+```
+
+## Uma variável contínua {.smaller}
+
+::: {.incremental}
+1. **Dados** — a mesma tabela
+2. **Mapeamento** — `x = HIGH`. **Só isso.**
+3. **Geometria** — `histogram`
+4. **Gráfico** — o eixo Y aparece sozinho: é a **contagem**
+:::
+
+. . .
+
+```r
+ggplot(dados, aes(x = HIGH)) +
+  geom_histogram()
+```
+
+::: {.citacao}
+Repare: você não pediu o eixo Y. A geometria calculou.
+:::
+
+# A tradução para o R
+
+## Cada camada é um pedaço do comando {.smaller}
+
+| Camada | No R |
+|---|---|
+| **Dados** | objeto da classe `data.frame` |
+| **Mapeamento** | colunas do `data.frame` — X, Y, grupos, cor, preenchimento |
+| **Geometria** | uma função da família `geom_` |
+
+. . .
+
+```r
+ggplot(data, aes(x, y)) + geom_point()
+```
+
+- `data` — define o objeto com a tabela
+- `aes()` — define qual coluna é X e qual é Y
+- `geom_` — define qual geometria plotar
+
+## O sinal de `+` {.smaller}
+
+```r
+ggplot(data, aes(x, y)) +
+  geom_point() +
+  theme_classic() +
+  labs(x = "Gravidade alta", y = "Total")
+```
+
+. . .
+
+O `+` **adiciona camadas**. Uma camada por linha, sempre — facilita ler,
+facilita comentar uma linha para testar, e facilita achar o erro.
+
+::: {.citacao}
+Erro clássico: pôr o `+` no começo da linha seguinte em vez do fim da
+anterior. O R não entende — ele precisa saber que a frase continua.
+:::
+
+# Mapeamento
+
+## Mapear é traduzir coluna em propriedade visual {.smaller}
+
+Usando o `iris`, que já vem com o R:
+
+```r
+head(iris)
+```
+
+| Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species |
+|--:|--:|--:|--:|---|
+| 5.1 | 3.5 | 1.4 | 0.2 | setosa |
+| 4.9 | 3.0 | 1.4 | 0.2 | setosa |
+| 4.7 | 3.2 | 1.3 | 0.2 | setosa |
+
+## O mesmo gráfico, mapeamentos diferentes {.smaller}
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length)) +
+  geom_point()
+```
+
+. . .
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
+                 color = Species)) +
+  geom_point()
+```
+
+. . .
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
+                 color = Species, shape = Species)) +
+  geom_point(size = 3)
+```
+
+::: {.citacao}
+Os dados não mudaram. Só o que você pediu para o gráfico dizer sobre eles.
+:::
+
+## Dentro ou fora do `aes()`? {.smaller}
+
+```r
+geom_point(aes(color = Species))   # cor VEM DOS DADOS
+geom_point(color = "red")          # cor é uma DECISÃO SUA
+```
+
+. . .
+
+::: {.incremental}
+- Dentro do `aes()` → o valor da cor depende da linha. Ganha legenda.
+- Fora do `aes()` → todos os pontos ficam iguais. Sem legenda.
+:::
+
+. . .
+
+::: {.citacao}
+É o erro nº 1 de quem está começando. Legenda estranha? Confira se algo
+que deveria estar fora do `aes()` foi parar dentro.
+:::
+
+## Discretas vs. contínuas {.smaller}
+
+::: {.incremental}
+- O ggplot trata qualquer variável **categórica** como **discreta**
+- Variáveis de texto costumam virar **fatores** no R
+- Fatores são discretos: mapeados por **níveis**, não de forma contínua
+:::
+
+. . .
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
+                 color = Petal.Width)) + geom_point()
+# escala contínua: um gradiente
+
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
+                 color = factor(Petal.Width))) + geom_point()
+# escala discreta: uma cor por valor
+```
+
+::: {.citacao}
+`factor()` é o interruptor entre os dois mundos.
+:::
+
+# Os cinco gráficos básicos
+
+## Qual gráfico usar? {.smaller}
+
+```{dot}
+//| fig-width: 11
+digraph escolha {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.6; nodesep=0.22;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=22 margin="0.24,0.14"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=18];
+
+  VIZ  [label="Visualização\nde dados" shape=ellipse fillcolor="#e3dccd"];
+  UMA  [label="Uma variável"];
+  DUAS [label="Duas variáveis"];
+  HIST [label="Histograma"]; BAR  [label="Barras"];
+  DISP [label="Dispersão"];  LIN  [label="Linha"];
+  BOX  [label="Boxplot"];
+  BARF [label="Barras\nfacet / stack / dodge"];
+
+  VIZ -> UMA; VIZ -> DUAS;
+  UMA  -> HIST [label="contínua"];
+  UMA  -> BAR  [label="categórica"];
+  DUAS -> DISP [label="X num, Y num\nvários Y por X"];
+  DUAS -> LIN  [label="X num, Y num\num Y por X"];
+  DUAS -> BOX  [label="X categ, Y num"];
+  DUAS -> BARF [label="X categ, Y categ"];
+}
+```
+
+::: {.citacao}
+Adaptado do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-graficos-r/)
+:::
+
+## Histograma — `geom_histogram()` {.smaller}
+
+Representa a **distribuição** de uma variável numérica.
+
+```r
+ggplot(dados, aes(x = var)) +
+  geom_histogram()
+```
+
+![](img/a05-geom-histogram.png){width=45%}
+
+::: {.citacao}
+Uma variável numérica. O eixo Y é contagem, calculada pela geometria.
+:::
+
+## Barras — `geom_bar()` {.smaller}
+
+Representa variáveis **categóricas** com barras de comprimento proporcional
+ao valor.
+
+```r
+ggplot(dados, aes(x = var)) +
+  geom_bar()
+```
+
+![](img/a05-geom-bar.png){width=45%}
+
+::: {.citacao}
+Uma variável categórica. `geom_bar()` conta; `geom_col()` usa um valor
+que você já tem.
+:::
+
+## Boxplot — `geom_boxplot()` {.smaller}
+
+Quartis de uma variável numérica em função de uma variável categórica.
+
+```r
+ggplot(dados, aes(x = grupo, y = medida)) +
+  geom_boxplot()
+```
+
+![](img/a05-geom-boxplot.png){width=45%}
+
+## Anatomia do boxplot {.smaller}
+
+![](img/a05-boxplot-iqr.png){width=42%}
+
+::: {.incremental}
+- A linha do meio é a **mediana**, não a média
+- A caixa vai do 1º ao 3º quartil — **50% dos dados**
+- As hastes vão até 1,5 × IQR; o que passa disso vira ponto
+:::
+
+## Dispersão — `geom_point()` {.smaller}
+
+A relação entre **duas variáveis numéricas**.
+
+```r
+ggplot(dados, aes(x = var1, y = var2)) +
+  geom_point()
+```
+
+![](img/a05-geom-point.png){width=45%}
+
+## Linha — `geom_line()` {.smaller}
+
+Dados em série, conectados por segmentos de reta.
+
+```r
+ggplot(dados, aes(x = var1, y = var2)) +
+  geom_line()
+```
+
+![](img/a05-geom-line.png){width=45%}
+
+::: {.citacao}
+Linha só faz sentido com **um** valor de Y por X, e com um X que tenha
+ordem — tempo, distância, altitude.
+:::
+
+# Combinando camadas
+
+## Desafio: como juntar os dois? {.smaller}
+
+Você tem um gráfico de dispersão e quer a linha de tendência por cima.
+
+. . .
+
+```r
+ggplot(dados, aes(x = var1, y = var2)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+. . .
+
+::: {.citacao}
+Repare que `aes()` foi declarado **uma vez**, no `ggplot()`. As duas
+geometrias herdam o mesmo mapeamento.
+:::
+
+## A ordem das camadas importa {.smaller}
+
+```r
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point() +
+  geom_smooth()      # a linha fica POR CIMA dos pontos
+```
+
+. . .
+
+```r
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_smooth() +
+  geom_point()       # os pontos ficam POR CIMA da linha
+```
+
+. . .
+
+::: {.citacao}
+É como empilhar transparências: a última entra na frente.
+:::
+
+<!-- TODO: nos slides 39-41 do pptx havia um desafio 2 ("como este grafico
+     foi feito?") cuja resposta vinha num GIF de 9,8 MB. Substitui por
+     fragmentos de codigo. Se quiser recriar o desafio 2, me diga qual era
+     o grafico que eu escrevo o codigo. -->
+
+# Ferramentas e exemplos
+
+## `esquisse` — montar o gráfico clicando {.smaller}
+
+Um *add-in* do RStudio: você arrasta as colunas, ele monta o gráfico —
+e **devolve o código do ggplot2**.
+
+```r
+install.packages("esquisse")
+esquisse::esquisser()
+```
+
+![](img/a05-esquisse.gif){width=60%}
+
+::: {.citacao}
+[Documentação do esquisse](https://dreamrs.github.io/esquisse/) ·
+Bom para explorar e para aprender a sintaxe. Ruim como muleta permanente —
+o código que fica no script é o que garante reprodutibilidade.
+:::
+
+## O que dá para fazer {.smaller}
+
+![](img/a05-galeria-3.png)
+
+::: {.citacao}
+Bovo, R.P.; Simon, M.N.; **Provete, D.B.**; Lyra, M.; Navas, C.A.;
+Andrade, D.V. (2023). **Beyond Janzen's Hypothesis: How Amphibians That
+Climb Tropical Mountains Respond to Climate Variation.**
+*Integrative Organismal Biology* 5(1): obad009.
+[doi:10.1093/iob/obad009](https://doi.org/10.1093/iob/obad009)
+:::
+
+## {.smaller}
+
+![](img/a05-galeria-2.png)
+
+::: {.citacao}
+Mesmos dados, com `geom_smooth()` por espécie — Bovo et al. (2023).
+Sete variáveis fisiológicas, seis altitudes, cinco espécies, **um bloco de código**.
+:::
+
+## {.smaller}
+
+![](img/a05-galeria-1.png)
+
+::: {.citacao}
+Distância de fuga por tipo de arena e tipo de estímulo, em 17 espécies de
+anuros. Citadini, J. *et al.* — manuscrito **em avaliação**.
+:::
+
+## E uma feita nesta semana {.smaller}
+
+![](img/a05-galeria-javier.png)
+
+::: {.citacao}
+Crescimento de girinos: comprimento rostro-cloacal por estágio de Gosner,
+por sexo, em três zonas. Dados de campo de Javier.
+:::
+
+## O código que fez a figura anterior {.smaller}
+
+```r
+library(ggplot2)
+d <- read.table("javier_renacuajos.txt", header = TRUE)
+d$zona <- factor(d$zona, labels = c("Zona 1", "Zona 2", "Zona 3"))
+
+ggplot(d, aes(x = estadio, y = LHC, colour = sexo)) +
+  geom_point(size = 1.9, alpha = .75) +
+  geom_smooth(method = "lm", formula = y ~ x) +
+  facet_wrap(~ zona) +
+  labs(x = "Estágio de desenvolvimento (Gosner)",
+       y = "Comprimento rostro-cloacal (mm)") +
+  theme_minimal()
+```
+
+. . .
+
+**Dez linhas.** Dados, mapeamento (`x`, `y`, `colour`), duas geometrias,
+uma estatística, facetas e rótulos — tudo o que vimos hoje, numa figura só.
+
+## Um último: o que está errado aqui? {.smaller}
+
+![](img/a05-galeria-4.png)
+
+. . .
+
+::: {.citacao}
+Os rótulos do eixo X estão ilegíveis, sobrepostos. Um gráfico bonito que
+ninguém consegue ler não é um gráfico bonito. **Como vocês consertariam?**
+:::
+
+::: {.notes}
+Respostas possíveis, todas de uma linha:
+  + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  + scale_x_discrete(breaks = ...)   para mostrar só alguns meses
+  + coord_flip()
+  ou converter o eixo para data de verdade e usar scale_x_date().
+O ponto pedagógico: a camada de tema e a de escala existem justamente
+para isso, e são tão parte da gramática quanto a geometria.
+:::
+
+## Exercitando {.smaller}
+
+Em [Análises Ecológicas no R](https://analises-ecologicas.com/cap6.html), capítulo 6:
+
+- Leiam a seção [Gramática dos gráficos](https://analises-ecologicas.com/cap6.html#grámatica-dos-gráficos)
+- Façam os [exercícios](https://analises-ecologicas.com/cap6.html#exerc%C3%ADcios-2)
+
+. . .
+
+::: {.citacao}
+Regra da aula: **nada de `esquisse` nos exercícios.** Escrevam o código.
+:::

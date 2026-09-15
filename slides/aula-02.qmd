@@ -14,8 +14,6 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 5% 86%
-mermaid:
-  theme: neutral
 ---
 
 ## Roteiro
@@ -150,26 +148,58 @@ Porto Alegre: Artmed. Capítulo 8 — *Gerenciamento e curadoria de dados*.
 
 O fluxograma a seguir é uma adaptação da Figura 8.7 desse capítulo.
 
-## O ciclo de curadoria {.smaller}
+## O ciclo, primeira metade {.smaller}
 
-```{mermaid}
-%%| fig-width: 11
-%%{init: {"flowchart": {"htmlLabels": false, "padding": 12, "nodeSpacing": 30, "rankSpacing": 45}, "themeVariables": {"fontSize": "15px"}}}%%
-flowchart LR
-  RAW["Dados brutos<br/>caderno de campo,<br/>instrumentos"] --> PLAN["Organize<br/>em planilhas"]
-  MET["Métodos<br/>detalhados"] --> MD0["Gere os<br/>metadados"]
-  PLAN --> DS(["Conjunto de dados<br/>documentado"])
-  MD0 --> DS
-  DS --> ARQ["Deposite uma versão<br/>em repositório com DOI"]
-  ARQ --> CHK{"Conferido?"}
-  CHK -- "não" --> QC["Marque os<br/>discrepantes"]
-  QC --> DOCQC["Documente o<br/>controle de qualidade"]
-  DOCQC --> DS
-  CHK -- "sim" --> AED(["Análise exploratória"])
-  AED --> TR{"Transformar?"}
-  TR -- "sim" --> TRA["Transforme e<br/>documente"]
-  TRA --> DS
-  TR -- "não" --> AN(["Analise os dados"])
+```{dot}
+//| fig-width: 10
+digraph c1 {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.75; nodesep=0.3;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=22 margin="0.24,0.14"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=18];
+
+  RAW  [label="Dados brutos\ncaderno de campo,\ninstrumentos"];
+  MET  [label="Métodos\ndetalhados"];
+  PLAN [label="Organize\nem planilhas"];
+  MD0  [label="Gere os\nmetadados"];
+  DS   [label="Conjunto de dados\ndocumentado" shape=ellipse fillcolor="#e3dccd"];
+  ARQ  [label="Deposite em\nrepositório com DOI"];
+
+  RAW -> PLAN; MET -> MD0; PLAN -> DS; MD0 -> DS; DS -> ARQ;
+}
+```
+
+::: {.citacao}
+Repare que os **metadados** nascem junto com os dados, não no fim.
+:::
+
+## O ciclo, segunda metade {.smaller}
+
+```{dot}
+//| fig-width: 10
+digraph c2 {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.75; nodesep=0.3;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=22 margin="0.24,0.14"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=18];
+
+  ARQ  [label="Conjunto\narquivado" shape=ellipse fillcolor="#e3dccd"];
+  CHK  [label="Conferido?" shape=diamond fillcolor="#ffffff"];
+  QC   [label="Marque os discrepantes\ne documente a checagem"];
+  AED  [label="Análise\nexploratória"];
+  TR   [label="Transformar?" shape=diamond fillcolor="#ffffff"];
+  TRA  [label="Transforme e\ndocumente"];
+  AN   [label="Analise\nos dados" shape=ellipse fillcolor="#e3dccd"];
+
+  ARQ -> CHK;
+  CHK -> QC  [label="não"];
+  CHK -> AED [label="sim"];
+  AED -> TR;
+  TR  -> TRA [label="sim"];
+  TR  -> AN  [label="não"];
+  QC  -> ARQ [label="volta ao conjunto" constraint=false];
+  TRA -> ARQ [label="volta ao conjunto" constraint=false];
+}
 ```
 
 ::: {.citacao}
@@ -179,9 +209,8 @@ público com DOI**. Voltamos nesse ponto no fim da aula.
 :::
 
 <!-- TODO: no pptx original esse fluxograma reaparecia nos slides 11, 16 e 21
-     como marcador de "voce esta aqui". Se quiser recriar isso, basta duplicar
-     o bloco mermaid e usar `style NODE fill:#f3eee3` para destacar a etapa
-     da vez. -->
+     como marcador de "voce esta aqui". Para recriar, duplique o bloco dot e
+     troque o fillcolor do no da vez, p.ex.:  AED [fillcolor="#c2701c"];  -->
 
 ## Primeiros passos {.smaller}
 

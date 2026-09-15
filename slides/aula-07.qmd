@@ -14,8 +14,6 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 5% 86%
-mermaid:
-  theme: neutral
 ---
 
 ## Lógica de programação usando o R base

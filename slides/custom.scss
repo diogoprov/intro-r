@@ -76,3 +76,24 @@ $code-block-border-color: #e3dccd;
   max-width: 100%;
   height: auto;
 }
+
+// --- Imagens ---------------------------------------------------------------
+// Sem um teto de altura, uma imagem alta e estreita estoura o slide: o
+// `width=` do markdown controla só a largura. Este limite vale para todas.
+.reveal .slide img {
+  max-height: 68vh;
+  width: auto;
+  object-fit: contain;
+}
+// Quando a imagem tem legenda, o conjunto é que precisa caber.
+.reveal .slide figure > img { max-height: 60vh; }
+
+// --- Diagramas Graphviz (blocos ```{dot}) ---------------------------------
+// O Quarto emite um <svg> com width/height fixos e um viewBox bem mais largo,
+// o que deixa o desenho pequeno e centralizado numa caixa alta demais.
+// Forcando width 100% + height auto, o desenho passa a ocupar a largura toda.
+.reveal .slide div.cell-output-display svg {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 62vh;
+}

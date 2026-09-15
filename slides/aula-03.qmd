@@ -14,8 +14,6 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 5% 86%
-mermaid:
-  theme: neutral
 ---
 
 ## Para quê controle de versão? {.smaller}
@@ -77,16 +75,26 @@ Nuvem sincroniza arquivos; git versiona *alterações*. Não são a mesma coisa.
 
 ## Qual o fluxo de trabalho?
 
-```{mermaid}
-%%| fig-width: 8
-%%{init: {"flowchart": {"htmlLabels": false, "padding": 12, "nodeSpacing": 34, "rankSpacing": 55}, "themeVariables": {"fontSize": "16px"}}}%%
-flowchart LR
-  WD["Working directory"] -- "add" --> ST["Stage"]
-  ST -- "commit" --> LR["Local repository"]
-  LR -- "push" --> RR["Remote repository"]
-  RR -- "fetch" --> LR
-  RR -- "pull" --> WD
-  LR -- "checkout" --> WD
+```{dot}
+//| fig-width: 9
+digraph fluxo {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.5; nodesep=0.22;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=22 margin="0.24,0.14"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=18];
+
+  WD [label="Working\ndirectory"];
+  ST [label="Stage"];
+  LR [label="Local\nrepository"];
+  RR [label="Remote\nrepository"];
+
+  WD -> ST [label="add"];
+  ST -> LR [label="commit"];
+  LR -> RR [label="push"];
+  RR -> LR [label="fetch"];
+  RR -> WD [label="pull"];
+  LR -> WD [label="checkout"];
+}
 ```
 
 ## O mesmo fluxo, em comandos {.smaller}
@@ -133,10 +141,9 @@ Tudo o que vimos em comando tem um botão ali:
 | `git pull` | seta **↓ Pull** |
 | `git diff` | botão **Diff** |
 
-<!-- TODO: um screenshot do painel Git do RStudio com 2 ou 3 arquivos
-     modificados cairia muito bem aqui. Tire com o proprio repo da
-     disciplina aberto e salve como slides/img/a03-rstudio-git.png,
-     que eu ponho no lugar deste TODO. -->
+## O painel {.smaller}
+
+![A aba **Git**, ao lado de *Environment* e *History*. Cada linha é um arquivo; as caixinhas **Staged** à esquerda são o `git add`.](img/a03-rstudio-git.png)
 
 ## As letrinhas ao lado do arquivo {.smaller}
 
@@ -167,6 +174,28 @@ Puxar antes de empurrar evita a maior parte dos conflitos. Ganhe o hábito
 agora, antes de trabalhar com alguém.
 :::
 
+## A janela de commit {.smaller}
+
+![Botão **Commit** abre esta janela: arquivos em cima à esquerda, mensagem à direita, e a **diferença linha a linha** embaixo — verde entrou, vermelho saiu.](img/a03-rstudio-git_commit_panel.png)
+
+## Leia o diff antes de commitar {.smaller}
+
+A metade de baixo daquela janela é o `git diff`. Vale o hábito de **passar o
+olho nela antes de clicar em Commit**:
+
+::: {.incremental}
+- pega aquele `print()` de teste que ficou para trás
+- pega a linha que você apagou sem querer
+- e obriga você a escrever uma mensagem que descreve algo real
+:::
+
+. . .
+
+::: {.citacao}
+Mensagem de commit boa completa a frase "este commit vai…":
+*"…corrigir a leitura de datas na planilha de campo"*. Não *"ajustes"*.
+:::
+
 # Duas coisas que ninguém avisa
 
 ## O que NÃO colocar no git {.smaller}
@@ -193,6 +222,25 @@ que não existe:
 /docs/
 dados/processados/
 ```
+
+## Volte ao painel de agora há pouco {.smaller}
+
+Naquele screenshot, **tudo** estava marcado com **?** — arquivo novo, que o
+git ainda não rastreia. E o que era?
+
+::: {.incremental}
+- `Aula2.pptx`, `Aula3.pptx`, … — binários pesados que o git não sabe comparar
+- `Aula2.pdf`, `Aula5.pdf`, … — **gerados** a partir dos .pptx
+- `0003936-200221144449610.zip` — um zip solto
+- `.Rproj.user`, `.Rhistory` — configuração da máquina
+:::
+
+. . .
+
+::: {.citacao}
+É exatamente esse o momento de escrever o `.gitignore` — **antes** do primeiro
+`git add .`. Depois, o peso já entrou na história.
+:::
 
 ## Uma história real {.smaller}
 
