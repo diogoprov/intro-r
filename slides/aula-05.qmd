@@ -14,7 +14,31 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 94% 88%
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
+
+```{r}
+#| include: false
+library(ggplot2)
+library(dplyr)
+theme_set(theme_minimal(base_size = 15))
+options(width = 74)
+
+anuros <- read.csv(here::here("dados", "anuros_altitude.csv")) %>%
+  rename(especie = Species, sexo = Sex, ewl = EWL_Ugcm2s1,
+         massa = Bodymass_g, ctmin = CTmin, ctmax = CTmax,
+         serra = Mountain_Range, altitude = Altitude_m) %>%
+  select(id = ID, especie, sexo, serra, altitude, massa, ewl,
+         ctmin, ctmax, bio5 = BIO_5) %>%
+  mutate(especie   = factor(especie),
+         serra     = factor(serra),
+         alt_fator = factor(altitude, levels = sort(unique(altitude))),
+         amplitude = ctmax - ctmin,
+         tol_aquec = ctmax - bio5)
+```
 
 ## De onde vem a ideia {.smaller}
 
@@ -67,51 +91,56 @@ Figura do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-gra
 
 ## Os dados do exemplo {.smaller}
 
-Vulnerabilidades registradas por aplicativo:
+O mesmo arquivo da aula 04, já limpo:
 
-| APPLICATION | TOTAL | HIGH | MEDIUM | LOW | SCORE |
-|---|--:|--:|--:|--:|--:|
-| Apple Safari | 81 | 2 | 71 | 8 | 413 |
-| Mozilla Firefox | 44 | 3 | 30 | 11 | 236 |
-| Google Chrome | 61 | 1 | 30 | 30 | 205 |
-| Microsoft Internet Explorer | 34 | 1 | 30 | 3 | 178 |
-| Adobe Flash Player | 34 | 0 | 34 | 0 | 170 |
-| Java Runtime Environment | 28 | 5 | 5 | 18 | 168 |
+```{r}
+#| echo: false
+head(anuros[, c("especie", "serra", "altitude", "massa", "ctmin", "ctmax")], 5)
+```
 
 ::: {.citacao}
-Tabela do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-graficos-r/) · mostrando 6 de 15 linhas
+Bovo et al. (2023), *Integrative Organismal Biology* ·
+[doi:10.1093/iob/obad009](https://doi.org/10.1093/iob/obad009) ·
+225 indivíduos, 5 espécies, 6 altitudes
 :::
 
 ## Duas variáveis contínuas {.smaller}
 
 ::: {.incremental}
-1. **Dados** — a tabela acima
-2. **Mapeamento** — `x = HIGH`, `y = TOTAL`
+1. **Dados** — `anuros`
+2. **Mapeamento** — `x = ctmin`, `y = ctmax`
 3. **Geometria** — `point`
-4. **Gráfico** — um ponto por aplicativo
+4. **Gráfico** — um ponto por indivíduo
 :::
 
 . . .
 
-```r
-ggplot(dados, aes(x = HIGH, y = TOTAL)) +
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 4
+ggplot(anuros,
+       aes(x = ctmin, y = ctmax)) +
   geom_point()
 ```
 
 ## Uma variável contínua {.smaller}
 
 ::: {.incremental}
-1. **Dados** — a mesma tabela
-2. **Mapeamento** — `x = HIGH`. **Só isso.**
+1. **Dados** — os mesmos
+2. **Mapeamento** — `x = ctmax`. **Só isso.**
 3. **Geometria** — `histogram`
 4. **Gráfico** — o eixo Y aparece sozinho: é a **contagem**
 :::
 
 . . .
 
-```r
-ggplot(dados, aes(x = HIGH)) +
-  geom_histogram()
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 4
+ggplot(anuros, aes(x = ctmax)) +
+  geom_histogram(bins = 25)
 ```
 
 ::: {.citacao}
@@ -161,40 +190,55 @@ anterior. O R não entende — ele precisa saber que a frase continua.
 
 ## Mapear é traduzir coluna em propriedade visual {.smaller}
 
-Usando o `iris`, que já vem com o R:
+Três colunas do nosso arquivo, e o que cada uma pode virar:
 
-```r
-head(iris)
-```
+| Coluna | Tipo | Vira bem |
+|---|---|---|
+| `ctmin`, `ctmax` | numérica contínua | posição em X ou Y, gradiente de cor |
+| `especie`, `serra` | categórica | cor, forma, faceta |
+| `altitude` | numérica com 6 valores | **as duas coisas** — você escolhe |
 
-| Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species |
-|--:|--:|--:|--:|---|
-| 5.1 | 3.5 | 1.4 | 0.2 | setosa |
-| 4.9 | 3.0 | 1.4 | 0.2 | setosa |
-| 4.7 | 3.2 | 1.3 | 0.2 | setosa |
+::: {.citacao}
+Essa última linha é a decisão mais interessante do dia. Voltamos a ela.
+:::
 
 ## O mesmo gráfico, mapeamentos diferentes {.smaller}
 
-```r
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length)) +
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(x = ctmin, y = ctmax)) +
   geom_point()
 ```
 
 . . .
 
-```r
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
-                 color = Species)) +
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(x = ctmin, y = ctmax,
+           colour = especie)) +
   geom_point()
 ```
 
-. . .
+## Mais um mapeamento {.smaller}
 
-```r
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
-                 color = Species, shape = Species)) +
-  geom_point(size = 3)
+```{r}
+#| output-location: column
+#| fig-width: 5.4
+#| fig-height: 4
+ggplot(anuros,
+       aes(x = ctmin, y = ctmax,
+           colour = especie,
+           shape  = serra)) +
+  geom_point(size = 2.4)
 ```
+
+. . .
 
 ::: {.citacao}
 Os dados não mudaram. Só o que você pediu para o gráfico dizer sobre eles.
@@ -203,8 +247,8 @@ Os dados não mudaram. Só o que você pediu para o gráfico dizer sobre eles.
 ## Dentro ou fora do `aes()`? {.smaller}
 
 ```r
-geom_point(aes(color = Species))   # cor VEM DOS DADOS
-geom_point(color = "red")          # cor é uma DECISÃO SUA
+geom_point(aes(colour = especie))   # cor VEM DOS DADOS
+geom_point(colour = "red")          # cor é uma DECISÃO SUA
 ```
 
 . . .
@@ -231,18 +275,33 @@ que deveria estar fora do `aes()` foi parar dentro.
 
 . . .
 
-```r
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
-                 color = Petal.Width)) + geom_point()
-# escala contínua: um gradiente
+A altitude é o caso perfeito: um **número** que na prática são **seis sítios**.
 
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length,
-                 color = factor(Petal.Width))) + geom_point()
-# escala discreta: uma cor por valor
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.2
+ggplot(anuros,
+       aes(ctmin, ctmax,
+           colour = altitude)) +
+  geom_point()          # gradiente
+```
+
+. . .
+
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.2
+ggplot(anuros,
+       aes(ctmin, ctmax,
+           colour = alt_fator)) +
+  geom_point()          # níveis
 ```
 
 ::: {.citacao}
-`factor()` é o interruptor entre os dois mundos.
+`factor()` é o interruptor entre os dois mundos. Qual dos dois está certo
+**depende da pergunta** — nenhum dos dois é o padrão correto.
 :::
 
 # Os cinco gráficos básicos
@@ -283,15 +342,17 @@ Adaptado do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-g
 
 Representa a **distribuição** de uma variável numérica.
 
-```r
-ggplot(dados, aes(x = var)) +
-  geom_histogram()
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.6
+ggplot(anuros, aes(x = massa)) +
+  geom_histogram(bins = 30)
 ```
-
-![](img/a05-geom-histogram.png){width=45%}
 
 ::: {.citacao}
 Uma variável numérica. O eixo Y é contagem, calculada pela geometria.
+A cauda longa à direita é a *Rhinella icterica*, muito maior que as outras.
 :::
 
 ## Barras — `geom_bar()` {.smaller}
@@ -299,28 +360,33 @@ Uma variável numérica. O eixo Y é contagem, calculada pela geometria.
 Representa variáveis **categóricas** com barras de comprimento proporcional
 ao valor.
 
-```r
-ggplot(dados, aes(x = var)) +
+```{r}
+#| output-location: column
+#| fig-width: 5.4
+#| fig-height: 3.6
+ggplot(anuros, aes(y = especie)) +
   geom_bar()
 ```
 
-![](img/a05-geom-bar.png){width=45%}
-
 ::: {.citacao}
-Uma variável categórica. `geom_bar()` conta; `geom_col()` usa um valor
-que você já tem.
+Uma variável categórica. `geom_bar()` **conta**; `geom_col()` usa um valor
+que você já tem. Mapear em `y` em vez de `x` resolve nome comprido sem
+precisar girar rótulo.
 :::
 
 ## Boxplot — `geom_boxplot()` {.smaller}
 
 Quartis de uma variável numérica em função de uma variável categórica.
 
-```r
-ggplot(dados, aes(x = grupo, y = medida)) +
-  geom_boxplot()
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.6
+ggplot(anuros,
+       aes(x = alt_fator, y = ctmax)) +
+  geom_boxplot() +
+  labs(x = "Altitude (m)")
 ```
-
-![](img/a05-geom-boxplot.png){width=45%}
 
 ## Anatomia do boxplot {.smaller}
 
@@ -336,27 +402,62 @@ ggplot(dados, aes(x = grupo, y = medida)) +
 
 A relação entre **duas variáveis numéricas**.
 
-```r
-ggplot(dados, aes(x = var1, y = var2)) +
-  geom_point()
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(x = massa, y = ewl)) +
+  geom_point(alpha = .6)
 ```
 
-![](img/a05-geom-point.png){width=45%}
+::: {.citacao}
+Massa contra perda de água. Quase tudo empilhado à esquerda: a massa vai de
+**0,4 g a 373 g** — três ordens de grandeza na mesma escala linear.
+:::
+
+## O mesmo dado, outra escala {.smaller}
+
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(x = massa, y = ewl)) +
+  geom_point(alpha = .6) +
+  scale_x_log10()
+```
+
+. . .
+
+::: {.citacao}
+A **escala** é uma camada da gramática, como a geometria. Nenhum dado mudou;
+o gráfico passou a ser legível. E o padrão que aparece é real: os anuros
+menores perdem **mais** água por área — maior superfície por unidade de
+volume.
+:::
 
 ## Linha — `geom_line()` {.smaller}
 
 Dados em série, conectados por segmentos de reta.
 
-```r
-ggplot(dados, aes(x = var1, y = var2)) +
-  geom_line()
-```
+Precisamos de **um** Y por X — então primeiro resumimos:
 
-![](img/a05-geom-line.png){width=45%}
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.2
+anuros %>%
+  group_by(altitude) %>%
+  summarise(bio5 = unique(bio5)) %>%
+  ggplot(aes(altitude, bio5)) +
+  geom_line() + geom_point()
+```
 
 ::: {.citacao}
 Linha só faz sentido com **um** valor de Y por X, e com um X que tenha
-ordem — tempo, distância, altitude.
+ordem. Repare no sítio de 1600 m: mais alto e **mais quente** que o de
+1500 m, porque fica na outra serra. Altitude não é temperatura.
 :::
 
 # Combinando camadas
@@ -367,10 +468,15 @@ Você tem um gráfico de dispersão e quer a linha de tendência por cima.
 
 . . .
 
-```r
-ggplot(dados, aes(x = var1, y = var2)) +
-  geom_point() +
-  geom_smooth(method = "lm")
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(altitude, tol_aquec)) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm",
+              formula = y ~ x)
 ```
 
 . . .
@@ -380,32 +486,51 @@ Repare que `aes()` foi declarado **uma vez**, no `ggplot()`. As duas
 geometrias herdam o mesmo mapeamento.
 :::
 
+## Facetas: uma janela por grupo {.smaller}
+
+```{r}
+#| output-location: column
+#| fig-width: 6
+#| fig-height: 4.6
+ggplot(anuros,
+       aes(altitude, tol_aquec)) +
+  geom_point(alpha = .6) +
+  geom_smooth(method = "lm",
+              formula = y ~ x) +
+  facet_wrap(~ especie, ncol = 2,
+    labeller = label_wrap_gen(16))
+```
+
+::: {.citacao}
+`facet_wrap()` reparte os dados e repete o gráfico — nenhuma linha do código
+do gráfico mudou. O `labeller` quebra o nome da espécie em duas linhas;
+sem ele, *Dendropsophus minutus* sai cortado.
+:::
+
 ## A ordem das camadas importa {.smaller}
 
-```r
-ggplot(iris, aes(Sepal.Length, Petal.Length)) +
-  geom_point() +
-  geom_smooth()      # a linha fica POR CIMA dos pontos
+```{r}
+#| output-location: column
+#| fig-width: 4.4
+#| fig-height: 2.3
+ggplot(anuros, aes(ctmin, ctmax)) +
+  geom_point(size = 3) +
+  geom_smooth()   # linha por cima
 ```
 
-. . .
-
-```r
-ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+```{r}
+#| output-location: column
+#| fig-width: 4.4
+#| fig-height: 2.3
+ggplot(anuros, aes(ctmin, ctmax)) +
   geom_smooth() +
-  geom_point()       # os pontos ficam POR CIMA da linha
+  geom_point(size = 3)  # pontos por cima
 ```
-
-. . .
 
 ::: {.citacao}
 É como empilhar transparências: a última entra na frente.
 :::
 
-<!-- TODO: nos slides 39-41 do pptx havia um desafio 2 ("como este grafico
-     foi feito?") cuja resposta vinha num GIF de 9,8 MB. Substitui por
-     fragmentos de codigo. Se quiser recriar o desafio 2, me diga qual era
-     o grafico que eu escrevo o codigo. -->
 
 # Ferramentas e exemplos
 

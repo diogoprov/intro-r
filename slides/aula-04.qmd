@@ -14,7 +14,19 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 94% 88%
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
+
+```{r}
+#| include: false
+library(dplyr)
+library(tidyr)
+options(width = 74, pillar.print_max = 8)
+bruto <- read.csv(here::here("dados", "anuros_altitude.csv"))
+```
 
 ## A estratégia *split-apply-combine*
 
@@ -32,12 +44,6 @@ Wickham, H. (2011). The split-apply-combine strategy for data analysis.
 
 ![O mesmo raciocínio, com um exemplo de soma por país.](img/a04-slide05-1.png)
 
-## Visualizando o que cada verbo faz
-
-Para **ver a tabela se transformando** passo a passo:
-
-[tidydatatutor.com](https://tidydatatutor.com){.r-fit-text}
-
 ## O ciclo da ciência de dados
 
 ![](img/a04-slide07-1.png)
@@ -46,56 +52,321 @@ Para **ver a tabela se transformando** passo a passo:
 Wickham, Çetinkaya-Rundel & Grolemund, *R for Data Science* (2ª ed.)
 :::
 
-## Onde estudar
+## Onde estudar {.smaller}
 
 - [tidyverse.org](https://www.tidyverse.org) — documentação oficial dos pacotes
 - [R para Ciência de Dados](https://pt.r4ds.hadley.nz) — o livro, em português
+- [tidydatatutor.com](https://tidydatatutor.com) — **veja a tabela se
+  transformando**, passo a passo, enquanto o código roda
 
 ## Instalando e carregando
 
-```r
+```{r}
+#| eval: false
 install.packages("tidyverse")
 library(tidyverse)
 ```
 
-## Lógica do tidyverse
+. . .
 
-- Principais **verbos** do `dplyr` e do `tidyr`
-- O que é um conjunto de dados ***tidy***?
-- Como converter dados em formatos não padrão para *tidy*
-- Trabalhar com *data frames*
+O `tidyverse` é um **guarda-chuva**: carrega `dplyr`, `tidyr`, `ggplot2`,
+`readr`, `purrr` e mais alguns de uma vez. Hoje usamos os dois primeiros.
 
-## Verbos do `dplyr`
+# O dado da semana
+
+## De onde ele vem {.smaller}
+
+::: {.citacao}
+Bovo, R.P.; Simon, M.N.; **Provete, D.B.**; Lyra, M.; Navas, C.A.;
+Andrade, D.V. (2023). **Beyond Janzen's Hypothesis: How Amphibians That
+Climb Tropical Mountains Respond to Climate Variation.**
+*Integrative Organismal Biology* 5(1): obad009.
+[doi:10.1093/iob/obad009](https://doi.org/10.1093/iob/obad009)
+:::
+
+. . .
+
+**225 indivíduos**, 5 espécies de anuros, 6 altitudes, 2 serras da Mata
+Atlântica. Limites térmicos, perda de água, massa e clima de cada sítio.
+
+::: {.citacao}
+Dados reais e publicados. É o mesmo arquivo da aula 01 à aula 08.
+:::
+
+## O que tem dentro {.smaller}
+
+```{r}
+dim(bruto)
+names(bruto)[1:12]
+```
+
+. . .
+
+Repare nos nomes: `EWL_Ugcm2s1`, `Bodymass_g`, `Altitude_m`. A **unidade
+está no nome da coluna** — ótimo para quem abre o arquivo solto, cansativo
+para quem vai digitar aquilo cinquenta vezes hoje.
+
+# Verbos do `dplyr`
+
+## Os cinco que resolvem quase tudo {.smaller}
 
 ![](img/hex-dplyr.png){.absolute top=0 right=0 width=110}
 
-- **`mutate()`** cria novas variáveis que são funções de variáveis já existentes.
-- **`select()`** seleciona as variáveis com que se deseja trabalhar, criando um novo conjunto de dados.
-- **`filter()`** seleciona as linhas por um critério definido — o equivalente ao filtro do Excel.
-- **`summarise()`** gera valores-resumo de um agrupamento dos dados (média, quantis, etc.).
-- **`arrange()`** ordena as linhas de acordo com um critério.
+- **`rename()`** muda o nome de uma coluna
+- **`select()`** escolhe **colunas**
+- **`filter()`** escolhe **linhas** por um critério — o filtro do Excel
+- **`mutate()`** cria colunas novas a partir das que existem
+- **`summarise()`** reduz muitas linhas a um valor-resumo
+- **`arrange()`** ordena as linhas
 
-<!-- TODO (opcional): um exemplo executavel com um dos verbos.
-     Escreva o bloco de codigo com a cerca marcada entre chaves
-     (a forma de chunk do Quarto) em vez da marcacao estatica:
-     assim o codigo roda no render e a saida e gerada, em vez de
-     colada como imagem. Use um dado do livro Analises Ecologicas,
-     nao um dataset de exemplo generico. -->
+. . .
 
-## Verbos do `tidyr`
+::: {.citacao}
+`select` mexe em coluna, `filter` mexe em linha. Trocar os dois é o erro
+mais comum da primeira semana.
+:::
+
+## `rename()` — tirar a unidade do nome {.smaller}
+
+```{r}
+anuros <- bruto %>%
+  rename(especie  = Species,     sexo     = Sex,
+         ewl      = EWL_Ugcm2s1, massa    = Bodymass_g,
+         ctmin    = CTmin,       ctmax    = CTmax,
+         serra    = Mountain_Range, altitude = Altitude_m)
+names(anuros)[1:8]
+```
+
+. . .
+
+::: {.citacao}
+A unidade não sumiu — **mudou de lugar**. Ela agora vive no comentário do
+script e no arquivo de metadados. Encurtar nome sem fazer isso é perder
+informação.
+:::
+
+## `select()` — ficar só com o que interessa {.smaller}
+
+```{r}
+anuros <- anuros %>%
+  select(id = ID, especie, sexo, serra, altitude,
+         massa, ewl, ctmin, ctmax, bio5 = BIO_5)
+head(anuros, 4)
+```
+
+. . .
+
+Repare: `select()` **também renomeia** (`bio5 = BIO_5`). Um verbo a menos.
+
+## `filter()` — escolher linhas {.smaller}
+
+```{r}
+anuros %>% filter(especie == "Boana faber") %>% nrow()
+anuros %>% filter(altitude >= 1000, !is.na(ctmax)) %>% nrow()
+anuros %>% filter(is.na(sexo)) %>% nrow()
+```
+
+. . .
+
+Cento e sete sem sexo registrado, de 225. Não é erro de digitação: nem
+sempre dá para sexar o animal. Mas é uma variável que vocês **não vão
+conseguir usar** como preditora.
+
+::: {.citacao}
+Vírgula dentro do `filter()` significa **e**. Para "ou", use `|`.
+:::
+
+## `mutate()` — criar coluna {.smaller}
+
+```{r}
+anuros <- anuros %>%
+  mutate(amplitude = ctmax - ctmin,      # amplitude térmica tolerada
+         tol_aquec = ctmax - bio5)       # tolerância ao aquecimento
+summary(anuros$tol_aquec)
+```
+
+. . .
+
+O arquivo já trazia essas duas prontas. Recalculamos assim mesmo — não por
+desconfiança, mas porque agora a **definição** está escrita no código, e não
+só num arquivo de metadados que o leitor pode nunca abrir.
+
+## O pipe `%>%` {.smaller}
+
+```{r}
+#| eval: false
+# sem pipe: lê-se de dentro para fora
+head(arrange(filter(anuros, altitude > 1000), ctmax), 3)
+
+# com pipe: lê-se na ordem em que acontece
+anuros %>% filter(altitude > 1000) %>% arrange(ctmax) %>% head(3)
+```
+
+. . .
+
+```{r}
+#| echo: false
+anuros %>% filter(altitude > 1000) %>% arrange(ctmax) %>% head(3)
+```
+
+. . .
+
+::: {.citacao}
+Leia o `%>%` como **"e então"**. O R moderno também aceita `|>`, nativo,
+que faz o mesmo nos casos simples.
+:::
+
+## `group_by()` + `summarise()` {.smaller}
+
+O *split-apply-combine* do Wickham, em duas linhas:
+
+```{r}
+anuros %>%
+  group_by(especie) %>%
+  summarise(n = n(),
+            ctmax_med = round(mean(ctmax, na.rm = TRUE), 2),
+            ctmax_dp  = round(sd(ctmax,   na.rm = TRUE), 2))
+```
+
+## A armadilha do `.groups` {.smaller}
+
+```{r}
+anuros %>%
+  group_by(especie, serra) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  head(4)
+```
+
+. . .
+
+::: {.citacao}
+**Sem `.groups = "drop"`**, o resultado sai ainda agrupado por `especie`, e
+a próxima operação age dentro de cada espécie **sem avisar**. É a fonte
+silenciosa de resultado errado mais comum do `dplyr`.
+:::
+
+## O desenho amostral, em uma linha {.smaller}
+
+```{r}
+anuros %>% count(serra, altitude)
+```
+
+. . .
+
+Leiam com atenção: **cada altitude aparece em uma serra só.**
+
+::: {.citacao}
+Isso não é defeito do arquivo — é como a coleta foi feita. E vai decidir
+quais modelos são possíveis na aula 06. Guardem.
+:::
+
+# Verbos do `tidyr`
+
+## O que é um dado *tidy* {.smaller}
 
 ![](img/hex-tidyr.png){.absolute top=0 right=0 width=110}
 
-Reorganizar o formato da tabela:
+::: {.incremental}
+1. Cada **variável** é uma coluna
+2. Cada **observação** é uma linha
+3. Cada **unidade observacional** é uma tabela
+:::
 
-- **`pivot_longer()`** — de largo para longo
-- **`pivot_wider()`** — de longo para largo
+. . .
+
+::: {.citacao}
+Wickham, H. (2014). **Tidy Data.** *Journal of Statistical Software*
+59(10): 1–23. [doi:10.18637/jss.v059.i10](https://doi.org/10.18637/jss.v059.i10)
+:::
+
+## `pivot_longer()` — de largo para longo {.smaller}
+
+Nosso arquivo tem `ctmin` e `ctmax` em **duas colunas**. Para o ggplot,
+muitas vezes queremos uma coluna "limite" e uma coluna "valor":
+
+```{r}
+longo <- anuros %>%
+  select(id, especie, altitude, ctmin, ctmax) %>%
+  pivot_longer(cols = c(ctmin, ctmax),
+               names_to = "limite", values_to = "temperatura")
+head(longo, 4)
+```
+
+. . .
+
+De 225 linhas para `r nrow(longo)`: cada indivíduo agora ocupa duas.
+
+## `pivot_wider()` — o caminho de volta {.smaller}
+
+```{r}
+longo %>%
+  pivot_wider(names_from = limite, values_from = temperatura) %>%
+  head(3)
+```
+
+. . .
+
+::: {.citacao}
+"Largo" e "longo" não são certo e errado — são **formatos convenientes para
+propósitos diferentes**. Largo para ler na tela; longo para o ggplot e para
+a maioria dos modelos.
+:::
+
+## Os outros verbos do `tidyr` {.smaller}
+
 - **`separate()`** / **`unite()`** — dividir e juntar colunas
-- **`drop_na()`** / **`fill()`** / **`replace_na()`** — lidar com ausentes
+  (útil quando alguém gravou `"Boana faber"` e `"macho"` na mesma célula)
+- **`drop_na()`** — remove as linhas com ausentes
+- **`replace_na()`** / **`fill()`** — substituem ou propagam
 
-<!-- TODO: conferir se esta lista corresponde ao que voce cobre em
-     aula. Extrai do cheat sheet que estava no slide; pode estar
-     mais ampla ou mais estreita que o seu recorte. -->
+. . .
+
+::: {.citacao}
+Cuidado com `drop_na()` sem argumento: ele apaga a linha se **qualquer**
+coluna tiver `NA`. Aqui isso jogaria fora os 107 indivíduos sem sexo, mesmo
+numa análise que nem usa sexo. Diga em qual coluna: `drop_na(ctmax)`.
+:::
+
+## Onde isso dá errado de verdade {.smaller}
+
+```{r}
+nrow(anuros)
+nrow(tidyr::drop_na(anuros))
+nrow(tidyr::drop_na(anuros, ctmax))
+```
+
+. . .
+
+::: {.citacao}
+O primeiro `drop_na()` custou mais da metade da amostra para nada. Silêncio
+total: nenhum aviso, nenhum erro. Só um `n` menor lá na frente.
+:::
+
+# Fechando o ciclo
+
+## Gravar o resultado {.smaller}
+
+```{r}
+#| eval: false
+dir.create("dados/processados", showWarnings = FALSE, recursive = TRUE)
+write.csv(anuros, "dados/processados/anuros_limpo.csv", row.names = FALSE)
+```
+
+. . .
+
+::: {.incremental}
+- O **dado bruto nunca é sobrescrito**. Fica em `dados/`, como veio da fonte.
+- O **dado processado é descartável**. Vive em `dados/processados/`, que
+  entra no `.gitignore` — porque o script que o gera está versionado, e
+  isso basta para reconstruí-lo.
+:::
+
+. . .
+
+::: {.citacao}
+Esse arquivo é o que as aulas 05, 06 e 07 vão ler. Rodem o `aula-04.R`
+antes delas.
+:::
 
 ## Cheat sheets {.smaller}
 
@@ -110,7 +381,18 @@ Posit Software, PBC · CC BY-SA
 
 ## Exercícios {.smaller}
 
-No livro [*Análises Ecológicas no R*](https://analises-ecologicas.com), capítulo 5:
+**Com o dado da semana** — abram o [`aula-04.R`](../aula-04-tidyverse/aula-04.R):
 
-- Ler o **tópico 5.6** ([`pivot_longer` e `pivot_wider`](https://analises-ecologicas.com/cap5.html#pivot_longer-e-pivot_wider))
-- Depois, do **5.7.6 ao 5.8.17**
+::: {.incremental}
+1. Quantas espécies ocorrem em **ambas** as serras? Responda com `dplyr`,
+   não contando na tabela.
+2. Monte um resumo de `ewl` por `serra` e `sexo`. O que fazer com a linha
+   dos `NA`?
+3. `amplitude` tem 35 ausentes, os mesmos de `ctmax`. Mostre **com código**
+   que são os mesmos indivíduos.
+:::
+
+. . .
+
+No livro [*Análises Ecológicas no R*](https://analises-ecologicas.com),
+capítulo 5: leiam o **tópico 5.6** e façam do **5.7.6 ao 5.8.17**.
