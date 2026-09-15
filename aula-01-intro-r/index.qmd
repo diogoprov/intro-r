@@ -12,7 +12,10 @@ Histórico da linguagem R, instalação, RStudio, importação de dados, tipos d
 
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-01.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/aula-01.html){.btn .btn-outline-primary}
+
+*Quer em PDF? Abra os slides, acrescente `?print-pdf` ao endereço e
+imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 

@@ -12,7 +12,22 @@ Teste de hipótese e regressão linear no R. Sintaxe `formula`. Diagnóstico de 
 
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-06.pdf){.btn .btn-outline-primary}
+Esta aula não tem slides próprios: a parte expositiva vem de outra disciplina,
+onde o assunto é tratado com mais tempo.
+
+[{{< fa solid display >}} O modelo linear como arcabouço unificador](https://provetelab.org/analise-dados-univariados-2026-2/slides/e02.html){.btn .btn-outline-primary}
+
+Encontro 2 de **Análise de Dados Univariados** (PPGBA/UFMS): anatomia do modelo
+linear, o teste *t* como modelo linear, correlação versus regressão,
+interpretação de coeficientes, codificação de fatores e diagnóstico de
+resíduos. É o material principal desta aula.
+
+Se precisar de uma base mais devagar antes disso, a
+[Aula 08 de Bioestatística](https://provetelab.org/bioestatistica/aula-08-modelos-lineares-teste-t/)
+cobre o teste *t* no nível da graduação, com vídeos.
+
+O que é próprio desta aula — os desafios de diagnóstico, o walkthrough e os
+dados — está logo abaixo.
 
 ## Código R (aula prática)
 

@@ -1,0 +1,484 @@
+---
+title: "Introdução ao ambiente R"
+subtitle: "Aula 01 · Introdução à Linguagem R"
+author: "Diogo B. Provete"
+institute: "PPG em Ecologia e Conservação · UFMS"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    logo: img/lsb-canto.png
+    slide-number: true
+    preview-links: auto
+    history: false
+    title-slide-attributes:
+      data-background-image: img/lsb-logo.png
+      data-background-size: 300px
+      data-background-position: 94% 88%
+---
+
+# A disciplina
+
+## Programa do curso {.smaller}
+
+::: {.incremental}
+1. Introdução ao R
+2. Organização e curadoria dos dados
+3. Importação e manipulação de dados
+4. Controle de versão (git e GitHub)
+5. Análise — modelos lineares simples
+6. Gráficos com `ggplot2`
+7. Rudimentos de programação
+8. Reprodutibilidade em pesquisa (Markdown e Quarto)
+:::
+
+## Avaliação {.smaller}
+
+Atividades diárias, feitas por vocês:
+
+::: {.incremental}
+- **P1** — os *scripts* que vocês produzirem ao longo da semana
+- **P2** — trabalho final em Markdown/Quarto
+:::
+
+. . .
+
+::: {.citacao}
+Repare que as duas notas são **código que roda**. Não há prova escrita.
+:::
+
+## Cronograma — segunda {.smaller}
+
+**Manhã**
+
+- Ambientação no R e no RStudio
+- Tipos de objetos
+- Como obter ajuda
+- Como escrever e organizar um script
+
+**Tarde**
+
+- Organização dos dados no seu computador
+- Boas práticas e curadoria de dados
+
+## Cronograma — terça {.smaller}
+
+**Manhã**
+
+- Controle de versão com git e GitHub
+
+**Tarde**
+
+- Manipulação de dados e a estratégia *split-apply-combine*: o `tidyverse`
+- *Subsetting*, `summarize()`, `group_by()`, o operador *pipe*
+
+## Cronograma — quarta {.smaller}
+
+**Manhã**
+
+- Análises simples com modelos lineares
+- Gráficos com `ggplot2`
+
+**Tarde**
+
+- Exercícios com gráficos
+- Análises com `tidyverse` e modelos lineares
+- Rudimentos de programação
+
+## Cronograma — quinta e sexta {.smaller}
+
+**Quinta, manhã**
+
+- Reprodutibilidade em pesquisa: Markdown, knitr e Quarto
+- Como organizar um documento Quarto
+
+**Quinta, tarde**
+
+- Exercícios com Quarto
+
+**Sexta, manhã**
+
+- Tira-dúvidas
+
+## Onde ficam os materiais {.smaller}
+
+**Este site** — slides, scripts e dados de todas as aulas:
+
+[provetelab.org/intro-r](https://provetelab.org/intro-r/){.r-fit-text}
+
+. . .
+
+**Moodle da UFMS** — quizzes, entregas e avaliações da turma:
+
+[ava.ufms.br](https://ava.ufms.br)
+
+::: {.citacao}
+A chave de inscrição do Moodle eu passo em aula.
+:::
+
+# Por que programar
+
+## Por que uma linguagem, e não um menu {.smaller}
+
+::: {.incremental}
+- **Controle do que se quer fazer** — você conhece todos os passos da análise
+- O preço: é preciso **aprender uma linguagem**
+- **Gratuito e aberto**, amplamente usado por biólogos — análises novas
+  aparecem primeiro em R
+:::
+
+. . .
+
+::: {.citacao}
+O argumento decisivo aparece na quinta-feira: análise feita clicando em menu
+não pode ser auditada nem repetida. O script é a receita.
+:::
+
+## O que dizem por aí {.smaller}
+
+> "For students entering my lab, I place a premium on **quantitative skills**,
+> intellectual creativity, hard work, and independence."
+
+. . .
+
+> "What kinds of skills do you need for success in community ecology? You
+> should invest the time in learning a **programming/statistical language**…
+> R is the language that I recommend… there is no better (or more enjoyable)
+> way to learn about statistics and ecological theory than by programming."
+
+::: {.citacao}
+Nicholas J. Gotelli, University of Vermont —
+[Information for Prospective Graduate Students](https://www.uvm.edu/~ngotelli/GradAdvice.html)
+:::
+
+# Instalando
+
+## R e RStudio são duas coisas {.smaller}
+
+::: {.incremental}
+- **R** é a linguagem e o motor — [r-project.org](https://www.r-project.org)
+- **RStudio** é o ambiente de trabalho (IDE) que roda por cima —
+  [posit.co/download/rstudio-desktop](https://posit.co/download/rstudio-desktop/)
+:::
+
+. . .
+
+Instale **nessa ordem**: primeiro o R, depois o RStudio.
+
+::: {.citacao}
+A empresa que faz o RStudio mudou de nome para **Posit** em 2022. Você vai
+encontrar os dois nomes na internet — é a mesma coisa.
+:::
+
+## Fichas de referência {.smaller}
+
+Resumos de uma ou duas páginas, por pacote. Vale imprimir as do `dplyr` e do
+`ggplot2` já na segunda-feira.
+
+[opensource.posit.co/resources/cheatsheets](https://opensource.posit.co/resources/cheatsheets/)
+
+::: {.citacao}
+Há versões em português de algumas delas, feitas pela comunidade.
+:::
+
+## Enquanto instala… {.smaller}
+
+Dá para rodar R no navegador, sem instalar nada:
+
+- [jdoodle.com/execute-r-online](https://www.jdoodle.com/execute-r-online)
+- [Posit Cloud](https://posit.cloud) — o RStudio inteiro no navegador,
+  com conta gratuita
+
+::: {.citacao}
+Serve para a primeira hora e para emergências. Não serve para o curso:
+a partir de amanhã vocês precisam dos arquivos na própria máquina.
+:::
+
+## Onde procurar ajuda depois {.smaller}
+
+::: {.incremental}
+- **Manuais e tutoriais** do CRAN —
+  [cran.r-project.org/other-docs.html](https://cran.r-project.org/other-docs.html)
+- **CRAN Task Views** — como navegar entre 20 mil pacotes por área temática:
+  [cran.r-project.org/web/views](https://cran.r-project.org/web/views/)
+- **Bioconductor** — pacotes de bioinformática, fora do CRAN
+- Listas **R-SIG-XXX** por tema, e a lista brasileira **R-Br**
+:::
+
+# O ambiente de trabalho
+
+## Os quatro painéis do RStudio {.smaller}
+
+| Painel | Onde fica | Para que serve |
+|---|---|---|
+| **Source** | acima, à esquerda | onde você **escreve o script** |
+| **Console** | abaixo, à esquerda | onde o R **executa** |
+| **Environment** | acima, à direita | os objetos que existem agora |
+| **Files / Plots / Help** | abaixo, à direita | arquivos, gráficos, ajuda |
+
+. . .
+
+::: {.citacao}
+A regra do curso: **escreva no Source, não no Console.** O console esquece;
+o script fica.
+:::
+
+<!-- TODO: um screenshot do SEU RStudio com os quatro paineis visiveis
+     cairia bem aqui, do mesmo jeito que o do painel Git funcionou na
+     aula 03. Salve como slides/img/a01-rstudio-paineis.png. -->
+
+## Comece pelo Projeto {.smaller}
+
+**File → New Project…** e escolha:
+
+::: {.incremental}
+- **New Directory** — projeto novo, pasta nova
+- **Existing Directory** — você já tem a pasta
+- **Version Control** — clonar um repositório do GitHub (terça-feira)
+:::
+
+. . .
+
+::: {.citacao}
+Por que isso importa tanto que abre o curso: o Projeto define o diretório de
+trabalho sozinho, e o script deixa de depender de onde a pasta está. Voltamos
+nisso à tarde, com `here()`.
+:::
+
+<!-- TODO: screenshot da janela New Project do RStudio atual, se quiser.
+     O que estava no pptx era de 2011 e nao se parece mais com o programa. -->
+
+## Duas facilidades que economizam horas {.smaller}
+
+::: {.incremental}
+- **Tab completion** — comece a digitar e aperte `Tab`. Funciona para
+  funções, argumentos, nomes de objetos e caminhos de arquivo
+- **Snippets** — atalhos que expandem para blocos de código. Digite `fun` e
+  `Tab` para o esqueleto de uma função
+:::
+
+::: {.citacao}
+[Documentação dos snippets](https://docs.posit.co/ide/user/ide/guide/productivity/snippets.html)
+:::
+
+# A linguagem
+
+## Seguindo no livro {.smaller}
+
+Esta parte acompanha o capítulo 4 de
+[Análises Ecológicas no R](https://analises-ecologicas.com/cap4.html#funcionamento-da-linguagem-r).
+
+::: {.citacao}
+Leiam em casa o que não der tempo de ver aqui.
+:::
+
+## O R como calculadora {.smaller}
+
+```r
+2 + 3
+10 / 4
+2^10
+sqrt(144)
+5 %% 2      # resto da divisão
+5 %/% 2     # divisão inteira
+```
+
+. . .
+
+O prompt `>` espera um comando novo. O prompt `+` significa que o R está
+esperando você **terminar** o comando anterior — quase sempre um parêntese
+ou uma aspa que faltou fechar.
+
+## Atribuir é guardar {.smaller}
+
+```r
+a <- 1
+b <- c(1, 2, 3, 4, 5)
+minha.media <- mean(b)
+```
+
+. . .
+
+::: {.incremental}
+- Use `<-`, não `=`. Os dois funcionam, mas `<-` é a convenção e evita
+  confusão com os argumentos de função
+- Atalho no RStudio: `Alt` + `-` (Windows/Linux) ou `Option` + `-` (Mac)
+- O objeto aparece no painel **Environment** assim que é criado
+:::
+
+## Tipos de objeto {.smaller}
+
+A organização é mais simples do que parece — são duas perguntas:
+**quantas dimensões?** e **todos os elementos do mesmo tipo?**
+
+|  | Homogêneo | Heterogêneo |
+|---|---|---|
+| **1 dimensão** | vetor | **lista** |
+| **2 dimensões** | matriz | **data frame** |
+| **n dimensões** | array | — |
+
+. . .
+
+::: {.citacao}
+O **data frame** é o formato dos seus dados de campo: cada coluna pode ser de
+um tipo diferente. É com ele que vocês vão trabalhar a semana inteira.
+:::
+
+## Os tipos dentro de um vetor {.smaller}
+
+```{dot}
+//| fig-width: 9
+digraph vetores {
+  bgcolor="transparent"; rankdir=TB; ranksep=0.35; nodesep=0.3;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=20 margin="0.22,0.12"];
+  edge [color="#8a8375" arrowhead=none];
+
+  V   [label="Vetor" shape=ellipse fillcolor="#e3dccd"];
+  AT  [label="Vetor atômico\ntodos do mesmo tipo"];
+  LI  [label="Lista\npode misturar tipos"];
+  LOG [label="logical\nTRUE / FALSE"];
+  NUM [label="numeric"];
+  CHR [label="character\n\"texto\""];
+  INT [label="integer\n1L"];
+  DBL [label="double\n1.5"];
+
+  V -> AT; V -> LI;
+  AT -> LOG; AT -> NUM; AT -> CHR;
+  NUM -> INT; NUM -> DBL;
+}
+```
+
+::: {.citacao}
+Estrutura adaptada de [Advanced R](https://adv-r.hadley.nz/vectors-chap.html),
+de Hadley Wickham.
+:::
+
+## Coerção: o R nunca reclama {.smaller}
+
+Um vetor atômico só guarda **um** tipo. Se você misturar, o R converte tudo
+para o tipo mais permissivo — **em silêncio**.
+
+```r
+c(1, 2, "três")
+#> "1"  "2"  "três"        <- viraram texto!
+
+c(TRUE, FALSE, 1)
+#> 1  0  1                 <- viraram número
+```
+
+. . .
+
+::: {.citacao}
+É por isso que uma planilha com `"sem dados"` no meio de uma coluna numérica
+transforma a coluna inteira em texto. Guardem isso para a aula da tarde.
+:::
+
+## O arquivo de ajuda {.smaller}
+
+```r
+?mean            # ajuda de uma função que você sabe o nome
+help(mean)       # o mesmo
+??regression     # procura por assunto
+```
+
+**O que ler, em ordem de utilidade:**
+
+::: {.incremental}
+1. **Usage** — a assinatura da função e os valores padrão
+2. **Arguments** — o que cada argumento faz
+3. **Examples**, no fim — quase sempre a parte mais útil
+:::
+
+## Quando a ajuda não basta {.smaller}
+
+- [rseek.org](https://rseek.org) — busca restrita ao universo R
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/r) — dúvidas de código
+- [Cross Validated](https://stats.stackexchange.com) — dúvidas de estatística
+
+::: {.citacao}
+Na sexta-feira falamos de como usar LLMs para isso — e do que conferir
+antes de acreditar na resposta.
+:::
+
+## Instalando e carregando pacotes {.smaller}
+
+```r
+install.packages("vegan")   # uma vez só, na vida da máquina
+library(vegan)              # toda vez que abrir o R
+data(BCI)                   # carrega um conjunto de dados do pacote
+```
+
+. . .
+
+::: {.incremental}
+- `install.packages()` **baixa**; `library()` **carrega**
+- `install.packages()` nunca vai dentro de um script que você compartilha —
+  ele mexe na máquina de quem rodar
+- Pacotes vão **todos no começo** do script
+:::
+
+# Entrando e saindo
+
+## Importando dados {.smaller}
+
+```r
+dados <- read.table("dados/brutos/anuros.txt", header = TRUE)
+dados <- read.csv("dados/brutos/anuros.csv")
+```
+
+. . .
+
+Existe também `read.table(file.choose())`, que abre uma janela para você
+escolher o arquivo. **Evitem.**
+
+::: {.citacao}
+Um caminho escrito no script roda de novo sozinho. Uma janela exige que
+alguém esteja ali para clicar — e ninguém sabe o que foi clicado da última vez.
+:::
+
+## Conferindo o que entrou {.smaller}
+
+Antes de qualquer análise, sempre estes quatro:
+
+```r
+head(dados)      # as primeiras linhas
+str(dados)       # a estrutura: tipo de cada coluna
+dim(dados)       # quantas linhas e colunas
+summary(dados)   # resumo por coluna
+```
+
+. . .
+
+::: {.citacao}
+O `str()` é o mais importante: é onde você descobre que a coluna que deveria
+ser numérica entrou como texto.
+:::
+
+## Exportando {.smaller}
+
+```r
+write.csv(objeto, "dados/processados/resultado.csv", row.names = FALSE)
+write.table(objeto, "resultado.txt", sep = "\t", quote = FALSE)
+```
+
+. . .
+
+::: {.incremental}
+- Escreva em `.csv` ou `.txt` — formatos abertos
+- `row.names = FALSE` evita aquela primeira coluna de números sem nome
+- O que sai do script vai para `dados/processados/`, nunca por cima do bruto
+:::
+
+## Quais funções você aprendeu hoje? {.smaller}
+
+Anote, com uma frase cada, o que faz cada função nova desta manhã:
+
+```r
+c()   mean()   sqrt()   head()   str()   dim()   summary()
+library()   install.packages()   read.csv()   write.csv()   ?
+```
+
+::: {.citacao}
+Esse caderninho vale mais que o slide. E na sexta-feira ele vira o seu
+próprio resumo da disciplina.
+:::
