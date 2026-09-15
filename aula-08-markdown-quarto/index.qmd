@@ -37,6 +37,16 @@ O `relatorio-modelo.qmd` parte do **dado bruto**, de propósito: um relatório
 reprodutível refaz a limpeza, ele não pressupõe um arquivo já limpo que
 alguém produziu em outro lugar.
 
+### Para o exercício 2
+
+- [{{< fa solid file-lines >}} `anuros_altitude_versao-trabalho.txt`](../dados/historico/anuros_altitude_versao-trabalho.txt)
+  · [{{< fa solid book >}} o que há nessa pasta](../dados/historico/LEIA-ME.html)
+
+A planilha que circulou entre os autores **antes** da publicação. O exercício
+é descobrir, com código, o que mudou dali até o arquivo publicado — e há mais
+do que as oito linhas de diferença sugerem. Nenhum script da disciplina lê
+este arquivo.
+
 ## Recursos externos
 
 - [Vídeo da aula — reprodutibilidade em pesquisa](https://www.youtube.com/watch?v=MJVzS7fVl2I&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=9)

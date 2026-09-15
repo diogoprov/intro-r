@@ -496,17 +496,86 @@ e diz em voz alta o que está fazendo.
 
 # Exercícios
 
-## Exercício 1 — do script ao documento {.smaller}
+## Exercício 1 — o trabalho final {.smaller}
 
-Peguem alguns dos scripts que usamos na semana e passem para Quarto:
+Abram o [`relatorio-modelo.qmd`](../aula-08-markdown-quarto/relatorio-modelo.qmd).
+Ele já compila. **Troquem a pergunta.**
 
 ::: {.incremental}
-- explicando, em texto, o que cada trecho faz
-- exibindo os gráficos gerados pelo próprio código
-- compilando o resultado em **`.html`**
+- escolham outra resposta: `ewl`, `ctmin`, `amplitude` — ou outra preditora
+- refaçam limpeza, figura, modelo e diagnóstico em volta dela
+- o texto tem que mudar **sozinho**: nenhum número digitado à mão
 :::
 
-## Exercício 2 — usando um LLM {.smaller}
+. . .
+
+::: {.citacao}
+O teste de aceitação: reinicie o R, apague o `.html` e o `_files`, renderize.
+Compilou sem você tocar em nada? Está pronto.
+:::
+
+## Exercício 2 — o que mudou entre duas versões {.smaller}
+
+Em `dados/historico/` há a planilha de trabalho que circulou **antes** da
+publicação. O arquivo que usamos a semana toda é o publicado.
+
+```{r}
+#| eval: false
+velho <- read.delim("dados/historico/anuros_altitude_versao-trabalho.txt")
+novo  <- read.csv("dados/anuros_altitude.csv")
+dim(velho); dim(novo)
+```
+
+. . .
+
+::: {.callout-note icon=false}
+## Descubram, com código, o que mudou
+
+1. Quantos indivíduos estão nos dois arquivos? Só num deles?
+2. Para os que estão nos dois: **alguma medida mudou de valor?**
+3. Escrevam a resposta como um `.qmd` que compila
+:::
+
+## O que vocês vão encontrar {.smaller}
+
+::: {.incremental}
+- **219** indivíduos nos dois arquivos; **9** só na versão de trabalho
+- **4 indivíduos com massa corporal diferente** entre as versões —
+  um deles, `RPB 166`, de 2,73 g para 1,75 g
+- a espécie mudou de nome: `Hypsiboas_faber` virou `Boana faber`
+:::
+
+. . .
+
+::: {.citacao}
+Nada disso está anunciado em lugar nenhum. Só aparece porque alguém comparou.
+:::
+
+## O que fazer com isso {.smaller}
+
+Revisar dado de campo é **normal**: a balança é reconferida, um indivíduo sai
+por um motivo que está no caderno, um código é reconciliado.
+
+. . .
+
+::: {.incremental}
+- O problema não é revisar — é revisar **sem deixar rastro**
+- Com os dois arquivos versionados, `git log` responderia em um comando o que
+  aqui exigiu um script
+- E uma análise feita sobre a versão antiga daria outro número, sem que
+  ninguém percebesse
+:::
+
+. . .
+
+::: {.citacao}
+Olhem o `ID` da última linha do arquivo publicado:
+`sem RPB C38 (tvz RPB 226)`. Um "talvez" que atravessou a revisão por pares
+e está num repositório público até hoje. **Não é deboche** — é o que
+acontece com todo mundo que não versiona o dado desde o primeiro dia.
+:::
+
+## Exercício 3 — usando um LLM {.smaller}
 
 Peçam a um modelo de linguagem:
 

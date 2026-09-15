@@ -154,6 +154,32 @@ lm(tol_aquec ~ altitude, data = anuros) %>%
 # Comece pelo `relatorio-modelo.qmd`, nesta mesma pasta.
 
 # ---------------------------------------------------------------------------
+# 9. Exercício: o que mudou entre duas versões do mesmo dado
+# ---------------------------------------------------------------------------
+# Em dados/historico/ está a planilha de trabalho que circulou ANTES da
+# publicação. O arquivo que usamos a semana toda é o publicado.
+#
+#   velho <- read.delim("dados/historico/anuros_altitude_versao-trabalho.txt")
+#   novo  <- read.csv("dados/anuros_altitude.csv")
+#
+# Descubra COM CÓDIGO, e escreva a resposta como um .qmd que compila:
+#
+#   a) Quantos indivíduos estão nos dois arquivos? Quantos só em um?
+#      (Cuidado: a espécie mudou de nome — Hypsiboas_faber virou Boana faber
+#      — e os códigos usam separadores diferentes nos dois arquivos.)
+#   b) Para os indivíduos que estão nos dois: alguma MEDIDA mudou de valor?
+#      Dica: junte os dois por código e compare coluna a coluna.
+#   c) Escreva, em duas frases, o que você faria diferente se fosse você
+#      revisando esses dados.
+#
+# O que está lá: 219 indivíduos nos dois, 9 só na versão de trabalho, e
+# 4 com massa corporal diferente — um deles de 2,73 g para 1,75 g.
+# Nada disso está anunciado em lugar nenhum: só aparece se alguém comparar.
+#
+# Revisar dado de campo é normal. Revisar sem deixar rastro é que não é.
+# Com os dois arquivos versionados, `git log` responderia isto num comando.
+
+# ---------------------------------------------------------------------------
 # CONFIRA ANTES DE SEGUIR
 # ---------------------------------------------------------------------------
 # O teste que importa é o do item 8: reiniciar o R e renderizar do zero.

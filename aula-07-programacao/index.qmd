@@ -30,6 +30,15 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 `dados/processados/anuros_limpo.csv` — produzido pelo
 [`aula-04.R`](../aula-04-tidyverse/aula-04.R).
 
+::: {.callout-note}
+## Os exercícios são com o dado da semana
+
+Os slides trazem dois blocos práticos. O segundo termina devolvendo vocês à
+aula 06: em *Dendropsophus minutus* e *Leptodactylus latrans* o ponto mais
+alto do gradiente vem de uma serra diferente do resto da amostra.
+Automatizar o ajuste não automatiza o julgamento.
+:::
+
 ## Recursos externos
 
 - [Vídeo da aula — rudimentos de programação](https://www.youtube.com/watch?v=4nACCtC-PnI&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=8)

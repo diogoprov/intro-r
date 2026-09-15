@@ -166,6 +166,7 @@ ajusta_seguro <- function(dados) {
 #    Aplique-a a todas as colunas de `colunas` com map_dbl.
 # b) Reescreva o item 8 trocando `especie` por `serra`. Quantas linhas do
 #    seu código mudaram? (Se foram mais de uma, generalize.)
+# b2) Acrescente o R² de cada modelo, com glance(), à tabela do item b.
 # c) O item 8 ajusta um modelo por espécie ignorando a serra. Rode
 #       anuros %>% filter(!is.na(tol_aquec)) %>% count(especie, serra, altitude)
 #    e repare em quantas altitudes cada espécie tem em CADA serra. Para
