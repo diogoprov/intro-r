@@ -45,10 +45,32 @@ jobs:
 
       - name: Install R packages
         run: |
-          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2", "broom", "purrr"))'
+          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2", "broom", "purrr", "performance", "see"))'
 
       - name: Render site
         run: quarto render
+
+      # O check_model() do walkthrough da aula 06 falha de um jeito silencioso:
+      # com fig-height abaixo de 5 os seis paineis nao cabem, o knitr descarta
+      # a figura e NAO emite erro nem aviso. O site compila sem a figura e
+      # ninguem percebe. Esta assercao existe para que isso vire build vermelho.
+      - name: Conferir que as figuras dos walkthroughs foram geradas
+        run: |
+          faltou=0
+          for f in \
+            docs/aula-06-modelos-lineares/walkthrough-aula-06_files/figure-html/fig-checkmodel-1.png \
+            docs/aula-06-modelos-lineares/walkthrough-aula-06_files/figure-html/fig-diag4-1.png \
+            docs/aula-06-modelos-lineares/walkthrough-aula-06_files/figure-html/fig-serras-1.png
+          do
+            if [ ! -s "$f" ]; then
+              echo "::error::figura ausente ou vazia: $f"
+              echo "Se for a fig-checkmodel, quase certamente o fig-height caiu abaixo de 5."
+              faltou=1
+            else
+              echo "ok  $(wc -c < "$f") bytes  $f"
+            fi
+          done
+          exit $faltou
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

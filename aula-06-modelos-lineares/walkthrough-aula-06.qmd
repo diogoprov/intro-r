@@ -284,6 +284,71 @@ não é uma quantidade única que o modelo estima: é o contraste em um ponto qu
 **você escolheu**, muitas vezes sem perceber que estava escolhendo.
 :::
 
+# Uma segunda opinião sobre as premissas
+
+Os quatro painéis do `plot()` pedem que **você** julgue olhando. O pacote
+`performance`, do ecossistema [easystats](https://easystats.github.io/easystats/),
+faz o teste e devolve um veredito escrito.
+
+```{r}
+#| warning: true
+library(performance)
+
+check_normality(m3)
+check_heteroscedasticity(m3)
+```
+
+Os dois **discordam**: a normalidade dos resíduos passa, a homocedasticidade
+não. Antes de "consertar" qualquer coisa, três perguntas:
+
+::: {.callout-important}
+## Um teste não decide por você — ele te obriga a ter um argumento
+
+a. **Quanto** foi violado? Um *p* pequeno com *n* = 190 detecta desvios que
+   talvez não importem. Volte ao Scale–Location e olhe.
+b. **O que isso estraga?** Heterocedasticidade não enviesa os coeficientes.
+   Ela estraga os erros-padrão — e portanto os *p* e os intervalos.
+c. **Era de se esperar?** Este modelo junta cinco espécies que diferem em
+   massa por duas ordens de grandeza. Variância constante seria surpreendente.
+:::
+
+```{r}
+check_collinearity(m3)
+r2(m3)
+```
+
+VIF baixo: altitude e espécie não estão medindo a mesma coisa, o que já
+sabíamos pelo desenho — as cinco espécies ocorrem nas duas serras.
+
+## O painel completo
+
+```{r}
+#| label: fig-checkmodel
+#| fig-cap: "Diagnóstico completo do modelo `m3`. As faixas sombreadas são intervalos de referência simulados: o que se espera ver se a premissa valer."
+#| fig-height: 5.2
+#| fig-width: 9
+#| warning: true
+# fig-height >= 5 e obrigatorio: abaixo disso os seis paineis nao cabem,
+# o grid desiste e o knitr descarta a figura SEM erro e SEM aviso.
+# Medido em setembro de 2026; nao baixe este numero.
+plot(check_model(m3))
+```
+
+As faixas de referência são o que torna este painel mais fácil de ler que o
+`plot()` do R base: em vez de perguntar "isso parece um padrão?", você
+pergunta "isso saiu da faixa?".
+
+::: {.callout-warning}
+## A armadilha que custou uma tarde
+
+`check_model()` com `fig-height` menor que 5 **não desenha nada e não
+reclama**. O documento compila, a figura não está lá. Se o seu `.qmd` tiver
+`warning: false`, nem o aviso que explicaria isso chega até você.
+
+É por isso que o comentário sobre a altura está dentro do bloco: para que
+ninguém — inclusive você, daqui a seis meses — "limpe" aquele número.
+:::
+
 # O que dá para fazer: um modelo por serra
 
 É por isso que o artigo original analisa as duas serras separadamente.
