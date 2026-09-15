@@ -14,7 +14,17 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 94% 88%
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
+
+```{r}
+#| include: false
+options(width = 76)
+dados <- read.csv(here::here("dados", "anuros_altitude.csv"))
+```
 
 ## Roteiro
 
@@ -353,8 +363,20 @@ Tem [site companheiro](https://kbroman.org/dataorg/) com os exemplos.
 
 ```r
 setwd("C:/Users/diogo/Documents/tese/cap2/dados")
-dados <- read.csv("anuros_cerrado.csv")
+dados <- read.csv("anuros_altitude.csv")
 ```
+
+. . .
+
+E o roteiro suplementar do artigo do Bovo — dado real, publicado — abre assim:
+
+```r
+setwd("your_path")
+```
+
+::: {.citacao}
+Ou seja: não roda em lugar nenhum sem edição manual. Acontece com todo mundo.
+:::
 
 . . .
 
@@ -384,18 +406,19 @@ O script deixa de depender de onde a pasta está no computador.
 ## Uma estrutura que funciona {.smaller}
 
 ```
-anuros_cerrado/
-├── anuros_cerrado.Rproj
+intro-r/
+├── intro-r.Rproj
 ├── README.md
 ├── dados/
-│   ├── brutos/          <- somente leitura, nunca editar
-│   └── processados/     <- gerados pelo script, descartáveis
+│   ├── anuros_altitude.csv              <- somente leitura, nunca editar
+│   ├── metadados_anuros_altitude.md     <- o que cada coluna significa
+│   └── processados/                     <- gerados pelo script, descartáveis
 ├── scripts/
-│   ├── 01_limpeza.R
-│   ├── 02_exploratoria.R
-│   └── 03_modelos.R
+│   ├── aula-01.R
+│   ├── aula-04.R
+│   └── aula-06.R
 ├── figuras/
-└── metadados/
+└── relatorio.qmd
 ```
 
 . . .
@@ -412,9 +435,9 @@ renderiza um Quarto que está numa subpasta.
 library(here)
 
 here()
-#> "/Users/diogo/projetos/anuros_cerrado"
+#> "/Users/diogo/GitHub/intro-r"
 
-dados <- read.csv(here("dados", "brutos", "anuros_cerrado.csv"))
+dados <- read.csv(here("dados", "anuros_altitude.csv"))
 ```
 
 . . .
@@ -434,6 +457,47 @@ você usou para obtê-los.
 - Coletor
 - Modelo e marca do equipamento
 - Unidades de medida de cada variável
+:::
+
+## O nosso, por exemplo {.smaller}
+
+`dados/metadados_anuros_altitude.md` — um arquivo de texto, versionável:
+
+```
+## Fonte
+Bovo, R.P.; Simon, M.N.; Provete, D.B.; ... (2023). Beyond Janzen's
+Hypothesis... doi:10.1093/iob/obad009
+
+## Variáveis
+| Coluna        | Unidade        | O que é                          |
+|---------------|----------------|----------------------------------|
+| EWL_Ugcm2s1   | µg H2O/cm²·s   | taxa de perda de água evaporativa|
+| CTmax         | °C             | limite térmico crítico superior  |
+| Tbr           | °C             | DERIVADA: CTmax - CTmin          |
+| BIO_5         | °C             | temp. máxima do mês mais quente  |
+```
+
+::: {.citacao}
+Markdown, não Word. Cabe no git, o diff é legível, e daqui a três anos ele
+ainda abre. **A unidade que vocês tirarem do nome da coluna tem que aparecer
+aqui** — senão não foi movida, foi perdida.
+:::
+
+## Coluna derivada é uma armadilha {.smaller}
+
+`Tbr` e `WT` já vêm prontas no arquivo. Confira em vez de confiar:
+
+```{r}
+all.equal(dados$Tbr, dados$CTmax - dados$CTmin)
+all.equal(dados$WT,  dados$CTmax - dados$BIO_5)
+```
+
+. . .
+
+::: {.citacao}
+Batem. A segunda difere na quinta casa — arredondamento de quem gravou o
+arquivo, não discordância. **Use `all.equal()`, não `==`**: `==` compara bit
+a bit e diz `FALSE` por uma diferença na décima quinta casa decimal.
 :::
 
 ## Um padrão para metadados ecológicos {.smaller}
@@ -486,6 +550,54 @@ Plote usando o gráfico mais adequado ao tipo de dado:
 - *Scatter plot* — duas variáveis contínuas
 - *Boxplot* — um tratamento (preditora) e uma resposta contínua
 - Um **histograma** nunca é demais
+:::
+
+## Primeiro, conte os ausentes {.smaller}
+
+```{r}
+colSums(is.na(dados))[c("Sex", "EWL_Ugcm2s1", "CTmin", "CTmax", "BIO_5")]
+```
+
+. . .
+
+::: {.incremental}
+- **107 sem sexo**, de 225. Não é erro: nem sempre dá para sexar o animal
+- **35 sem CTmax.** Esses 35 somem de qualquer modelo que use CTmax
+- **`BIO_5` não tem nenhum.** Repare por quê no próximo slide
+:::
+
+## Uma variável de sítio, repetida por indivíduo {.smaller}
+
+```{r}
+aggregate(BIO_5 ~ Altitude_m, dados, function(x) c(n = length(x), dp = sd(x)))
+```
+
+. . .
+
+::: {.citacao}
+**Desvio-padrão zero em toda altitude.** `BIO_5` não foi medida em cada
+animal — é o clima do *sítio*, copiado para as 39 linhas daquele sítio. São
+**6** valores independentes disfarçados de 225.
+:::
+
+## Por que isso importa {.smaller}
+
+::: {.incremental}
+- O arquivo está **certo**: formato tidy quer uma linha por indivíduo
+- O erro seria **tratar as 225 linhas como 225 observações de clima**
+- Quem comparar clima entre sítios com *n* = 225 está inventando 219 graus
+  de liberdade que não existem
+:::
+
+. . .
+
+::: {.citacao}
+Não dá para ver no `summary()` nem no `str()` — só contando. É o tipo de
+coisa que as *Ten Simple Rules for Digital Data Storage* tratam:
+Hart, E.M.; Barmby, P.; LeBauer, D.; Michonneau, F.; Mount, S.; Mulrooney, P.;
+Poisot, T.; Woo, K.H.; Zimmerman, N.B.; Hollister, J.W. (2016).
+*PLOS Computational Biology* 12(10): e1005097.
+[doi:10.1371/journal.pcbi.1005097](https://doi.org/10.1371/journal.pcbi.1005097)
 :::
 
 ## Documente as alterações

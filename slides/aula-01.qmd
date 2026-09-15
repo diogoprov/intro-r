@@ -14,7 +14,19 @@ format:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
       data-background-position: 94% 88%
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
+
+```{r}
+#| include: false
+options(width = 76)
+# Os slides são renderizados a partir de slides/; o aluno roda a partir da
+# raiz do Projeto. O caminho mostrado no slide é o dele, não o meu.
+dados <- read.csv(here::here("dados", "anuros_altitude.csv"))
+```
 
 # A disciplina
 
@@ -316,9 +328,8 @@ Leiam em casa o que não der tempo de ver aqui.
 
 ## O R como calculadora {.smaller}
 
-```r
+```{r}
 2 + 3
-10 / 4
 2^10
 sqrt(144)
 5 %% 2      # resto da divisão
@@ -333,10 +344,11 @@ ou uma aspa que faltou fechar.
 
 ## Atribuir é guardar {.smaller}
 
-```r
+```{r}
 a <- 1
 b <- c(1, 2, 3, 4, 5)
 minha.media <- mean(b)
+minha.media
 ```
 
 . . .
@@ -401,12 +413,9 @@ de Hadley Wickham.
 Um vetor atômico só guarda **um** tipo. Se você misturar, o R converte tudo
 para o tipo mais permissivo — **em silêncio**.
 
-```r
-c(1, 2, "três")
-#> "1"  "2"  "três"        <- viraram texto!
-
-c(TRUE, FALSE, 1)
-#> 1  0  1                 <- viraram número
+```{r}
+c(1, 2, "três")      # viraram texto!
+c(TRUE, FALSE, 1)    # viraram número
 ```
 
 . . .
@@ -446,9 +455,9 @@ antes de acreditar na resposta.
 ## Instalando e carregando pacotes {.smaller}
 
 ```r
-install.packages("vegan")   # uma vez só, na vida da máquina
-library(vegan)              # toda vez que abrir o R
-data(BCI)                   # carrega um conjunto de dados do pacote
+install.packages("tidyverse")   # uma vez só, na vida da máquina
+library(dplyr)                  # toda vez que abrir o R
+library(ggplot2)
 ```
 
 . . .
@@ -462,16 +471,57 @@ data(BCI)                   # carrega um conjunto de dados do pacote
 
 # Entrando e saindo
 
-## Importando dados {.smaller}
+# O dado da semana
 
-```r
-dados <- read.table("dados/brutos/anuros.txt", header = TRUE)
-dados <- read.csv("dados/brutos/anuros.csv")
+## Um arquivo, oito aulas {.smaller}
+
+::: {.citacao}
+Bovo, R.P.; Simon, M.N.; **Provete, D.B.**; Lyra, M.; Navas, C.A.;
+Andrade, D.V. (2023). **Beyond Janzen's Hypothesis: How Amphibians That
+Climb Tropical Mountains Respond to Climate Variation.**
+*Integrative Organismal Biology* 5(1): obad009.
+[doi:10.1093/iob/obad009](https://doi.org/10.1093/iob/obad009)
+:::
+
+. . .
+
+**225 indivíduos**, 5 espécies de anuros, 6 altitudes, 2 serras da Mata
+Atlântica. Limites térmicos, perda de água, massa e clima de cada sítio.
+
+::: {.citacao}
+Dados reais, publicados, com os problemas que dados reais têm. É o mesmo
+arquivo de hoje até sexta-feira.
+:::
+
+## Monte a pasta agora {.smaller}
+
+```
+intro-r.Rproj
+dados/
+  anuros_altitude.csv          <- baixe da página da aula
+  processados/                 <- o que o seu script produzir
+scripts/
+  aula-01.R
+figuras/
 ```
 
 . . .
 
-Existe também `read.table(file.choose())`, que abre uma janela para você
+::: {.citacao}
+Tudo o que vem depois supõe essa estrutura. Cinco minutos agora economizam
+a semana inteira.
+:::
+
+## Importando dados {.smaller}
+
+```{r}
+#| eval: false
+dados <- read.csv("dados/anuros_altitude.csv")
+```
+
+. . .
+
+Existe também `read.csv(file.choose())`, que abre uma janela para você
 escolher o arquivo. **Evitem.**
 
 ::: {.citacao}
@@ -492,16 +542,68 @@ summary(dados)   # resumo por coluna
 
 . . .
 
+```{r}
+dim(dados)
+names(dados)[1:10]
+```
+
+## O que o `str()` mostra {.smaller}
+
+```{r}
+str(dados[, 1:8])
+```
+
+. . .
+
 ::: {.citacao}
 O `str()` é o mais importante: é onde você descobre que a coluna que deveria
-ser numérica entrou como texto.
+ser numérica entrou como texto. Repare em `ID` e `Sex`: `chr`, texto — e
+está certo. Já `EWL_Ugcm2s1` ser `num` é o que a gente queria ver.
+:::
+
+## Agora vocês {.smaller}
+
+::: {.callout-note icon=false}
+## 5 minutos — no **Source**, não no Console
+
+1. Crie o Projeto e a pasta `dados/`; ponha o `anuros_altitude.csv` lá
+2. Leia o arquivo num objeto chamado `dados`
+3. Rode os quatro: `head()`, `str()`, `dim()`, `summary()`
+4. **Escreva no script, em comentário, uma coisa que você notou** e que
+   não estava neste slide
+:::
+
+. . .
+
+::: {.citacao}
+O passo 4 é o que importa. Quem só roda os quatro comandos não viu nada —
+viu a tela. Vou pedir a resposta de três de vocês.
+:::
+
+## O que o `summary()` mostra {.smaller}
+
+```{r}
+summary(dados[, c("Bodymass_g", "CTmin", "CTmax")])
+```
+
+. . .
+
+::: {.incremental}
+- A massa vai de **0,4 g a 373 g** — três ordens de grandeza numa amostra só
+- `CTmax` tem **35 `NA`**. `CTmin` tem 1
+:::
+
+. . .
+
+::: {.citacao}
+Nenhum erro, nenhum aviso. Se vocês não tivessem olhado, descobririam esses
+35 ausentes só na quarta-feira, quando um modelo disser `n = 190`.
 :::
 
 ## Exportando {.smaller}
 
 ```r
-write.csv(objeto, "dados/processados/resultado.csv", row.names = FALSE)
-write.table(objeto, "resultado.txt", sep = "\t", quote = FALSE)
+write.csv(objeto, "dados/processados/anuros_limpo.csv", row.names = FALSE)
 ```
 
 . . .
@@ -517,7 +619,7 @@ write.table(objeto, "resultado.txt", sep = "\t", quote = FALSE)
 Anote, com uma frase cada, o que faz cada função nova desta manhã:
 
 ```r
-c()   mean()   sqrt()   head()   str()   dim()   summary()
+c()   mean()   sqrt()   head()   str()   dim()   summary()   names()
 library()   install.packages()   read.csv()   write.csv()   ?
 ```
 

@@ -164,7 +164,36 @@ por_serra
 # diferença entre as duas coisas é metade da disciplina.
 
 # ---------------------------------------------------------------------------
-# 9. Exercício
+# 9. Uma segunda opinião sobre as premissas: o pacote performance
+# ---------------------------------------------------------------------------
+# Instale uma vez:  install.packages("performance")
+# Os quatro gráficos do item 3 pedem que VOCÊ julgue olhando. O `performance`
+# faz o teste e devolve um veredito escrito. As duas coisas se completam.
+library(performance)
+
+check_normality(m3)          # Shapiro-Wilk nos resíduos
+check_heteroscedasticity(m3) # Breusch-Pagan
+check_collinearity(m3)       # VIF, para modelos com mais de uma preditora
+r2(m3)
+
+# No nosso modelo os dois primeiros DISCORDAM: a normalidade passa, a
+# homocedasticidade não. Antes de consertar qualquer coisa, pense:
+#
+#   a) O que exatamente foi violado, e quanto? Um p pequeno com n = 190
+#      detecta um desvio que talvez não importe. Olhe o Scale-Location do
+#      item 3 e decida se o que você vê é grave.
+#   b) Heterocedasticidade não enviesa os coeficientes — ela estraga os
+#      erros-padrão, e portanto os p e os intervalos de confiança.
+#   c) Este modelo junta cinco espécies que diferem em tamanho por duas
+#      ordens de grandeza. É de espantar que a variância seja constante?
+#
+# Um teste não decide por você. Ele te obriga a ter um argumento.
+
+# Se tiver o pacote `see` instalado, o painel completo sai em um comando:
+# check_model(m3)
+
+# ---------------------------------------------------------------------------
+# 10. Exercício
 # ---------------------------------------------------------------------------
 # a) Refaça o item 2 usando `ctmax` como resposta em vez de `tol_aquec`.
 #    O sinal do coeficiente muda? Por quê? (Dica: tol_aquec = ctmax - bio5,
@@ -173,3 +202,17 @@ por_serra
 #    transformação? Teste `log(ewl) ~ log(massa)`.
 # c) Quantas observações cada modelo acima usou de fato? Compare
 #    `nobs(m1)` com `nrow(anuros)` e explique a diferença.
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+stopifnot(
+  inherits(m1, "lm"),
+  nobs(m1) == 190,                       # 225 menos os 35 sem CTmax
+  # o modelo com altitude como FATOR não é estimável: sobram coeficientes NA
+  any(is.na(coef(m4))),
+  # o modelo com altitude contínua é estimável: nenhum NA
+  !any(is.na(coef(m5))),
+  nrow(por_serra) == 2
+)
+cat("Aula 06 OK — e você viu o mesmo dado aceitar um modelo e recusar outro.\n")

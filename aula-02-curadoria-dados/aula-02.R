@@ -44,3 +44,16 @@ table(dados$Altitude_categorical, dados$Altitude_m)
 # O original chamava-se RPB_data_alt.csv. Iniciais de pessoa + "alt"
 # abreviado + nada de projeto nem data. Renomeamos para anuros_altitude.csv
 # seguindo as regras de hoje. O conteúdo é idêntico.
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+# Estes números são o que a auditoria desta aula tinha que encontrar.
+stopifnot(
+  sum(is.na(dados$CTmax)) == 35,          # ausentes na resposta principal
+  sum(is.na(dados$Sex))   == 107,         # ausentes no sexo
+  length(unique(dados$Altitude_m)) == 6,  # seis sítios
+  # a variável de clima é do SÍTIO, não do indivíduo: sd zero dentro do sítio
+  all(tapply(dados$BIO_5, dados$Altitude_m, sd) == 0)
+)
+cat("Aula 02 OK — você encontrou os ausentes e a variável de sítio.\n")

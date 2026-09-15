@@ -146,3 +146,18 @@ lm(tol_aquec ~ altitude, data = anuros) %>%
 #   4. Se compilou sem tocar em nada, está pronto
 #
 # Comece pelo `relatorio-modelo.qmd`, nesta mesma pasta.
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+# O teste que importa é o do item 8: reiniciar o R e renderizar do zero.
+# Este bloco só confere se o ambiente tem o que o .qmd vai precisar.
+faltando <- setdiff(c("here", "dplyr", "ggplot2", "broom", "knitr", "rmarkdown"),
+                    rownames(installed.packages()))
+if (length(faltando)) {
+  stop("instale antes de renderizar: ", paste(faltando, collapse = ", "))
+}
+stopifnot(
+  file.exists(here::here("dados", "anuros_altitude.csv"))
+)
+cat("Aula 08 OK — agora reinicie o R e renderize o relatório do zero.\n")

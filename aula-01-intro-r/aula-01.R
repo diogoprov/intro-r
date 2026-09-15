@@ -53,3 +53,16 @@ library(dplyr)
 # ---- 9. Exportando --------------------------------------------------------
 # Nada a exportar hoje. Mas quando houver:
 # write.csv(objeto, "dados/processados/resultado.csv", row.names = FALSE)
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+# Rode este bloco. Se ele passar sem erro, sua aula 01 está fechada.
+stopifnot(
+  exists("dados"),
+  is.data.frame(dados),
+  nrow(dados) == 225,
+  ncol(dados) == 26,
+  "CTmax" %in% names(dados)
+)
+cat("Aula 01 OK — o arquivo está lido e no formato esperado.\n")

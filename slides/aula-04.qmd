@@ -228,6 +228,25 @@ anuros %>%
             ctmax_dp  = round(sd(ctmax,   na.rm = TRUE), 2))
 ```
 
+## Agora vocês {.smaller}
+
+::: {.callout-note icon=false}
+## 10 minutos — encadeie os verbos
+
+Escreva **um** pipeline, do `anuros` até a resposta, para cada pergunta:
+
+1. Qual espécie tem o maior CTmax médio?
+2. Quantos indivíduos há por serra, contando só os que têm `ctmax` medido?
+3. Qual a massa mediana de cada espécie em cada altitude?
+:::
+
+. . .
+
+::: {.citacao}
+Regra: **um `%>%` por linha.** Quando der erro, apague a última linha e rode
+de novo — assim você descobre em qual verbo quebrou, em vez de adivinhar.
+:::
+
 ## A armadilha do `.groups` {.smaller}
 
 ```{r}

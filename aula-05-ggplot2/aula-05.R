@@ -55,3 +55,13 @@ fig <- ggplot(anuros, aes(x = altitude, y = tol_aquec, colour = especie)) +
 dir.create("figuras", showWarnings = FALSE)
 ggsave("figuras/tolerancia_aquecimento.png", fig,
        width = 8, height = 4.5, dpi = 200)
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+stopifnot(
+  file.exists("figuras/tolerancia_aquecimento.png"),
+  inherits(fig, "ggplot"),
+  nrow(anuros) == 225
+)
+cat("Aula 05 OK — a figura do relatório está em figuras/.\n")

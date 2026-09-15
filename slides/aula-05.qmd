@@ -460,6 +460,25 @@ ordem. Repare no sítio de 1600 m: mais alto e **mais quente** que o de
 1500 m, porque fica na outra serra. Altitude não é temperatura.
 :::
 
+## Agora vocês {.smaller}
+
+::: {.callout-note icon=false}
+## 10 minutos — três gráficos, do zero
+
+Sem copiar dos slides. Se travar, `?geom_boxplot` antes de pedir socorro.
+
+1. A distribuição de `ctmin` — escolha a geometria
+2. `ewl` por espécie, com a geometria que mostra os quartis
+3. `massa` contra `ctmax`, colorido por serra
+:::
+
+. . .
+
+::: {.citacao}
+No terceiro: a cor entrou dentro ou fora do `aes()`? Se apareceu legenda,
+está dentro — e é isso que vocês queriam aqui.
+:::
+
 # Combinando camadas
 
 ## Desafio: como juntar os dois? {.smaller}

@@ -172,3 +172,16 @@ ajusta_seguro <- function(dados) {
 #    Dendropsophus minutus e Leptodactylus latrans, o ponto mais alto do
 #    gradiente vem de uma serra diferente de todos os outros. O que isso
 #    faz com a inclinação estimada para essas espécies?
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+stopifnot(
+  is.function(resumo),
+  length(resumo(anuros$ctmax)) == 4,
+  length(modelos) == 5,                  # um modelo por espécie
+  nrow(coefs) == 5,
+  # a função vetorizada e o case_when concordam
+  all(table(anuros$faixa) > 0)
+)
+cat("Aula 07 OK — suas funções rodam e o map devolveu os cinco modelos.\n")

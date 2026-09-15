@@ -72,3 +72,20 @@ anuros %>% count(serra, altitude)
 # ---- 8. Guardar o resultado ----------------------------------------------
 dir.create("dados/processados", showWarnings = FALSE, recursive = TRUE)
 write.csv(anuros, "dados/processados/anuros_limpo.csv", row.names = FALSE)
+
+# ---------------------------------------------------------------------------
+# CONFIRA ANTES DE SEGUIR
+# ---------------------------------------------------------------------------
+# A aula 05 e a 06 leem o arquivo que você acabou de gravar. Se algo aqui
+# falhar, conserte AGORA — senão o erro reaparece amanhã, disfarçado.
+stopifnot(
+  file.exists("dados/processados/anuros_limpo.csv"),
+  nrow(anuros) == 225,
+  all(c("especie", "serra", "altitude", "ctmin", "ctmax",
+        "amplitude", "tol_aquec") %in% names(anuros)),
+  is.factor(anuros$especie),
+  # as derivadas foram recalculadas, não copiadas
+  isTRUE(all.equal(anuros$amplitude, anuros$ctmax - anuros$ctmin)),
+  sum(is.na(anuros$ctmax)) == 35
+)
+cat("Aula 04 OK — dados/processados/anuros_limpo.csv pronto para a aula 05.\n")
