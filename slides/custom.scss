@@ -80,7 +80,10 @@ $code-block-border-color: #e3dccd;
 // --- Imagens ---------------------------------------------------------------
 // Sem um teto de altura, uma imagem alta e estreita estoura o slide: o
 // `width=` do markdown controla só a largura. Este limite vale para todas.
-.reveal .slide img {
+// O `:not(.r-stretch)` é essencial: quando a imagem é a única coisa do slide,
+// o Quarto a marca com .r-stretch e calcula a altura dela em JS. Um max-height
+// nosso atrapalha essa medição e ela acaba com height: 0 — imagem invisível.
+.reveal .slide img:not(.r-stretch) {
   max-height: 68vh;
   width: auto;
   object-fit: contain;

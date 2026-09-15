@@ -176,9 +176,15 @@ Resumos de uma ou duas páginas, por pacote. Vale imprimir as do `dplyr` e do
 
 [opensource.posit.co/resources/cheatsheets](https://opensource.posit.co/resources/cheatsheets/)
 
-::: {.citacao}
+. . .
+
 Há versões em português de algumas delas, feitas pela comunidade.
-:::
+
+## Estão dentro do RStudio também {.smaller}
+
+**Help → Cheat Sheets** — as principais já vêm instaladas.
+
+![](img/a01-rstudio-cheatsheets.png){.nostretch width="88%"}
 
 ## Enquanto instala… {.smaller}
 
@@ -222,9 +228,12 @@ A regra do curso: **escreva no Source, não no Console.** O console esquece;
 o script fica.
 :::
 
-<!-- TODO: um screenshot do SEU RStudio com os quatro paineis visiveis
-     cairia bem aqui, do mesmo jeito que o do painel Git funcionou na
-     aula 03. Salve como slides/img/a01-rstudio-paineis.png. -->
+## Os quatro painéis, de verdade {.smaller}
+
+O seu vai estar vazio — e claro em vez de escuro, até mexerem em
+*Tools → Global Options → Appearance*.
+
+![](img/a01-rstudio-paineis.png){.nostretch width="88%"}
 
 ## Comece pelo Projeto {.smaller}
 
@@ -244,8 +253,18 @@ trabalho sozinho, e o script deixa de depender de onde a pasta está. Voltamos
 nisso à tarde, com `here()`.
 :::
 
-<!-- TODO: screenshot da janela New Project do RStudio atual, se quiser.
-     O que estava no pptx era de 2011 e nao se parece mais com o programa. -->
+## A janela que abre {.smaller}
+
+**Version Control** é como vocês vão clonar o repositório da disciplina na terça.
+
+![](img/a01-rstudio-new-project.png){.nostretch width="88%"}
+
+## Trocando de projeto {.smaller}
+
+O canto superior **direito** mostra o projeto aberto — e lista os outros.
+Cada um abre com sessão, histórico e arquivos próprios.
+
+![](img/a01-rstudio-projetos-menu.png){.nostretch width="88%"}
 
 ## Duas facilidades que economizam horas {.smaller}
 
