@@ -19,17 +19,25 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-aula-3-desafio-broom-dplyr.html)**  
-  *Desafio prático — manipulação de dados com `dplyr` e modelos com `broom`.*  
-  [{{< fa solid file-code >}} baixar `aula-3-desafio-broom-dplyr.R`](aula-3-desafio-broom-dplyr.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-aula-04.html)**  
+  *O script executado, com as saídas à vista — para conferir se o seu console
+  mostrou o que deveria.*
+- [{{< fa solid file-code >}} baixar `aula-04.R`](aula-04.R)  
+  *A limpeza que o resto da semana usa: renomear, selecionar, converter
+  tipos, recalcular as variáveis derivadas, agrupar e resumir. O arquivo
+  que sai daqui alimenta as aulas 05 e 06.*
 
 ## Dados utilizados
 
-- [`Rafael_bovo_dados2.txt`](Rafael_bovo_dados2.txt)
-- [`diogo_week.csv`](diogo_week.csv)
+- [{{< fa solid file-csv >}} `anuros_altitude.csv`](../dados/anuros_altitude.csv)
+- [{{< fa solid book >}} metadados do arquivo](../dados/metadados_anuros_altitude.html)
+
+O script grava o resultado em `dados/processados/anuros_limpo.csv`. **Rode
+esta aula antes das aulas 05 e 06** — elas partem desse arquivo.
 
 ## Recursos externos
 
+- [Vídeo da aula — tidyverse: manipulação de dados](https://www.youtube.com/watch?v=dmQkJfOC0RA&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=5)
 - [*Análises Ecológicas no R* — capítulo de tidyverse](https://analises-ecologicas.com/cap5)
 - [Exercícios do capítulo (Análises Ecológicas)](https://analises-ecologicas.com/cap5#exercicios)
 - [Vignette do pacote `broom`](https://broom.tidymodels.org/articles/broom.html)

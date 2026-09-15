@@ -19,14 +19,18 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica/expositiva).*
+- [{{< fa solid file-code >}} baixar `aula-03.R`](aula-03.R)  
+  *Os comandos do terminal, o `.gitignore` que este projeto precisa e o
+  exercício de versionar a pasta do curso.*
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+*Nenhum arquivo novo: o objeto versionado nesta aula é a própria pasta do
+curso, montada na aula 01.*
 
 ## Recursos externos
 
+- [Vídeo da aula — controle de versão com git e GitHub](https://www.youtube.com/watch?v=akiJG-FjVcg&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=4)
 - [GitHub em 15 minutos (tutorial)](https://docs.github.com/en/get-started/quickstart/hello-world)
 - [Ten Simple Rules for Taking Advantage of Git and GitHub](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004947)
 - [Quadro resumo git (cheatsheet)](https://education.github.com/git-cheat-sheet-education.pdf)

@@ -1,8 +1,11 @@
 name: Render & deploy course site
 
-# The .qmd files carry R chunks, but all of them are `eval: false` — nothing
-# is executed at render time. R and knitr are still required because the
-# knitr engine processes the documents. No scholar/pagedown/Chrome needed.
+# Os decks e as páginas de aula trazem blocos R com `eval: false`, mas os
+# walkthroughs das aulas 04 e 06 e o `relatorio-modelo.qmd` EXECUTAM código
+# de verdade: leem `dados/anuros_altitude.csv`, ajustam modelos e desenham
+# gráficos. Por isso o passo de instalação abaixo vai além do knitr.
+# Se um walkthrough novo usar um pacote que não está na lista, o build
+# quebra aqui — acrescente o pacote antes de fazer o push.
 
 on:
   push:
@@ -34,9 +37,15 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install knitr
+      - name: Cache R packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-rpkgs-${{ hashFiles('.github/workflows/publish.yml') }}
+
+      - name: Install R packages
         run: |
-          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown","knitr"))'
+          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2", "broom", "purrr"))'
 
       - name: Render site
         run: quarto render

@@ -1,0 +1,222 @@
+---
+title: "Tolerância térmica e altitude em anuros da Mata Atlântica"
+subtitle: "Trabalho final — Introdução à Linguagem R"
+author: "Seu nome aqui"
+date: today
+lang: pt
+format:
+  html:
+    toc: true
+    toc-title: "Sumário"
+    number-sections: true
+    code-fold: true
+    code-summary: "Mostrar código"
+    theme: cosmo
+    fig-width: 7
+    fig-height: 4.5
+execute:
+  warning: false
+  message: false
+bibliography: referencias.bib
+---
+
+<!--
+COMO USAR ESTE MODELO
+---------------------
+Ele não é um gabarito para preencher lacunas: é o ESQUELETO de um relatório
+reprodutível. Troque a pergunta, troque as variáveis, troque as figuras.
+O que deve permanecer é a estrutura — e o fato de que nenhum número do texto
+foi digitado à mão.
+
+Antes de entregar:
+  1. Session > Restart R
+  2. apague `relatorio-modelo_files/` e o .html
+  3. Render
+  4. compilou sem você tocar em nada? então está reprodutível.
+
+Se você não tiver um `referencias.bib`, apague a linha `bibliography:` do
+YAML acima e escreva as citações à mão.
+-->
+
+```{r}
+#| label: setup
+#| include: false
+
+library(here)
+library(dplyr)
+library(ggplot2)
+library(broom)
+library(knitr)
+
+theme_set(theme_minimal(base_size = 12))
+```
+
+# Introdução
+
+Organismos ectotérmicos dependem da temperatura ambiente para regular seus
+processos fisiológicos. Ao longo de um gradiente altitudinal, a temperatura
+do ar cai de forma previsível — o que levanta a pergunta de como os limites
+térmicos das espécies acompanham essa variação.
+
+Aqui reanalisamos os dados de @bovo2023, que mediram limites térmicos
+críticos e perda de água em anuros de duas serras da Mata Atlântica.
+Nossa pergunta é:
+
+> A tolerância ao aquecimento — a diferença entre o limite térmico crítico
+> superior do animal e a temperatura máxima do ambiente onde ele vive —
+> varia com a altitude?
+
+<!-- Uma introdução de trabalho final tem 2 a 4 parágrafos e termina numa
+     pergunta que o resto do documento responde. Se a sua pergunta não
+     couber numa frase, ela ainda não está pronta. -->
+
+# Métodos
+
+## Dados
+
+```{r}
+#| label: leitura
+
+bruto <- read.csv(here("dados", "anuros_altitude.csv"))
+```
+
+Os dados brutos contêm `r nrow(bruto)` indivíduos e `r ncol(bruto)` variáveis.
+A descrição completa de cada coluna, com unidades e origem, está em
+`dados/metadados_anuros_altitude.md`.
+
+## Preparação dos dados
+
+```{r}
+#| label: limpeza
+
+anuros <- bruto %>%
+  rename(id = ID, especie = Species, sexo = Sex,
+         ewl = EWL_Ugcm2s1, massa = Bodymass_g,
+         ctmin = CTmin, ctmax = CTmax,
+         serra = Mountain_Range, altitude = Altitude_m) %>%
+  select(id, especie, sexo, serra, altitude, massa, ewl, ctmin, ctmax,
+         bio5 = BIO_5) %>%
+  mutate(across(c(especie, serra, sexo), factor),
+         amplitude = ctmax - ctmin,
+         tol_aquec = ctmax - bio5)
+```
+
+Recalculamos as duas variáveis derivadas a partir das colunas de origem, em
+vez de usar as colunas prontas do arquivo: assim a definição de cada uma
+fica explícita no documento.
+
+```{r}
+#| label: tbl-desenho
+#| tbl-cap: "Número de indivíduos por serra e altitude."
+
+with(anuros, table(serra, altitude)) %>% kable()
+```
+
+A @tbl-desenho mostra uma característica do desenho amostral que restringe
+as análises possíveis: **cada altitude pertence a uma única serra**. Altitude
+e serra não estão cruzadas, de modo que nenhum modelo separa os dois efeitos
+usando apenas a identidade dos sítios. Por isso tratamos altitude como
+variável contínua e interpretamos os contrastes dentro da faixa amostrada.
+
+## Análise
+
+Ajustamos modelos lineares com `tol_aquec` como resposta. Todas as análises
+foram feitas no R [@rcore], com os pacotes `dplyr`, `ggplot2` e `broom`.
+
+# Resultados
+
+## Descrição
+
+```{r}
+#| label: tbl-resumo
+#| tbl-cap: "Limites térmicos por espécie. Média (desvio-padrão)."
+
+anuros %>%
+  group_by(especie) %>%
+  summarise(n = n(),
+            CTmin = sprintf("%.2f (%.2f)", mean(ctmin, na.rm = TRUE), sd(ctmin, na.rm = TRUE)),
+            CTmax = sprintf("%.2f (%.2f)", mean(ctmax, na.rm = TRUE), sd(ctmax, na.rm = TRUE)),
+            .groups = "drop") %>%
+  kable()
+```
+
+```{r}
+#| label: fig-altitude
+#| fig-cap: "Tolerância ao aquecimento em função da altitude, por espécie. Retas de regressão linear com intervalo de confiança de 95%."
+
+ggplot(anuros, aes(altitude, tol_aquec, colour = especie)) +
+  geom_point(alpha = .6, size = 1.8) +
+  geom_smooth(method = "lm", formula = y ~ x, linewidth = .8) +
+  labs(x = "Altitude (m)", y = "Tolerância ao aquecimento (°C)", colour = NULL) +
+  theme(legend.position = "top")
+```
+
+## Modelo
+
+```{r}
+#| label: modelo
+
+m <- lm(tol_aquec ~ altitude + especie, data = anuros)
+```
+
+```{r}
+#| label: tbl-coef
+#| tbl-cap: "Coeficientes do modelo linear."
+
+tidy(m, conf.int = TRUE) %>% kable(digits = 4)
+```
+
+```{r}
+#| label: extrai
+#| include: false
+
+b   <- tidy(m) %>% filter(term == "altitude")
+r2  <- glance(m)$adj.r.squared
+```
+
+O modelo explica `r round(100 * r2)`% da variação em tolerância ao
+aquecimento. O efeito da altitude é de
+`r sprintf("%.4f", b$estimate)` °C por metro
+(EP = `r sprintf("%.4f", b$std.error)`, p = `r format.pval(b$p.value, digits = 2)`),
+ou cerca de `r sprintf("%.1f", b$estimate * 1000)` °C a cada 1000 m.
+
+<!-- Repare: nenhum desses números foi digitado. Se você trocar a variável
+     resposta lá em cima, o parágrafo inteiro se atualiza sozinho. -->
+
+## Diagnóstico
+
+```{r}
+#| label: fig-diag
+#| fig-cap: "Resíduos contra valores ajustados."
+
+augment(m) %>%
+  ggplot(aes(.fitted, .resid)) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_point(alpha = .6) +
+  labs(x = "Valores ajustados", y = "Resíduos")
+```
+
+<!-- Um relatório que apresenta um modelo sem mostrar o diagnóstico está
+     pedindo para o leitor confiar. Mostre. -->
+
+# Discussão
+
+<!-- Dois a quatro parágrafos:
+     1. o que o resultado responde da pergunta da introdução
+     2. o que ele NÃO responde, e por quê (aqui entra o desenho amostral
+        da @tbl-desenho)
+     3. o que faria sentido fazer em seguida -->
+
+# Reprodutibilidade
+
+```{r}
+#| label: session
+#| echo: false
+
+sessionInfo()
+```
+
+# Referências
+
+::: {#refs}
+:::

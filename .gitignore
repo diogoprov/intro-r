@@ -13,3 +13,17 @@ _site/
 
 # pasta temporaria de inspecao de imagens do pptx
 _inspect/
+
+# pastas temporarias de inspecao de imagens do pptx
+_insp*/
+
+# material aposentado, aguardando exclusao manual
+_to_delete/
+
+# dado processado: descartavel, o aula-04.R o reconstroi
+dados/processados/
+
+# saidas dos walkthroughs e do relatorio
+**/*_files/
+aula-*/walkthrough-*.html
+aula-*/relatorio-*.html

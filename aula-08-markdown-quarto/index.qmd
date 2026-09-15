@@ -19,15 +19,28 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica/expositiva).*
+- [{{< fa solid file-code >}} baixar `aula-08.R`](aula-08.R)  
+  *Caminhos com `here`, ambiente limpo, números no meio do texto, tabelas
+  com `knitr::kable`, opções de bloco e referências cruzadas.*
+- [{{< fa solid file-lines >}} baixar `relatorio-modelo.qmd`](relatorio-modelo.qmd)
+  · [{{< fa solid quote-right >}} `referencias.bib`](referencias.bib)  
+  **O esqueleto do trabalho final.** Um documento que compila do zero, com
+  o fluxo completo: leitura do dado bruto, limpeza, exploração, modelo,
+  diagnóstico e discussão. Nenhum número dele foi digitado à mão.
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+- [{{< fa solid file-csv >}} `anuros_altitude.csv`](../dados/anuros_altitude.csv)
+- [{{< fa solid book >}} metadados do arquivo](../dados/metadados_anuros_altitude.html)
+
+O `relatorio-modelo.qmd` parte do **dado bruto**, de propósito: um relatório
+reprodutível refaz a limpeza, ele não pressupõe um arquivo já limpo que
+alguém produziu em outro lugar.
 
 ## Recursos externos
 
-- [Vídeo-aula — como criar um arquivo R Markdown](https://www.youtube.com/results?search_query=r+markdown+tutorial+provete)
+- [Vídeo da aula — reprodutibilidade em pesquisa](https://www.youtube.com/watch?v=MJVzS7fVl2I&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=9)
+- [Vídeo da aula prática — R Markdown](https://www.youtube.com/watch?v=m9qoEqRNpQQ&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=10)
 - [Quadro resumo Markdown (cheatsheet)](https://www.markdownguide.org/cheat-sheet/)
 - [Quadro resumo R Markdown (cheatsheet)](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf)
 - [British Ecological Society — *Guide to Reproducible Code*](https://www.britishecologicalsociety.org/wp-content/uploads/2017/12/guide-to-reproducible-code.pdf)

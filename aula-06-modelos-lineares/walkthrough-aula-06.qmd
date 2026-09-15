@@ -1,0 +1,328 @@
+---
+title: "Walkthrough — Modelos lineares"
+subtitle: "Aula 06 · Introdução à Linguagem R"
+lang: pt
+format:
+  html:
+    toc: true
+    toc-title: "Sumário"
+    code-fold: false
+    theme: cosmo
+    fig-width: 7
+    fig-height: 4.5
+execute:
+  warning: false
+  message: false
+---
+
+Este documento é o [`aula-06.R`](aula-06.R) executado. Ele parte do arquivo
+limpo produzido na [aula 04](../aula-04-tidyverse/aula-04.R) — se você ainda
+não rodou aquele script, rode antes.
+
+```{r}
+#| label: setup
+library(dplyr)
+library(ggplot2)
+library(broom)
+theme_set(theme_minimal(base_size = 12))
+```
+
+```{r}
+#| label: dados
+#| code-fold: true
+#| code-summary: "Refazendo a limpeza da aula 04 (clique para ver)"
+
+anuros <- read.csv(here::here("dados", "anuros_altitude.csv")) %>%
+  rename(id = ID, especie = Species, sexo = Sex,
+         ewl = EWL_Ugcm2s1, massa = Bodymass_g,
+         ctmin = CTmin, ctmax = CTmax,
+         serra = Mountain_Range, altitude = Altitude_m) %>%
+  select(id, especie, sexo, serra, altitude, massa, ewl, ctmin, ctmax,
+         bio5 = BIO_5) %>%
+  mutate(across(c(especie, serra, sexo), factor),
+         amplitude = ctmax - ctmin,
+         tol_aquec = ctmax - bio5,
+         alt_fator = factor(altitude, levels = sort(unique(altitude))))
+```
+
+# A pergunta
+
+A **tolerância ao aquecimento** é a distância entre o limite térmico crítico
+superior do animal (CTmax) e a temperatura máxima do ambiente onde ele vive
+(BIO_5): quanto o ambiente ainda pode esquentar antes de encostar no limite
+fisiológico.
+
+$$\text{tol\_aquec} = \text{CTmax} - \text{BIO}_5$$
+
+Ela varia com a altitude?
+
+```{r}
+#| label: fig-bruto
+#| fig-cap: "Tolerância ao aquecimento contra altitude. Cada ponto é um indivíduo."
+ggplot(anuros, aes(altitude, tol_aquec)) +
+  geom_point(alpha = .6) +
+  labs(x = "Altitude (m)", y = "Tolerância ao aquecimento (°C)")
+```
+
+Antes de qualquer modelo, repare em duas coisas no gráfico: a tendência
+parece subir, e os pontos estão em **seis colunas verticais**. Não há
+altitude contínua nesta amostra; há seis sítios.
+
+# O modelo mais simples
+
+```{r}
+m1 <- lm(tol_aquec ~ altitude, data = anuros)
+summary(m1)
+```
+
+Leia o `summary` de trás para frente:
+
+- **F-statistic / R²** — o modelo explica alguma coisa? Aqui, cerca de 30 %
+  da variação.
+- **Coefficients** — direção e tamanho. O coeficiente de `altitude` é
+  positivo: a tolerância **aumenta** com a altitude.
+- **Intercept** — a previsão em altitude = 0 m. Aqui quase faz sentido, já
+  que o sítio mais baixo está a 35 m. Nem sempre é assim.
+
+::: {.callout-note}
+## Por que a tolerância sobe com a altitude?
+
+Parece contraintuitivo até você lembrar da definição. Compare as duas metades
+da subtração ao longo do gradiente:
+
+```{r}
+#| echo: false
+anuros %>%
+  group_by(altitude, serra) %>%
+  summarise(`BIO_5 (°C)` = unique(bio5),
+            `CTmax médio (°C)` = round(mean(ctmax, na.rm = TRUE), 2),
+            .groups = "drop") %>%
+  knitr::kable()
+```
+
+O CTmax dos animais quase não muda — fica entre 35,8 e 38,1 °C em todas as
+altitudes. A temperatura máxima do ambiente cai de 30,4 °C a 35 m para
+23,8 °C a 1500 m. A diferença entre os dois, portanto, aumenta: quem vive no
+alto tem mais margem.
+
+(Repare que o sítio de 1600 m tem BIO_5 de 25,0 °C, **acima** do de 1500 m.
+Ele fica na outra serra. Altitude não é temperatura.)
+
+O corolário incômodo é o das terras baixas: é lá que a margem é menor.
+:::
+
+# Diagnóstico antes de interpretar
+
+```{r}
+#| label: fig-diag4
+#| fig-cap: "Os quatro gráficos de diagnóstico do `plot.lm`."
+#| fig-width: 8
+#| fig-height: 7
+par(mfrow = c(2, 2))
+plot(m1)
+par(mfrow = c(1, 1))
+```
+
+O que cada painel responde:
+
+| Painel | Pergunta |
+|---|---|
+| Residuals vs Fitted | a relação é mesmo linear? |
+| Q-Q Residuals | os resíduos são aproximadamente normais? |
+| Scale-Location | a variância é constante ao longo do ajuste? |
+| Residuals vs Leverage | algum ponto sozinho está puxando a reta? |
+
+As faixas verticais nos dois primeiros painéis são o desenho amostral
+aparecendo de novo: seis altitudes, seis valores ajustados possíveis.
+
+# `broom`: o resultado como data frame
+
+```{r}
+tidy(m1, conf.int = TRUE)
+glance(m1)
+```
+
+`summary()` imprime na tela e acabou. `tidy()` devolve um **data frame** — que
+entra em `ggplot`, em `kable`, em `dplyr`. É a diferença entre um resultado
+que você lê e um resultado que você usa.
+
+```{r}
+#| label: fig-coef
+#| fig-cap: "Estimativa e intervalo de confiança de 95 % para o efeito da altitude."
+#| fig-height: 2
+tidy(m1, conf.int = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  ggplot(aes(estimate, term)) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
+  labs(x = "Estimativa (°C por metro)", y = NULL)
+```
+
+# Uma preditora categórica
+
+```{r}
+m2 <- lm(tol_aquec ~ especie, data = anuros)
+anova(m2)
+tidy(m2)
+```
+
+Cinco espécies, **quatro** coeficientes. O R tomou a primeira em ordem
+alfabética como referência, e cada linha é a diferença em relação a ela:
+
+```{r}
+levels(anuros$especie)
+```
+
+Para trocar a referência: `relevel(anuros$especie, ref = "Rhinella icterica")`.
+A escolha não muda o ajuste — muda quais contrastes você lê de graça.
+
+# Juntando as duas
+
+```{r}
+m3 <- lm(tol_aquec ~ altitude + especie, data = anuros)
+glance(m3) %>% select(r.squared, adj.r.squared, nobs)
+anova(m1, m3)
+```
+
+O salto no R² é grande, e o teste F entre os modelos é inequívoco: as
+espécies diferem muito entre si em tolerância. Faz sentido biológico — elas
+diferem em CTmax, em tamanho e em hábito.
+
+# O desenho amostral decidindo o que é possível
+
+A pergunta natural agora: o efeito da altitude é o mesmo nas duas serras?
+
+Antes de ajustar, olhe o desenho:
+
+```{r}
+with(anuros, table(serra, altitude))
+```
+
+Cada altitude pertence a **uma única** serra. Não existe um par de sítios na
+mesma altitude em serras diferentes. Altitude, entendida como identidade do
+sítio, está **aninhada** em serra — não cruzada com ela.
+
+Escreva isso como modelo e o R avisa:
+
+```{r}
+m4 <- lm(tol_aquec ~ alt_fator * serra, data = anuros)
+summary(m4)$coefficients
+```
+
+A tabela termina em `alt_fator1600`: **nenhum termo de serra foi estimado**.
+O R não conseguiu — e diz exatamente por quê:
+
+```{r}
+alias(m4)
+```
+
+Cada termo de serra é combinação linear dos termos de altitude. Os dois
+rótulos descrevem a mesma partição dos dados.
+
+::: {.callout-important}
+## Isto não é um erro
+
+Não é bug do R, não é amostra pequena, não é problema de convergência. É o
+desenho amostral impondo um limite: **nenhum dado no mundo**, coletado assim,
+separa "efeito de altitude" de "efeito de serra".
+:::
+
+## O mesmo modelo, com altitude contínua
+
+```{r}
+m5 <- lm(tol_aquec ~ altitude * serra, data = anuros)
+tidy(m5)
+```
+
+Agora ajusta. Todos os coeficientes estimados, a interação até é
+"significativa". O que mudou?
+
+**O dado não mudou.** Mudou a premissa: tratar altitude como número impõe que
+a resposta seja uma **reta** dentro de cada serra. Com isso, duas altitudes
+por serra já bastam para estimar duas retas, e a diferença entre elas vira a
+interação.
+
+Essa premissa tem preço. As faixas amostradas não são as mesmas:
+
+```{r}
+tapply(anuros$altitude, anuros$serra, range)
+```
+
+O coeficiente `serraSerra do Mar` é a diferença entre as serras em
+**altitude = 0 m** — fora da faixa amostrada em ambas, e a 550 m do ponto mais
+baixo da Mantiqueira. É extrapolação sustentada pela reta, não pelo dado.
+
+Centralize a altitude e veja o que acontece:
+
+```{r}
+anuros$alt_c <- anuros$altitude - 1000
+m6 <- lm(tol_aquec ~ alt_c * serra, data = anuros)
+tidy(m6)
+```
+
+```{r}
+#| echo: false
+bind_rows(
+  tidy(m5) %>% filter(term == "serraSerra do Mar") %>% mutate(modelo = "altitude crua (contraste a 0 m)"),
+  tidy(m6) %>% filter(term == "serraSerra do Mar") %>% mutate(modelo = "altitude centrada (contraste a 1000 m)")
+) %>%
+  select(modelo, estimate, std.error, p.value) %>%
+  knitr::kable(digits = 3)
+```
+
+R², resíduos e graus de liberdade são **idênticos** nos dois: é o mesmo
+ajuste. Mas o coeficiente de serra mudou de sinal e de conclusão.
+
+Nenhum dos dois está errado. Eles respondem a perguntas diferentes — "a 0 m"
+e "a 1000 m" — e só o segundo cai dentro da faixa amostrada.
+
+::: {.callout-important}
+## A lição
+
+Um coeficiente sem a pergunta junto não significa nada. "O efeito da serra"
+não é uma quantidade única que o modelo estima: é o contraste em um ponto que
+**você escolheu**, muitas vezes sem perceber que estava escolhendo.
+:::
+
+# O que dá para fazer: um modelo por serra
+
+É por isso que o artigo original analisa as duas serras separadamente.
+
+```{r}
+por_serra <- anuros %>%
+  filter(!is.na(tol_aquec)) %>%
+  group_by(serra) %>%
+  group_modify(~ tidy(lm(tol_aquec ~ altitude, data = .x), conf.int = TRUE)) %>%
+  ungroup() %>%
+  filter(term == "altitude")
+por_serra
+```
+
+```{r}
+#| label: fig-serras
+#| fig-cap: "Uma reta por serra. Repare no que sustenta cada uma."
+ggplot(anuros, aes(altitude, tol_aquec, colour = serra)) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", formula = y ~ x) +
+  labs(x = "Altitude (m)", y = "Tolerância ao aquecimento (°C)", colour = NULL) +
+  theme(legend.position = "top")
+```
+
+Olhe a reta da Mantiqueira: ela liga **duas** altitudes, 550 e 1600 m. O
+modelo roda, o p-valor sai pequeno, o intervalo de confiança é estreito — e
+mesmo assim não há como saber se a relação entre elas é reta, curva ou
+degrau. A da Serra do Mar, com quatro altitudes, ao menos permite olhar.
+
+Saber a diferença entre "o modelo rodou" e "a inferência se sustenta" é
+metade desta disciplina.
+
+# Exercício
+
+a. Refaça o modelo `m1` usando `ctmax` como resposta em vez de `tol_aquec`.
+   O sinal do coeficiente muda? Explique usando a definição de `tol_aquec`.
+b. Ajuste `ewl ~ massa` e olhe o diagnóstico. A relação pede transformação?
+   Compare com `log(ewl) ~ log(massa)`.
+c. `nobs(m1)` contra `nrow(anuros)`: quantas observações o modelo usou de
+   fato, e de onde veio a diferença?
+d. Centralize a altitude em 550 m em vez de 1000 m e refaça `m6`. O que
+   acontece com o coeficiente de serra, e por quê?

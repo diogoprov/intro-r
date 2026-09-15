@@ -31,15 +31,28 @@ dados — está logo abaixo.
 
 ## Código R (aula prática)
 
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-respostas-modelos-lineares.html)**  
-  *Resoluções dos desafios — diagnóstico de modelos lineares com dados problemáticos.*  
-  [{{< fa solid file-code >}} baixar `respostas-modelos-lineares.R`](respostas-modelos-lineares.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-aula-06.html)**  
+  *O script executado, com os gráficos de diagnóstico, a saída do `alias()` e
+  a comparação entre o modelo com altitude crua e centrada.*
+- [{{< fa solid file-code >}} baixar `aula-06.R`](aula-06.R)  
+  *Ajuste, diagnóstico antes da interpretação, `broom` para extrair o
+  resultado em formato tidy — e o desenho amostral decidindo qual modelo
+  é possível.*
 
 ## Dados utilizados
 
-- [`dados_com_outliers_e_faltantes.csv`](dados_com_outliers_e_faltantes.csv)
-- [`dados_heterocedasticidade.csv`](dados_heterocedasticidade.csv)
-- [`dados_nao_normais.csv`](dados_nao_normais.csv)
+`dados/processados/anuros_limpo.csv` — produzido pelo
+[`aula-04.R`](../aula-04-tidyverse/aula-04.R).
+
+::: {.callout-note}
+## O ponto alto da aula
+
+Neste conjunto de dados cada altitude pertence a **uma única** serra. Escrito
+como `alt_fator * serra`, o modelo nem chega a ser estimável — o `alias()` do
+R mostra por quê. Escrito como `altitude * serra`, ele ajusta: não porque o
+dado melhorou, mas porque a premissa de linearidade passou a sustentar a
+comparação. É uma aula de desenho amostral que dado sintético nenhum dá.
+:::
 
 ## Materiais complementares
 
@@ -48,6 +61,7 @@ dados — está logo abaixo.
 
 ## Recursos externos
 
+- [Vídeo da aula — modelos lineares, uma recapitulação](https://www.youtube.com/watch?v=GXJOdV-NfjM&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=7)
 - [*Análises Ecológicas no R* — capítulo 7 (exercícios)](https://analises-ecologicas.com/cap7)
 - [Sintaxe `formula` no R](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html)
 - [Pacote `swirl` para aprendizado interativo](https://swirlstats.com/)

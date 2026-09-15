@@ -84,7 +84,38 @@ Baker, M. (2016). **1,500 scientists lift the lid on reproducibility.**
 
 # Os conceitos
 
+## Repetível {.smaller}
+
+Mesma pessoa, mesmo código, mesmos dados, mesma máquina.
+
+![](img/a08-repetivel.png){.nostretch width="90%"}
+
+## Reprodutível {.smaller}
+
+**Outra** pessoa, mesmo código, mesmos dados.
+
+![](img/a08-reprodutivel.png){.nostretch width="90%"}
+
+## Replicável {.smaller}
+
+Outra pessoa, mesmo método, **dados novos** — as conclusões se sustentam?
+
+![](img/a08-replicavel.png){.nostretch width="90%"}
+
+## Quanto custa cada degrau {.smaller}
+
+![](img/a08-piramide.png){.nostretch width="78%"}
+
+::: {.citacao}
+Ilustrações de Candace Savonen —
+[Advanced Reproducibility in Cancer Informatics](https://jhudatascience.org/Adv_Reproducibility_in_Cancer_Informatics/defining-reproducibility.html),
+JHU Data Science Lab · **CC BY 4.0**. A pirâmide é baseada em figura de
+Essawy et al. (2020), [doi:10.1016/j.envsoft.2020.104753](https://doi.org/10.1016/j.envsoft.2020.104753)
+:::
+
 ## Quatro palavras que não são sinônimas {.smaller}
+
+Resumindo o que acabamos de ver:
 
 | Termo | Dados | Método | Pergunta |
 |---|---|---|---|

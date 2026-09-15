@@ -19,17 +19,34 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica/expositiva).*
+- [{{< fa solid file-code >}} baixar `aula-01.R`](aula-01.R)  
+  *Primeiro contato: o R como calculadora, atribuição, tipos de objeto,
+  leitura do arquivo de dados da disciplina e as primeiras funções de
+  inspeção (`head`, `str`, `dim`, `summary`).*
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+- [{{< fa solid file-csv >}} `anuros_altitude.csv`](../dados/anuros_altitude.csv)
+- [{{< fa solid book >}} metadados do arquivo](../dados/metadados_anuros_altitude.html)
+
+Este é o **conjunto de dados da disciplina inteira**: dados reais e
+publicados de limites térmicos de anuros ao longo de dois gradientes
+altitudinais na Mata Atlântica. Todas as aulas práticas voltam a ele.
+
+::: {.callout-tip}
+## Monte a pasta do curso agora
+
+Crie um Projeto do RStudio, e dentro dele uma pasta `dados/`. Baixe o
+`anuros_altitude.csv` para lá. Todos os scripts da disciplina esperam
+encontrá-lo em `dados/anuros_altitude.csv`.
+:::
 
 ## Recursos externos
 
-- [Playlist de vídeo-aulas da disciplina (YouTube)](https://www.youtube.com/playlist?list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJD)
+- [Vídeo da aula — parte 1](https://www.youtube.com/watch?v=9m_vO20whgE&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=1)
+- [Vídeo da aula — parte 2](https://www.youtube.com/watch?v=uk1SR2g0NFo&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=2)
 - [*Análises Ecológicas no R* — capítulo 4 (introdução)](https://analises-ecologicas.com/cap4)
-- [Quadro resumo RStudio (em português)](https://www.rstudio.com/wp-content/uploads/2016/03/rstudio-IDE-cheatsheet-portuguese.pdf)
+- [Quadro resumo RStudio (em português)](https://rstudio.github.io/cheatsheets/translations/portuguese/rstudio-ide_pt.pdf)
 - [R reference card](https://cran.r-project.org/doc/contrib/Short-refcard.pdf)
 - [R for beginners (Paradis)](https://cran.r-project.org/doc/contrib/Paradis-rdebuts_en.pdf)
 - [R for biologists](https://www.rforbiologists.org/)

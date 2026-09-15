@@ -19,19 +19,28 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica/expositiva).*
+- [{{< fa solid file-code >}} baixar `aula-02.R`](aula-02.R)  
+  *Auditoria do arquivo da disciplina: o que ele faz certo, o que faz
+  errado, e como um dado no nível do sítio repetido por indivíduo
+  aparece na tabela.*
 
 ## Dados utilizados
 
-[{{< fa solid file-excel >}} `Planilha de dados FINAL v2 (1).xlsx`](Planilha%20de%20dados%20FINAL%20v2%20%281%29.xlsx)
+- [{{< fa solid file-excel >}} `Planilha de dados FINAL v2 (1).xlsx`](Planilha%20de%20dados%20FINAL%20v2%20%281%29.xlsx)
 
 Planilha **deliberadamente mal feita**, usada no exercício em dupla da aula.
 Contém um erro para cada regra enunciada nos slides — a começar pelo próprio
 nome do arquivo. Os dados são **fictícios**, inventados para o exercício.
 
+- [{{< fa solid file-csv >}} `anuros_altitude.csv`](../dados/anuros_altitude.csv)
+- [{{< fa solid book >}} metadados do arquivo](../dados/metadados_anuros_altitude.html)
+
+O contraponto: um arquivo **real e publicado**, que acerta quase tudo — e
+cujos poucos defeitos são justamente os que o `aula-02.R` procura.
+
 ## Recursos externos
 
-- [Vídeo-aula de curadoria de dados](https://www.youtube.com/results?search_query=curadoria+de+dados+provete)
+- [Vídeo da aula — curadoria de dados](https://www.youtube.com/watch?v=kfnslKpY9dE&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=3)
 - [Google R Style Guide](https://google.github.io/styleguide/Rguide.html)
 - [British Ecological Society — *Guide to Data Management*](https://www.britishecologicalsociety.org/wp-content/uploads/2019/06/BES-Guide-Data-Management-2019.pdf)
 - [Ten Simple Rules for Digital Data Storage](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005097)

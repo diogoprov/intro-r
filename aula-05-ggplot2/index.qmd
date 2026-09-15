@@ -19,14 +19,19 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica/expositiva).*
+- [{{< fa solid file-code >}} baixar `aula-05.R`](aula-05.R)  
+  *As três camadas, uma variável de cada vez, dentro ou fora do `aes()`,
+  discreta contra contínua, facetas, e a figura final do relatório.*
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+`dados/processados/anuros_limpo.csv` — produzido pelo
+[`aula-04.R`](../aula-04-tidyverse/aula-04.R). Se ainda não o rodou, rode
+antes.
 
 ## Recursos externos
 
+- [Vídeo da aula — gráficos com ggplot2](https://www.youtube.com/watch?v=nfBqNDWWQNY&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=6)
 - [*Análises Ecológicas no R* — capítulo 6 (ggplot2)](https://analises-ecologicas.com/cap6)
 - [Exercícios do capítulo 6](https://analises-ecologicas.com/cap6#exercicios)
 - [Apostila Provete et al. 2011 (CRAN)](http://cran.r-project.org/doc/contrib/Provete-Estatistica_aplicada.pdf)

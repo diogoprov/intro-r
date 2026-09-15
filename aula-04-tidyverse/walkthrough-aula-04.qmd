@@ -1,0 +1,206 @@
+---
+title: "Walkthrough — Manuseio de dados com o tidyverse"
+subtitle: "Aula 04 · Introdução à Linguagem R"
+lang: pt
+format:
+  html:
+    toc: true
+    toc-title: "Sumário"
+    code-fold: false
+    theme: cosmo
+    df-print: kable
+execute:
+  warning: false
+  message: false
+---
+
+Este documento é o [`aula-04.R`](aula-04.R) executado, com as saídas à vista.
+Use-o para conferir se o que apareceu no seu console é o que deveria aparecer.
+
+O arquivo de entrada é o [`anuros_altitude.csv`](../dados/anuros_altitude.csv);
+a descrição de cada coluna está nos
+[metadados](../dados/metadados_anuros_altitude.html).
+
+```{r}
+#| label: setup
+library(dplyr)
+library(tidyr)
+```
+
+# Ler e olhar
+
+```{r}
+bruto <- read.csv(here::here("dados", "anuros_altitude.csv"))
+dim(bruto)
+names(bruto)
+```
+
+Vinte e seis colunas, e os nomes carregam a unidade: `EWL_Ugcm2s1`,
+`Bodymass_g`, `Altitude_m`. Isso é bom para quem lê o arquivo solto e ruim
+para quem digita — vamos mover a unidade para o comentário e encurtar o nome.
+
+# Renomear
+
+```{r}
+anuros <- bruto %>%
+  rename(
+    id        = ID,
+    especie   = Species,
+    sexo      = Sex,
+    ewl       = EWL_Ugcm2s1,     # µg H2O / cm2 / s
+    wu        = WU_Ugcm2s1,      # µg H2O / cm2 / s
+    massa     = Bodymass_g,      # g
+    ctmin     = CTmin,           # °C
+    ctmax     = CTmax,           # °C
+    amplitude = Tbr,             # °C  (derivada: ctmax - ctmin)
+    tol_aquec = WT,              # °C  (derivada: ctmax - BIO_5)
+    serra     = Mountain_Range,
+    altitude  = Altitude_m       # m
+  )
+```
+
+::: {.callout-warning}
+## A unidade não sumiu — ela mudou de lugar
+
+Tirar `_g` do nome só é aceitável porque a unidade está registrada **em dois
+lugares**: no comentário ao lado e no arquivo de metadados. Encurtar nome sem
+fazer isso é perder informação.
+:::
+
+# Selecionar
+
+```{r}
+anuros <- anuros %>%
+  select(id, especie, sexo, serra, altitude,
+         massa, ewl, wu, ctmin, ctmax, amplitude, tol_aquec,
+         bio5 = BIO_5, bio6 = BIO_6)
+names(anuros)
+```
+
+`select()` renomeia também (`bio5 = BIO_5`), o que evita um `rename()` a mais.
+
+# Tipos
+
+```{r}
+anuros <- anuros %>%
+  mutate(
+    especie   = factor(especie),
+    serra     = factor(serra),
+    sexo      = factor(sexo),
+    alt_fator = factor(altitude, levels = sort(unique(altitude)))
+  )
+str(anuros)
+```
+
+Repare em `alt_fator`: altitude é um número, mas nesta amostra ela assume
+**seis valores**, que são seis sítios. Dependendo da pergunta, ela funciona
+como número (uma reta ao longo do gradiente) ou como fator (seis grupos).
+Guardar as duas versões evita ter que decidir agora.
+
+# Recalcular as derivadas
+
+```{r}
+anuros <- anuros %>%
+  mutate(amplitude = ctmax - ctmin,
+         tol_aquec = ctmax - bio5)
+```
+
+O arquivo já trazia `Tbr` e `WT` prontos. Recalculamos assim mesmo — não por
+desconfiança do autor, mas porque agora a **definição** de cada uma está
+escrita no código, e não só num arquivo de metadados que o leitor pode não
+abrir.
+
+```{r}
+all.equal(anuros$amplitude, bruto$Tbr)
+all.equal(anuros$tol_aquec, bruto$WT)
+```
+
+A amplitude bate exatamente. A tolerância ao aquecimento devolve uma
+diferença relativa de cerca de 7 × 10⁻⁵ — em valores da ordem de 10 °C, isso
+é menos de 0,001 °C. Não é discordância: é o arredondamento com que a coluna
+pronta foi gravada no arquivo original.
+
+::: {.callout-tip}
+## `all.equal()`, não `==`
+
+`==` compara bit a bit e diz `FALSE` para dois números que diferem na décima
+quinta casa decimal — o que acontece o tempo todo em ponto flutuante.
+`all.equal()` compara com tolerância e, quando discorda, **diz de quanto**.
+:::
+
+# Filtrar
+
+```{r}
+anuros %>% filter(especie == "Boana faber") %>% nrow()
+anuros %>% filter(altitude >= 1000, !is.na(ctmax)) %>% nrow()
+anuros %>% filter(is.na(sexo)) %>% nrow()
+```
+
+Cento e sete indivíduos sem sexo registrado, de 225. Não é erro de digitação:
+sexar anuro juvenil ou preservado nem sempre é possível. Mas é uma variável
+que você não vai conseguir usar como preditora.
+
+# split-apply-combine
+
+```{r}
+resumo <- anuros %>%
+  group_by(especie, alt_fator) %>%
+  summarise(
+    n         = n(),
+    ctmax_med = round(mean(ctmax, na.rm = TRUE), 2),
+    ctmax_dp  = round(sd(ctmax,   na.rm = TRUE), 2),
+    ewl_med   = round(mean(ewl,   na.rm = TRUE), 3),
+    .groups = "drop"
+  )
+resumo
+```
+
+::: {.callout-note}
+## `.groups = "drop"`
+
+Sem ele, o resultado sai ainda agrupado por `especie`, e a próxima operação
+que você fizer age dentro de cada espécie sem avisar. É a fonte silenciosa
+de resultado errado mais comum do `dplyr`.
+:::
+
+# O desenho amostral, em uma linha
+
+```{r}
+anuros %>% count(serra, altitude)
+```
+
+Leia essa tabela com atenção: **cada altitude aparece em uma serra só**.
+
+| Altitude | Serra |
+|---:|---|
+| 35, 820, 1022, 1500 m | Serra do Mar |
+| 550, 1600 m | Serra da Mantiqueira |
+
+Altitude e serra não estão cruzadas. Isso não é defeito do arquivo — é como
+a coleta foi feita, e vai determinar quais modelos são possíveis na aula 06.
+Guarde.
+
+# Gravar
+
+```{r}
+#| eval: false
+dir.create("dados/processados", showWarnings = FALSE, recursive = TRUE)
+write.csv(anuros, "dados/processados/anuros_limpo.csv", row.names = FALSE)
+```
+
+Duas regras que valem para sempre:
+
+1. **O dado bruto nunca é sobrescrito.** Ele fica em `dados/`, somente
+   leitura, exatamente como veio da fonte.
+2. **O dado processado é descartável.** Ele vive em `dados/processados/`,
+   que entra no `.gitignore` — porque o script que o gera está versionado, e
+   isso basta para reconstruí-lo.
+
+# Exercício
+
+a. Quantas espécies ocorrem em **ambas** as serras? Responda com `dplyr`,
+   não contando na tabela.
+b. Monte um resumo de `ewl` por `serra` e `sexo`. O que acontece com a
+   linha dos `NA` de sexo, e o que você faz com ela?
+c. `amplitude` tem 35 valores faltantes, os mesmos de `ctmax`. Mostre com
+   código que são de fato os mesmos indivíduos.

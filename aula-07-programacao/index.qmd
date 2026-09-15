@@ -19,14 +19,20 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica/expositiva).*
+- [{{< fa solid file-code >}} baixar `aula-07.R`](aula-07.R)  
+  *Funções, escopo, `if`/`for`/`while`, e a alternativa funcional com
+  `purrr::map`. Todo exemplo resolve um problema que apareceu de verdade
+  nas aulas 04 a 06 — incluindo ajustar um modelo por espécie sem escrever
+  `lm()` cinco vezes.*
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+`dados/processados/anuros_limpo.csv` — produzido pelo
+[`aula-04.R`](../aula-04-tidyverse/aula-04.R).
 
 ## Recursos externos
 
+- [Vídeo da aula — rudimentos de programação](https://www.youtube.com/watch?v=4nACCtC-PnI&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=8)
 - [Apostila de Victor Landeiro — Introdução ao R](https://cran.r-project.org/doc/contrib/Landeiro-Introducao.pdf)
 - [Programação Funcional com `purrr`](https://purrr.tidyverse.org/)
 - [Wickham — *Advanced R* (cap. functional programming)](https://adv-r.hadley.nz/fp.html)

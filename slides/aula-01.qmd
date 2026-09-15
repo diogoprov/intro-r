@@ -33,17 +33,41 @@ format:
 
 ## Avaliação {.smaller}
 
-Atividades diárias, feitas por vocês:
+**Um único trabalho final:** um documento Quarto (ou R Markdown) **compilado
+em `.html` ou `.pdf`**, com um fluxo de análise completo seguindo o `tidyverse`.
 
 ::: {.incremental}
-- **P1** — os *scripts* que vocês produzirem ao longo da semana
-- **P2** — trabalho final em Markdown/Quarto
+- importar os dados
+- limpar e organizar (*tidy*)
+- explorar com gráficos
+- ajustar um modelo e diagnosticá-lo
+- relatar — texto, código e resultados no mesmo documento
 :::
 
 . . .
 
 ::: {.citacao}
-Repare que as duas notas são **código que roda**. Não há prova escrita.
+Não há prova escrita. A nota é **um documento que compila** — se ele roda na
+minha máquina a partir do que você entregou, a maior parte do trabalho está
+feita.
+:::
+
+## E vamos construí-lo a semana inteira {.smaller}
+
+Cada dia acrescenta uma camada ao mesmo trabalho:
+
+| Dia | O que entra no seu documento |
+|---|---|
+| **Segunda** | o Projeto criado, os dados importados |
+| **Terça** | tudo versionado no git; dados limpos com `dplyr` |
+| **Quarta** | os gráficos e o modelo |
+| **Quinta** | o texto em volta, e o documento compilado |
+
+. . .
+
+::: {.citacao}
+Ou seja: na quinta-feira vocês não começam o trabalho — vocês **terminam**
+o que vêm fazendo desde hoje de manhã.
 :::
 
 ## Cronograma — segunda {.smaller}
