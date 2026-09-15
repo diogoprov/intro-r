@@ -13,7 +13,7 @@ format:
     title-slide-attributes:
       data-background-image: img/lsb-logo.png
       data-background-size: 300px
-      data-background-position: 5% 86%
+      data-background-position: 94% 88%
 ---
 
 ## Para quê controle de versão? {.smaller}

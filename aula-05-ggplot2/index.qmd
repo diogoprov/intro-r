@@ -12,7 +12,10 @@ A gramática de gráficos de Wilkinson e a implementação no `ggplot2`. Camadas
 
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-05.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/aula-05.html){.btn .btn-outline-primary}
+
+*Quer em PDF? Abra os slides, acrescente `?print-pdf` ao endereço e
+imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 

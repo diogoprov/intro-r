@@ -12,7 +12,10 @@ Como escrever funções no R. Controle de fluxo (`if`, `for`, `while`). Programa
 
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-07.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/aula-07.html){.btn .btn-outline-primary}
+
+*Quer em PDF? Abra os slides, acrescente `?print-pdf` ao endereço e
+imprima pelo navegador escolhendo "Salvar como PDF".*
 
 ## Código R (aula prática)
 
