@@ -396,6 +396,47 @@ Escritas dentro do bloco, começando com `#|`:
 | `fig-cap:` | põe legenda na figura |
 | `cache: true` | não recalcula o que não mudou |
 
+## O preço de esconder o aviso {.smaller}
+
+`warning: false` e `message: false` no `_quarto.yml` são convenientes — e
+foram o que fez esta figura sumir **sem erro, sem aviso, sem rastro**:
+
+```r
+#| fig-height: 4.4
+plot(check_model(m))      # o bloco roda. A figura não aparece.
+```
+
+. . .
+
+::: {.incremental}
+- Primeiro diagnóstico: "`check_model()` devolve o objeto invisivelmente".
+  Plausível, e **errado**
+- Medindo o PNG em bytes, quatro formas de chamada × quatro alturas:
+  **todo sucesso teve `fig-height` ≥ 5; toda falha, ≤ 4,4**
+- Os seis painéis não cabem num dispositivo menor, o `grid` desiste e o
+  `knitr` descarta a figura calado
+:::
+
+## O que fica disso {.smaller}
+
+::: {.incremental}
+1. **`fig-height: 5.2`** ou mais para o `check_model()`. Ponha o porquê em
+   comentário, ou alguém vai "limpar" isso daqui a seis meses
+2. Uma hipótese plausível **medida** vale mais que uma hipótese plausível
+   defendida. A primeira explicação estava boa demais para ser checada — e
+   estava errada
+3. `warning: false` não conserta o aviso: ele tira a sua chance de ler o
+   aviso. Ligue os avisos quando algo não sair como esperado
+:::
+
+. . .
+
+::: {.citacao}
+Episódio real, do repositório de *Análise de Dados Univariados* (setembro de
+2026). O script que mediu isso ficou versionado junto, em `R/`, para que a
+conclusão pudesse ser refeita — que é do que esta aula inteira trata.
+:::
+
 ## Como tornar o código reprodutível {.smaller}
 
 ::: {.incremental}

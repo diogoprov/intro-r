@@ -110,6 +110,12 @@ lm(tol_aquec ~ altitude, data = anuros) %>%
 #   #| eval: false                   mostra o código sem executar
 #   #| cache: true                   guarda o resultado; só refaz se mudar
 #
+# `warning: false` merece uma ressalva. Ele é conveniente e é também o jeito
+# mais fácil de perder uma figura sem perceber: um `plot(check_model(m))` com
+# `fig-height` menor que 5 não desenha nada, o knitr descarta a figura em
+# silêncio, e o aviso que explicaria isso foi suprimido por você mesmo.
+# Quando algo não sair como esperado, LIGUE os avisos antes de investigar.
+#
 # No texto, `@fig-altitude` vira "Figura 1" e vira link. Renumera sozinho
 # quando você inserir outra figura antes.
 #

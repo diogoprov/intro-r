@@ -189,8 +189,24 @@ r2(m3)
 #
 # Um teste não decide por você. Ele te obriga a ter um argumento.
 
-# Se tiver o pacote `see` instalado, o painel completo sai em um comando:
+# Com o pacote `see` instalado, o painel completo sai em um comando:
 # check_model(m3)
+#
+# ATENÇÃO ao levar isto para o seu .qmd do trabalho final: os seis painéis
+# precisam de espaço. Com `fig-height` abaixo de 5, o grid desiste, o knitr
+# DESCARTA a figura e não emite erro nem aviso — o documento compila e a
+# figura simplesmente não está lá. Escreva assim, com o comentário junto:
+#
+#   ```{r}
+#   #| fig-height: 5.2
+#   # fig-height >= 5 e obrigatorio: abaixo disso os seis paineis nao cabem
+#   # e o knitr descarta a figura sem avisar
+#   plot(check_model(m3))
+#   ```
+#
+# Medido no repositório de Análise de Dados Univariados em setembro de 2026,
+# quatro formas de chamada por quatro alturas: todo sucesso com altura >= 5,
+# toda falha com <= 4,4.
 
 # ---------------------------------------------------------------------------
 # 10. Exercício
