@@ -309,6 +309,7 @@ ggplot(anuros,
 ## Qual gráfico usar? {.smaller}
 
 ```{dot}
+//| echo: false
 //| fig-width: 11
 digraph escolha {
   rankdir=LR; bgcolor="transparent"; ranksep=0.6; nodesep=0.22;

@@ -161,6 +161,7 @@ O fluxograma a seguir é uma adaptação da Figura 8.7 desse capítulo.
 ## O ciclo, primeira metade {.smaller}
 
 ```{dot}
+//| echo: false
 //| fig-width: 10
 digraph c1 {
   rankdir=LR; bgcolor="transparent"; ranksep=0.75; nodesep=0.3;
@@ -186,6 +187,7 @@ Repare que os **metadados** nascem junto com os dados, não no fim.
 ## O ciclo, segunda metade {.smaller}
 
 ```{dot}
+//| echo: false
 //| fig-width: 10
 digraph c2 {
   rankdir=LR; bgcolor="transparent"; ranksep=0.75; nodesep=0.3;

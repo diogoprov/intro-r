@@ -36,20 +36,89 @@ Wickham, H. (2011). The split-apply-combine strategy for data analysis.
 [doi:10.18637/jss.v040.i01](https://doi.org/10.18637/jss.v040.i01)
 :::
 
-## {.smaller}
+## Dividir, aplicar, recombinar {.smaller}
 
-![Dividir os dados em grupos, aplicar uma função a cada grupo, recombinar os resultados.](img/a04-slide04-1.png)
+```{dot}
+//| echo: false
+//| fig-width: 10
+digraph sac {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.55; nodesep=0.18;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=19 margin="0.20,0.11"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=16];
 
-## {.smaller}
+  T  [label="anuros\n225 linhas" fillcolor="#e3dccd"];
+  G1 [label="B. faber\n46"];
+  G2 [label="D. minutus\n59"];
+  G3 [label="… mais 3"];
+  R1 [label="38,44"]; R2 [label="33,25"]; R3 [label="…"];
+  F  [label="5 linhas\nespecie · ctmax_med" fillcolor="#e3dccd"];
 
-![O mesmo raciocínio, com um exemplo de soma por país.](img/a04-slide05-1.png)
-
-## O ciclo da ciência de dados
-
-![](img/a04-slide07-1.png)
+  T -> G1 [label="split"]; T -> G2; T -> G3;
+  G1 -> R1 [label="apply"]; G2 -> R2; G3 -> R3;
+  R1 -> F [label="combine"]; R2 -> F; R3 -> F;
+}
+```
 
 ::: {.citacao}
-Wickham, Çetinkaya-Rundel & Grolemund, *R for Data Science* (2ª ed.)
+`group_by()` faz o *split*, `summarise()` faz o *apply* e o *combine* — e
+você nunca vê os grupos separados.
+:::
+
+## O mesmo, em código {.smaller}
+
+```{r}
+#| eval: false
+anuros %>%
+  group_by(especie) %>%                       # split
+  summarise(ctmax_med = mean(ctmax, na.rm = TRUE))   # apply + combine
+```
+
+. . .
+
+O equivalente no R base seria um `for` sobre as espécies, um `mean()` dentro,
+um objeto crescendo a cada volta e um `rbind()` no fim. Quatro lugares para
+errar em vez de um.
+
+::: {.citacao}
+É por isso que o artigo de 2011 tem 29 páginas para uma ideia que cabe em
+duas linhas: a ideia é simples, escrever isso certo à mão é que não era.
+:::
+
+## O ciclo da ciência de dados {.smaller}
+
+```{dot}
+//| echo: false
+//| fig-width: 10
+digraph ciclo {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.5; nodesep=0.3;
+  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
+        fontname="Helvetica" fontsize=20 margin="0.24,0.13"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=16];
+
+  IMP [label="Importar"];
+  ARR [label="Arrumar\n(tidy)"];
+  COM [label="Comunicar" fillcolor="#e3dccd"];
+
+  subgraph cluster_ex {
+    label="Explorar"; fontname="Helvetica"; fontsize=18;
+    color="#c9bfa8"; style="rounded"; margin=14;
+    TRA [label="Transformar"];
+    VIS [label="Visualizar"];
+    MOD [label="Modelar"];
+    TRA -> VIS [dir=both];
+    VIS -> MOD [dir=both];
+    MOD -> TRA [dir=both constraint=false];
+  }
+
+  IMP -> ARR; ARR -> TRA; MOD -> COM;
+}
+```
+
+::: {.citacao}
+Esquema baseado em Wickham, Çetinkaya-Rundel & Grolemund,
+*R for Data Science* (2ª ed.). A aula de hoje é a seta **Arrumar**; a de
+amanhã, o laço **Explorar**.
 :::
 
 ## Onde estudar {.smaller}
