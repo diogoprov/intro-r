@@ -35,7 +35,7 @@ Todo mundo já viveu o ciclo do `FINAL_rev.22.comments49.doc`.
 Jorge Cham, PHD Comics · tira nº 1531
 :::
 
-## Por que isso importa na ciência {.smaller}
+## Por que isso importa na ciência
 
 ::: {.citacao}
 Perez-Riverol, Y.; Gatto, L.; Wang, R.; Sachsenberg, T.; Uszkoreit, J.;
@@ -76,6 +76,7 @@ Nuvem sincroniza arquivos; git versiona *alterações*. Não são a mesma coisa.
 ## Qual o fluxo de trabalho?
 
 ```{dot}
+//| echo: false
 //| fig-width: 9
 digraph fluxo {
   rankdir=LR; bgcolor="transparent"; ranksep=0.5; nodesep=0.22;
@@ -97,7 +98,7 @@ digraph fluxo {
 }
 ```
 
-## O mesmo fluxo, em comandos {.smaller}
+## O mesmo fluxo, em comandos
 
 1. **Obter um repositório** — `git init` ou `git clone`
 2. **Fazer alterações** nos arquivos
@@ -261,7 +262,7 @@ Um `.gitignore` de cinco linhas, escrito no primeiro dia, teria evitado tudo.
 Escrever depois só impede que **piore**.
 :::
 
-## Conflito de merge {.smaller}
+## Conflito de merge
 
 Acontece quando você e outra pessoa alteram **a mesma linha** do mesmo
 arquivo. O git não escolhe por você — ele marca o arquivo assim:
@@ -291,7 +292,7 @@ O pânico é opcional.
 
 A documentação oficial, incluindo o livro *Pro Git* completo e gratuito.
 
-## Exercitando {.smaller}
+## Exercitando
 
 No [Curso de R intermediário — IPEA](https://ipeadata-lab.github.io/curso_r_intermediario_202501/git-github.html#introdução):
 

@@ -81,7 +81,7 @@ Descritivo **e** de tamanho razoável.
 Adaptado de slides de Rebekah Cummings
 :::
 
-## Regras de nomenclatura {.smaller}
+## Regras de nomenclatura
 
 ::: {.incremental}
 - Use apenas **letras, números e sublinhados**
@@ -267,7 +267,7 @@ Wickham, H. (2014). **Tidy Data.** *Journal of Statistical Software* 59(10).
   Evite `.xls`: quem for abrir precisa ter o Excel instalado
 :::
 
-## Nomes e pastas {.smaller}
+## Nomes e pastas
 
 | | |
 |---|---|
@@ -348,7 +348,7 @@ Fecha perguntando: quantos desses erros o R avisaria? Quase nenhum —
 ele leria tudo como texto e seguiria em frente.
 :::
 
-## A referência canônica desta aula {.smaller}
+## A referência canônica desta aula
 
 ::: {.citacao}
 Broman, K.W. & Woo, K.H. (2018). **Data Organization in Spreadsheets.**
@@ -405,7 +405,7 @@ Um arquivo `.Rproj` na raiz da pasta do projeto. Ao abrir o projeto:
 
 O script deixa de depender de onde a pasta está no computador.
 
-## Uma estrutura que funciona {.smaller}
+## Uma estrutura que funciona
 
 ```
 intro-r/
@@ -428,7 +428,7 @@ intro-r/
 Os números nos scripts dizem a ordem de execução. `dados/brutos/` nunca é
 tocado à mão — tudo que muda, muda por script.
 
-## `here::here()` {.smaller}
+## `here::here()`
 
 Mesmo dentro de um Projeto, o diretório de trabalho **muda** quando você
 renderiza um Quarto que está numa subpasta.
@@ -485,7 +485,7 @@ ainda abre. **A unidade que vocês tirarem do nome da coluna tem que aparecer
 aqui** — senão não foi movida, foi perdida.
 :::
 
-## Coluna derivada é uma armadilha {.smaller}
+## Coluna derivada é uma armadilha
 
 `Tbr` e `WT` já vêm prontas no arquivo. Confira em vez de confiar:
 
@@ -527,7 +527,7 @@ escrever XML:
 
 ![O formulário do ezEML: cada item do sumário à esquerda é uma seção do documento de metadados.](img/a02-s18-ezeml.png)
 
-## Publicando os dados num repositório {.smaller}
+## Publicando os dados num repositório
 
 ::: {.citacao}
 Vanderbilt, K.; Ide, J.; Gries, C.; Grossman-Clarke, S.; Hanson, P.;
@@ -554,7 +554,7 @@ Plote usando o gráfico mais adequado ao tipo de dado:
 - Um **histograma** nunca é demais
 :::
 
-## Primeiro, conte os ausentes {.smaller}
+## Primeiro, conte os ausentes
 
 ```{r}
 colSums(is.na(dados))[c("Sex", "EWL_Ugcm2s1", "CTmin", "CTmax", "BIO_5")]
@@ -615,7 +615,7 @@ Se está na planilha, ela é invisível.
 
 # Organizando o script
 
-## Guias de estilo {.smaller}
+## Guias de estilo
 
 - [NiceR Code](https://nicercode.github.io/guide.html)
 - [Google R style guide](https://google.github.io/styleguide/Rguide.html)

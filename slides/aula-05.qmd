@@ -62,7 +62,7 @@ A tese dos dois: um gráfico não é um **tipo** que você escolhe de um menu.
 É por isso que o `ggplot2` não tem uma função `grafico_de_barras()`.
 :::
 
-## Onde aprender mais {.smaller}
+## Onde aprender mais
 
 - [R for Data Science](https://r4ds.hadley.nz) — capítulos de visualização
 - [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org) — o livro do pacote
@@ -89,7 +89,7 @@ Boa parte desta aula é adaptada do curso de
 Figura do curso de [Gustavo Paterno](https://paternogbc.github.io/disciplina-graficos-r/)
 :::
 
-## Os dados do exemplo {.smaller}
+## Os dados do exemplo
 
 O mesmo arquivo da aula 04, já limpo:
 
@@ -118,7 +118,7 @@ Bovo et al. (2023), *Integrative Organismal Biology* ·
 ```{r}
 #| output-location: column
 #| fig-width: 5
-#| fig-height: 4
+#| fig-height: 3
 ggplot(anuros,
        aes(x = ctmin, y = ctmax)) +
   geom_point()
@@ -138,7 +138,7 @@ ggplot(anuros,
 ```{r}
 #| output-location: column
 #| fig-width: 5
-#| fig-height: 4
+#| fig-height: 3
 ggplot(anuros, aes(x = ctmax)) +
   geom_histogram(bins = 25)
 ```
@@ -167,7 +167,7 @@ ggplot(data, aes(x, y)) + geom_point()
 - `aes()` — define qual coluna é X e qual é Y
 - `geom_` — define qual geometria plotar
 
-## O sinal de `+` {.smaller}
+## O sinal de `+`
 
 ```r
 ggplot(data, aes(x, y)) +
@@ -207,7 +207,7 @@ Essa última linha é a decisão mais interessante do dia. Voltamos a ela.
 ```{r}
 #| output-location: column
 #| fig-width: 5
-#| fig-height: 3.4
+#| fig-height: 2.2
 ggplot(anuros,
        aes(x = ctmin, y = ctmax)) +
   geom_point()
@@ -218,14 +218,14 @@ ggplot(anuros,
 ```{r}
 #| output-location: column
 #| fig-width: 5
-#| fig-height: 3.4
+#| fig-height: 2.2
 ggplot(anuros,
        aes(x = ctmin, y = ctmax,
            colour = especie)) +
   geom_point()
 ```
 
-## Mais um mapeamento {.smaller}
+## Mais um mapeamento
 
 ```{r}
 #| output-location: column
@@ -244,7 +244,7 @@ ggplot(anuros,
 Os dados não mudaram. Só o que você pediu para o gráfico dizer sobre eles.
 :::
 
-## Dentro ou fora do `aes()`? {.smaller}
+## Dentro ou fora do `aes()`?
 
 ```r
 geom_point(aes(colour = especie))   # cor VEM DOS DADOS
@@ -287,7 +287,7 @@ ggplot(anuros,
   geom_point()          # gradiente
 ```
 
-. . .
+## O mesmo número, agora como fator {.smaller}
 
 ```{r}
 #| output-location: column
@@ -375,7 +375,7 @@ que você já tem. Mapear em `y` em vez de `x` resolve nome comprido sem
 precisar girar rótulo.
 :::
 
-## Boxplot — `geom_boxplot()` {.smaller}
+## Boxplot — `geom_boxplot()`
 
 Quartis de uma variável numérica em função de uma variável categórica.
 
@@ -399,7 +399,7 @@ ggplot(anuros,
 - As hastes vão até 1,5 × IQR; o que passa disso vira ponto
 :::
 
-## Dispersão — `geom_point()` {.smaller}
+## Dispersão — `geom_point()`
 
 A relação entre **duas variáveis numéricas**.
 
@@ -417,7 +417,7 @@ Massa contra perda de água. Quase tudo empilhado à esquerda: a massa vai de
 **0,4 g a 373 g** — três ordens de grandeza na mesma escala linear.
 :::
 
-## O mesmo dado, outra escala {.smaller}
+## O mesmo dado, outra escala
 
 ```{r}
 #| output-location: column
@@ -461,7 +461,7 @@ ordem. Repare no sítio de 1600 m: mais alto e **mais quente** que o de
 1500 m, porque fica na outra serra. Altitude não é temperatura.
 :::
 
-## Agora vocês {.smaller}
+## Agora vocês
 
 ::: {.callout-note icon=false}
 ## 10 minutos — três gráficos, do zero
@@ -506,7 +506,7 @@ Repare que `aes()` foi declarado **uma vez**, no `ggplot()`. As duas
 geometrias herdam o mesmo mapeamento.
 :::
 
-## Facetas: uma janela por grupo {.smaller}
+## Facetas: uma janela por grupo
 
 ```{r}
 #| output-location: column
@@ -532,7 +532,7 @@ sem ele, *Dendropsophus minutus* sai cortado.
 ```{r}
 #| output-location: column
 #| fig-width: 4.4
-#| fig-height: 2.3
+#| fig-height: 1.9
 ggplot(anuros, aes(ctmin, ctmax)) +
   geom_point(size = 3) +
   geom_smooth()   # linha por cima
@@ -541,7 +541,7 @@ ggplot(anuros, aes(ctmin, ctmax)) +
 ```{r}
 #| output-location: column
 #| fig-width: 4.4
-#| fig-height: 2.3
+#| fig-height: 1.9
 ggplot(anuros, aes(ctmin, ctmax)) +
   geom_smooth() +
   geom_point(size = 3)  # pontos por cima
@@ -611,7 +611,7 @@ Crescimento de girinos: comprimento rostro-cloacal por estágio de Gosner,
 por sexo, em três zonas. Dados de campo de Javier.
 :::
 
-## O código que fez a figura anterior {.smaller}
+## O código que fez a figura anterior
 
 ```r
 library(ggplot2)

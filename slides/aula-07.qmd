@@ -32,7 +32,7 @@ anuros <- read.csv(here::here("dados", "anuros_altitude.csv")) %>%
 
 # Por que escrever uma função
 
-## O custo escondido do copiar-e-colar {.smaller}
+## O custo escondido do copiar-e-colar
 
 Na aula 04 escrevemos isto, três vezes, mudando só a coluna:
 
@@ -68,7 +68,7 @@ Regra prática: copiou e colou **três vezes**, escreva uma função. Duas vezes
 comece a desconfiar.
 :::
 
-## Agora vocês {.smaller}
+## Agora vocês
 
 ::: {.callout-note icon=false}
 ## 10 minutos
@@ -84,7 +84,7 @@ comece a desconfiar.
 No item 3: você vai precisar mexer em **um** lugar só. Era esse o ponto.
 :::
 
-## Escopo: o que entra é cópia {.smaller}
+## Escopo: o que entra é cópia
 
 ```{r}
 x <- 10
@@ -167,7 +167,7 @@ map_dbl(anuros[colunas], ~ sum(is.na(.x)))
 se o resultado não for. O erro aparece na hora, não três passos adiante.
 :::
 
-## O caso real: um modelo por espécie {.smaller}
+## O caso real: um modelo por espécie
 
 ```{r}
 modelos <- anuros %>%
@@ -184,7 +184,7 @@ map_dfr(modelos, tidy, .id = "especie") %>%
 
 Cinco modelos, **nenhum** `lm()` repetido.
 
-## Agora vocês {.smaller}
+## Agora vocês
 
 ::: {.callout-note icon=false}
 ## 15 minutos
@@ -204,7 +204,7 @@ O item 3 não é sobre `purrr`. É a aula 06 voltando: automatizar o ajuste não
 automatiza o julgamento.
 :::
 
-## Para ler depois {.smaller}
+## Para ler depois
 
 - [Landeiro — *Introdução ao uso do programa R*](https://cran.r-project.org/doc/contrib/Landeiro-Introducao.pdf),
   páginas 36 a 41 — lógica de programação no R base

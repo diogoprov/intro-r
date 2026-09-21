@@ -52,7 +52,7 @@ chegarei aos mesmos resultados?
   também é estratégia de impacto.
 :::
 
-## O alerta que abriu a discussão {.smaller}
+## O alerta que abriu a discussão
 
 ::: {.citacao}
 Ioannidis, J.P.A. (2005). **Why Most Published Research Findings Are False.**
@@ -68,7 +68,7 @@ Ioannidis, J.P.A. (2005). **Why Most Published Research Findings Are False.**
 O argumento não é sobre fraude. É sobre **poder estatístico, viés e o número
 de hipóteses testadas** num campo.
 
-## E o que os pesquisadores dizem {.smaller}
+## E o que os pesquisadores dizem
 
 ::: {.citacao}
 Baker, M. (2016). **1,500 scientists lift the lid on reproducibility.**
@@ -177,7 +177,7 @@ Só a última é fraude. As outras quatro a gente comete **sem perceber**.
   sempre
 :::
 
-## A declaração da ASA {.smaller}
+## A declaração da ASA
 
 ::: {.citacao}
 Wasserstein, R.L. & Lazar, N.A. (2016). **The ASA Statement on p-Values:
@@ -193,7 +193,7 @@ Context, Process, and Purpose.** *The American Statistician* 70(2): 129–133.
 - Inferência adequada exige **relato completo e transparência**
 :::
 
-## O debate já era velho na ecologia {.smaller}
+## O debate já era velho na ecologia
 
 ![](img/a08-oikos-1996.png){width=48%}
 ![](img/a08-oikos-1997.png){width=48%}
@@ -230,7 +230,7 @@ Não é preciso haver má-fé: basta que as escolhas dependam dos dados.
 
 # O que fazer
 
-## O seu melhor colaborador {.smaller}
+## O seu melhor colaborador
 
 > "Your best collaborator is yourself six months from now —
 > and your past self doesn't answer emails."
@@ -250,7 +250,7 @@ consegue rodar isto de novo e chegar ao mesmo número?**
   "não existe" com p = 0,051
 :::
 
-## Dez regras simples {.smaller}
+## Dez regras simples
 
 ![](img/a08-ten-rules.png)
 
@@ -343,6 +343,7 @@ Ferramentas: **R Markdown** e **Quarto** no R · **Pluto.jl** em Julia ·
 ## O ecossistema {.smaller}
 
 ```{dot}
+//| echo: false
 //| fig-width: 11
 digraph ecossistema {
   rankdir=LR; bgcolor="transparent"; ranksep=0.7; nodesep=0.25;
@@ -383,7 +384,7 @@ e costura tudo no documento final.
 É por isso que "atualizar a figura 3" deixa de ser uma tarefa.
 :::
 
-## Opções de bloco {.smaller}
+## Opções de bloco
 
 Escritas dentro do bloco, começando com `#|`:
 
@@ -448,7 +449,7 @@ conclusão pudesse ser refeita — que é do que esta aula inteira trata.
 - Evite espalhar uma mesma análise por vários scripts soltos
 :::
 
-## Um exemplo de verdade {.smaller}
+## Um exemplo de verdade
 
 Código real, de um projeto deste laboratório. Ele remove três linhas antes
 de padronizar as variáveis:

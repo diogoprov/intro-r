@@ -65,7 +65,7 @@ digraph sac {
 você nunca vê os grupos separados.
 :::
 
-## O mesmo, em código {.smaller}
+## O mesmo, em código
 
 ```{r}
 #| eval: false
@@ -121,7 +121,7 @@ Esquema baseado em Wickham, Çetinkaya-Rundel & Grolemund,
 amanhã, o laço **Explorar**.
 :::
 
-## Onde estudar {.smaller}
+## Onde estudar
 
 - [tidyverse.org](https://www.tidyverse.org) — documentação oficial dos pacotes
 - [R para Ciência de Dados](https://pt.r4ds.hadley.nz) — o livro, em português
@@ -162,7 +162,7 @@ Atlântica. Limites térmicos, perda de água, massa e clima de cada sítio.
 Dados reais e publicados. É o mesmo arquivo da aula 01 à aula 08.
 :::
 
-## O que tem dentro {.smaller}
+## O que tem dentro
 
 ```{r}
 dim(bruto)
@@ -195,7 +195,7 @@ para quem vai digitar aquilo cinquenta vezes hoje.
 mais comum da primeira semana.
 :::
 
-## `rename()` — tirar a unidade do nome {.smaller}
+## `rename()` — tirar a unidade do nome
 
 ```{r}
 anuros <- bruto %>%
@@ -227,7 +227,7 @@ head(anuros, 4)
 
 Repare: `select()` **também renomeia** (`bio5 = BIO_5`). Um verbo a menos.
 
-## `filter()` — escolher linhas {.smaller}
+## `filter()` — escolher linhas
 
 ```{r}
 anuros %>% filter(especie == "Boana faber") %>% nrow()
@@ -245,7 +245,7 @@ conseguir usar** como preditora.
 Vírgula dentro do `filter()` significa **e**. Para "ou", use `|`.
 :::
 
-## `mutate()` — criar coluna {.smaller}
+## `mutate()` — criar coluna
 
 ```{r}
 anuros <- anuros %>%
@@ -285,7 +285,7 @@ Leia o `%>%` como **"e então"**. O R moderno também aceita `|>`, nativo,
 que faz o mesmo nos casos simples.
 :::
 
-## `group_by()` + `summarise()` {.smaller}
+## `group_by()` + `summarise()`
 
 O *split-apply-combine* do Wickham, em duas linhas:
 
@@ -297,7 +297,7 @@ anuros %>%
             ctmax_dp  = round(sd(ctmax,   na.rm = TRUE), 2))
 ```
 
-## Agora vocês {.smaller}
+## Agora vocês
 
 ::: {.callout-note icon=false}
 ## 10 minutos — encadeie os verbos
@@ -316,7 +316,7 @@ Regra: **um `%>%` por linha.** Quando der erro, apague a última linha e rode
 de novo — assim você descobre em qual verbo quebrou, em vez de adivinhar.
 :::
 
-## A armadilha do `.groups` {.smaller}
+## A armadilha do `.groups`
 
 ```{r}
 anuros %>%
@@ -333,7 +333,7 @@ a próxima operação age dentro de cada espécie **sem avisar**. É a fonte
 silenciosa de resultado errado mais comum do `dplyr`.
 :::
 
-## O desenho amostral, em uma linha {.smaller}
+## O desenho amostral, em uma linha
 
 ```{r}
 anuros %>% count(serra, altitude)
@@ -384,7 +384,7 @@ head(longo, 4)
 
 De 225 linhas para `r nrow(longo)`: cada indivíduo agora ocupa duas.
 
-## `pivot_wider()` — o caminho de volta {.smaller}
+## `pivot_wider()` — o caminho de volta
 
 ```{r}
 longo %>%
@@ -415,7 +415,7 @@ coluna tiver `NA`. Aqui isso jogaria fora os 107 indivíduos sem sexo, mesmo
 numa análise que nem usa sexo. Diga em qual coluna: `drop_na(ctmax)`.
 :::
 
-## Onde isso dá errado de verdade {.smaller}
+## Onde isso dá errado de verdade
 
 ```{r}
 nrow(anuros)
@@ -432,7 +432,7 @@ total: nenhum aviso, nenhum erro. Só um `n` menor lá na frente.
 
 # Fechando o ciclo
 
-## Gravar o resultado {.smaller}
+## Gravar o resultado
 
 ```{r}
 #| eval: false
@@ -456,7 +456,7 @@ Esse arquivo é o que as aulas 05, 06 e 07 vão ler. Rodem o `aula-04.R`
 antes delas.
 :::
 
-## Cheat sheets {.smaller}
+## Cheat sheets
 
 Sempre na versão mais recente, direto da fonte:
 

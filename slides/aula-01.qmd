@@ -96,7 +96,7 @@ o que vêm fazendo desde hoje de manhã.
 - Organização dos dados no seu computador
 - Boas práticas e curadoria de dados
 
-## Cronograma — terça {.smaller}
+## Cronograma — terça
 
 **Manhã**
 
@@ -107,7 +107,7 @@ o que vêm fazendo desde hoje de manhã.
 - Manipulação de dados e a estratégia *split-apply-combine*: o `tidyverse`
 - *Subsetting*, `summarize()`, `group_by()`, o operador *pipe*
 
-## Cronograma — quarta {.smaller}
+## Cronograma — quarta
 
 **Manhã**
 
@@ -205,7 +205,7 @@ A empresa que faz o RStudio mudou de nome para **Posit** em 2022. Você vai
 encontrar os dois nomes na internet — é a mesma coisa.
 :::
 
-## Fichas de referência {.smaller}
+## Fichas de referência
 
 Resumos de uma ou duas páginas, por pacote. Vale imprimir as do `dplyr` e do
 `ggplot2` já na segunda-feira.
@@ -222,7 +222,7 @@ Há versões em português de algumas delas, feitas pela comunidade.
 
 ![](img/a01-rstudio-cheatsheets.png){.nostretch width="88%"}
 
-## Enquanto instala… {.smaller}
+## Enquanto instala…
 
 Dá para rodar R no navegador, sem instalar nada:
 
@@ -302,7 +302,7 @@ Cada um abre com sessão, histórico e arquivos próprios.
 
 ![](img/a01-rstudio-projetos-menu.png){.nostretch width="88%"}
 
-## Duas facilidades que economizam horas {.smaller}
+## Duas facilidades que economizam horas
 
 ::: {.incremental}
 - **Tab completion** — comece a digitar e aperte `Tab`. Funciona para
@@ -317,7 +317,7 @@ Cada um abre com sessão, histórico e arquivos próprios.
 
 # A linguagem
 
-## Seguindo no livro {.smaller}
+## Seguindo no livro
 
 Esta parte acompanha o capítulo 4 de
 [Análises Ecológicas no R](https://analises-ecologicas.com/cap4.html#funcionamento-da-linguagem-r).
@@ -326,7 +326,7 @@ Esta parte acompanha o capítulo 4 de
 Leiam em casa o que não der tempo de ver aqui.
 :::
 
-## O R como calculadora {.smaller}
+## O R como calculadora
 
 ```{r}
 2 + 3
@@ -342,7 +342,7 @@ O prompt `>` espera um comando novo. O prompt `+` significa que o R está
 esperando você **terminar** o comando anterior — quase sempre um parêntese
 ou uma aspa que faltou fechar.
 
-## Atribuir é guardar {.smaller}
+## Atribuir é guardar
 
 ```{r}
 a <- 1
@@ -381,9 +381,11 @@ um tipo diferente. É com ele que vocês vão trabalhar a semana inteira.
 ## Os tipos dentro de um vetor {.smaller}
 
 ```{dot}
+//| echo: false
 //| fig-width: 9
 digraph vetores {
-  bgcolor="transparent"; rankdir=TB; ranksep=0.35; nodesep=0.3;
+  bgcolor="transparent"; rankdir=TB; ranksep=0.3; nodesep=0.3;
+  graph [size="9,4.2!"];
   node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
         fontname="Helvetica" fontsize=20 margin="0.22,0.12"];
   edge [color="#8a8375" arrowhead=none];
@@ -408,7 +410,7 @@ Estrutura adaptada de [Advanced R](https://adv-r.hadley.nz/vectors-chap.html),
 de Hadley Wickham.
 :::
 
-## Coerção: o R nunca reclama {.smaller}
+## Coerção: o R nunca reclama
 
 Um vetor atômico só guarda **um** tipo. Se você misturar, o R converte tudo
 para o tipo mais permissivo — **em silêncio**.
@@ -425,7 +427,7 @@ c(TRUE, FALSE, 1)    # viraram número
 transforma a coluna inteira em texto. Guardem isso para a aula da tarde.
 :::
 
-## O arquivo de ajuda {.smaller}
+## O arquivo de ajuda
 
 ```r
 ?mean            # ajuda de uma função que você sabe o nome
@@ -441,7 +443,7 @@ help(mean)       # o mesmo
 3. **Examples**, no fim — quase sempre a parte mais útil
 :::
 
-## Quando a ajuda não basta {.smaller}
+## Quando a ajuda não basta
 
 - [rseek.org](https://rseek.org) — busca restrita ao universo R
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/r) — dúvidas de código
@@ -452,7 +454,7 @@ Na sexta-feira falamos de como usar LLMs para isso — e do que conferir
 antes de acreditar na resposta.
 :::
 
-## Instalando e carregando pacotes {.smaller}
+## Instalando e carregando pacotes
 
 ```r
 install.packages("tidyverse")   # uma vez só, na vida da máquina
@@ -493,7 +495,7 @@ Dados reais, publicados, com os problemas que dados reais têm. É o mesmo
 arquivo de hoje até sexta-feira.
 :::
 
-## Monte a pasta agora {.smaller}
+## Monte a pasta agora
 
 ```
 intro-r.Rproj
@@ -512,7 +514,7 @@ Tudo o que vem depois supõe essa estrutura. Cinco minutos agora economizam
 a semana inteira.
 :::
 
-## Importando dados {.smaller}
+## Importando dados
 
 ```{r}
 #| eval: false
@@ -547,7 +549,7 @@ dim(dados)
 names(dados)[1:10]
 ```
 
-## O que o `str()` mostra {.smaller}
+## O que o `str()` mostra
 
 ```{r}
 str(dados[, 1:8])
@@ -561,7 +563,7 @@ ser numérica entrou como texto. Repare em `ID` e `Sex`: `chr`, texto — e
 está certo. Já `EWL_Ugcm2s1` ser `num` é o que a gente queria ver.
 :::
 
-## Agora vocês {.smaller}
+## Agora vocês
 
 ::: {.callout-note icon=false}
 ## 5 minutos — no **Source**, não no Console
@@ -580,7 +582,7 @@ O passo 4 é o que importa. Quem só roda os quatro comandos não viu nada —
 viu a tela. Vou pedir a resposta de três de vocês.
 :::
 
-## O que o `summary()` mostra {.smaller}
+## O que o `summary()` mostra
 
 ```{r}
 summary(dados[, c("Bodymass_g", "CTmin", "CTmax")])
@@ -600,7 +602,7 @@ Nenhum erro, nenhum aviso. Se vocês não tivessem olhado, descobririam esses
 35 ausentes só na quarta-feira, quando um modelo disser `n = 190`.
 :::
 
-## Exportando {.smaller}
+## Exportando
 
 ```r
 write.csv(objeto, "dados/processados/anuros_limpo.csv", row.names = FALSE)
@@ -614,7 +616,7 @@ write.csv(objeto, "dados/processados/anuros_limpo.csv", row.names = FALSE)
 - O que sai do script vai para `dados/processados/`, nunca por cima do bruto
 :::
 
-## Quais funções você aprendeu hoje? {.smaller}
+## Quais funções você aprendeu hoje?
 
 Anote, com uma frase cada, o que faz cada função nova desta manhã:
 
