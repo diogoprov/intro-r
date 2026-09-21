@@ -65,17 +65,12 @@ $code-block-border-color: #e3dccd;
 .reveal .fim img { max-width: 560px; margin: 0 auto 1.5rem; display: block; }
 .reveal .fim h2 { border: none; }
 
-// --- Diagramas mermaid ----------------------------------------------------
-// Por padrão o mermaid desenha os rótulos em `<foreignObject>` com HTML:
-// ele mede o texto com uma fonte e o revealjs o desenha com outra, mais
-// larga, e o rótulo sai cortado. A correção NÃO é de CSS — é passar
-// `"flowchart": {"htmlLabels": false}` no `%%{init:}%%` de cada diagrama,
-// o que faz o mermaid usar `<text>` nativo do SVG, medido e desenhado
-// pelo mesmo motor. Veja o bloco mermaid da aula 02 como modelo.
-.reveal .slide figure > div > svg.mermaid-js {
-  max-width: 100%;
-  height: auto;
-}
+// --- Diagramas ------------------------------------------------------------
+// Todos os diagramas do curso são blocos ```{dot} (Graphviz). Não há mais
+// nenhum diagrama em mermaid; se um dia voltar a existir, o cuidado é
+// passar `"flowchart": {"htmlLabels": false}` no `%%{init:}%%`, porque o
+// mermaid mede os rótulos com uma fonte e o revealjs os desenha com outra,
+// mais larga, e o texto sai cortado.
 
 // --- Imagens ---------------------------------------------------------------
 // Sem um teto de altura, uma imagem alta e estreita estoura o slide: o
