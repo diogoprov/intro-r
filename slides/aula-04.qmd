@@ -144,38 +144,21 @@ duas linhas: a ideia é simples, escrever isso certo à mão é que não era.
 
 ## O ciclo da ciência de dados {.smaller}
 
-```{dot}
-//| echo: false
-//| fig-width: 10
-digraph ciclo {
-  rankdir=LR; bgcolor="transparent"; ranksep=0.5; nodesep=0.3;
-  // regular=true + fixedsize desenha hexágonos de verdade, no espírito dos
-  // hex stickers dos pacotes. Sem o regular eles saem esticados e achatados.
-  node [shape=hexagon regular=true style="filled" fillcolor="#f3eee3"
-        color="#1c6e8c" penwidth=2.5 fontname="Helvetica" fontsize=16
-        fixedsize=true width=2.0];
-  edge [color="#8a8375" fontname="Helvetica" fontsize=16];
-
-  IMP [label="Importar\nreadr"];
-  ARR [label="Arrumar\ntidyr"];
-  COM [label="Comunicar\nquarto" fillcolor="#e3dccd"];
-
-  subgraph cluster_ex {
-    label="Explorar"; fontname="Helvetica"; fontsize=18;
-    color="#c9bfa8"; style="rounded"; margin=14;
-    TRA [label="Transformar\ndplyr"];
-    VIS [label="Visualizar\nggplot2"];
-    // O R4DS 2e não atribui um pacote ao passo Modelar; `stats` é escolha
-    // nossa, porque é de lá que vêm lm() e glm(), que o curso usa.
-    MOD [label="Modelar\nstats"];
-    TRA -> VIS [dir=both];
-    VIS -> MOD [dir=both];
-    MOD -> TRA [dir=both constraint=false];
-  }
-
-  IMP -> ARR; ARR -> TRA; MOD -> COM;
-}
-```
+::: {.ciclo}
+<div class="passo"><img src="img/hex-readr.png"><b>Importar</b></div>
+<div class="seta">→</div>
+<div class="passo"><img src="img/hex-tidyr.png"><b>Arrumar</b></div>
+<div class="seta">→</div>
+<div class="explorar">
+<div class="passo"><img src="img/hex-dplyr.png"><b>Transformar</b></div>
+<div class="seta">↔</div>
+<div class="passo"><img src="img/hex-ggplot2.png"><b>Visualizar</b></div>
+<div class="seta">↔</div>
+<div class="passo"><div class="sem-hex">stats</div><b>Modelar</b></div>
+</div>
+<div class="seta">→</div>
+<div class="passo"><img src="img/hex-quarto.png"><b>Comunicar</b></div>
+:::
 
 ::: {.citacao}
 Esquema baseado em Wickham, Çetinkaya-Rundel & Grolemund,

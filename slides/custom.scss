@@ -139,3 +139,42 @@ $code-block-border-color: #e3dccd;
   background: transparent;
   padding: 0;
 }
+
+// --- Ciclo da ciência de dados (aula 04) ----------------------------------
+// Feito em HTML, e não num bloco ```{dot}: os hexágonos são os hex stickers
+// oficiais dos pacotes, e o Graphviz só colocaria uma imagem num nó por
+// caminho de arquivo — que ele resolve a partir da pasta de render, não da
+// pasta do .qmd, e por isso quebra.
+//
+// Estas regras vêm DEPOIS das regras de imagem lá em cima de propósito:
+// `.reveal .ciclo .passo img` e `.reveal .slide img:not(.r-stretch)` têm a
+// mesma especificidade, então quem ganha é a última do arquivo.
+.reveal .ciclo {
+  display: flex; align-items: center; justify-content: center;
+  gap: .35rem; margin: 1.4rem 0 .8rem;
+}
+.reveal .ciclo .passo { display: flex; flex-direction: column; align-items: center; width: 142px; }
+.reveal .ciclo .passo img { width: 130px; height: auto; max-height: none; margin: 0 0 .3rem; }
+.reveal .ciclo .passo b { font-size: .6em; color: #144f64; line-height: 1.1; }
+.reveal .ciclo .seta { font-size: 1.1em; color: #8a8375; padding: 0 .1rem; }
+
+// O laço Explorar é uma caixa em volta dos três passos do meio; o rótulo
+// entra no ::before, montado sobre a borda, com o fundo do slide por trás.
+.reveal .ciclo .explorar {
+  display: flex; align-items: center; gap: .35rem; position: relative;
+  border: 1px solid #c9bfa8; border-radius: 10px; padding: .6rem .6rem .35rem;
+}
+.reveal .ciclo .explorar::before {
+  content: "Explorar"; position: absolute; top: -.62em; left: 50%;
+  transform: translateX(-50%); background: #faf7f0; padding: 0 .45rem;
+  font-size: .5em; color: #455260;
+}
+
+// O passo Modelar não tem hex sticker — `stats` é um pacote base, sem
+// logotipo. Este hexágono é desenhado em CSS, no tamanho dos outros.
+.reveal .ciclo .sem-hex {
+  width: 130px; height: 150px; margin: 0 0 .3rem;
+  display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: #e3dccd; color: #144f64; font-size: .58em; font-weight: 600;
+}
