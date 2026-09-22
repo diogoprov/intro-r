@@ -68,7 +68,7 @@ $code-block-border-color: #e3dccd;
 
 // Slide de encerramento (só na última aula do curso).
 .reveal .fim { text-align: center; }
-.reveal .fim img { max-width: 560px; margin: 0 auto 1.5rem; display: block; }
+.reveal .fim img { max-width: 700px; margin: 0 auto 1.5rem; display: block; }
 .reveal .fim h2 { border: none; }
 
 // --- Diagramas ------------------------------------------------------------
@@ -91,8 +91,12 @@ $code-block-border-color: #e3dccd;
 .reveal .slide img:not(.r-stretch) {
   max-height: 430px;
   width: auto;
-  object-fit: contain;
 }
+// O object-fit vale para TODAS as imagens, inclusive as .r-stretch. Nelas o
+// revealjs escreve width e height fixos no style; se uma regra nossa mexer só
+// em uma das duas medidas (o max-width do slide de encerramento, por exemplo),
+// a imagem estica. Com `contain` ela no máximo sobra espaço, nunca deforma.
+.reveal .slide img { object-fit: contain; }
 // Quando a imagem tem legenda, o conjunto é que precisa caber.
 .reveal .slide figure > img { max-height: 400px; }
 

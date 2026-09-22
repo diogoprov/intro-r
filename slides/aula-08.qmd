@@ -594,7 +594,10 @@ O LLM acelera o andaime. Conferir continua sendo trabalho seu.
 
 ## E fim de papo! {.fim .smaller}
 
-![](img/lsb-logo.png)
+<!-- .nostretch: sem isso o Quarto marca a imagem com .r-stretch e o
+     revealjs escreve width e height fixos nela. O max-width do .fim
+     corta só a largura e o logotipo sai achatado. -->
+![](img/lsb-logo.png){.nostretch width="62%"}
 
 **Obrigado!** E por favor respondam o feedback — é importante.
 
