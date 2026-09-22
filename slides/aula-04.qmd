@@ -28,10 +28,67 @@ options(width = 74, pillar.print_max = 8)
 bruto <- read.csv(here::here("dados", "anuros_altitude.csv"))
 ```
 
-## A estratégia *split-apply-combine*
+## A estratégia *split-apply-combine* {.smaller}
+
+```{dot}
+//| echo: false
+//| fig-width: 10
+digraph sac_esquema {
+  rankdir=LR; bgcolor="transparent"; ranksep=0.55; nodesep=0.20;
+  graph [size="10,4.2!"];
+  node [shape=plaintext fontname="Helvetica" margin="0.02,0.02"];
+  edge [color="#8a8375" fontname="Helvetica" fontsize=15 fontcolor="#144f64"];
+
+  // Cada nó é uma tabelinha desenhada com HTML-like label. Uma cor = um
+  // grupo, e é a cor que deixa claro o que o split fez: as linhas não
+  // mudam, só passam a ser tratadas separadamente.
+  TODO [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c">
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e3dccd"><FONT POINT-SIZE="13">grupo</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e3dccd"><FONT POINT-SIZE="13">valor</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">A</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">35.1</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">A</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">36.4</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">B</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">38.2</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">B</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">39.0</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">C</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">33.7</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">C</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">34.2</FONT></TD></TR>
+    </TABLE>>];
+
+  GA [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c">
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">A</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">35.1</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">A</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">36.4</FONT></TD></TR>
+    </TABLE>>];
+  GB [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c">
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">B</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">38.2</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">B</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">39.0</FONT></TD></TR>
+    </TABLE>>];
+  GC [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c">
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">C</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">33.7</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">C</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">34.2</FONT></TD></TR>
+    </TABLE>>];
+
+  RA [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c"><TR><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">35.8</FONT></TD></TR></TABLE>>];
+  RB [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c"><TR><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">38.6</FONT></TD></TR></TABLE>>];
+  RC [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c"><TR><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">34.0</FONT></TD></TR></TABLE>>];
+
+  FIM [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="1" COLOR="#1c6e8c">
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e3dccd"><FONT POINT-SIZE="13">grupo</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e3dccd"><FONT POINT-SIZE="13">média</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">A</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"><FONT POINT-SIZE="13">35.8</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">B</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"><FONT POINT-SIZE="13">38.6</FONT></TD></TR>
+      <TR><TD WIDTH="86" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">C</FONT></TD><TD WIDTH="62" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"><FONT POINT-SIZE="13">34.0</FONT></TD></TR>
+    </TABLE>>];
+
+  TODO -> GB [label="dividir"]; TODO -> GA; TODO -> GC;
+  GB -> RB [label="aplicar"]; GA -> RA; GC -> RC;
+  RB -> FIM [label="recombinar"]; RA -> FIM; RC -> FIM;
+}
+```
 
 ::: {.citacao}
-Wickham, H. (2011). The split-apply-combine strategy for data analysis.
+Wickham, H. (2011). **The split-apply-combine strategy for data analysis.**
 *Journal of Statistical Software* 40(1): 1–29.
 [doi:10.18637/jss.v040.i01](https://doi.org/10.18637/jss.v040.i01)
 :::
@@ -92,20 +149,25 @@ duas linhas: a ideia é simples, escrever isso certo à mão é que não era.
 //| fig-width: 10
 digraph ciclo {
   rankdir=LR; bgcolor="transparent"; ranksep=0.5; nodesep=0.3;
-  node [shape=box style="rounded,filled" fillcolor="#f3eee3" color="#1c6e8c"
-        fontname="Helvetica" fontsize=20 margin="0.24,0.13"];
+  // regular=true + fixedsize desenha hexágonos de verdade, no espírito dos
+  // hex stickers dos pacotes. Sem o regular eles saem esticados e achatados.
+  node [shape=hexagon regular=true style="filled" fillcolor="#f3eee3"
+        color="#1c6e8c" penwidth=2.5 fontname="Helvetica" fontsize=16
+        fixedsize=true width=2.0];
   edge [color="#8a8375" fontname="Helvetica" fontsize=16];
 
-  IMP [label="Importar"];
-  ARR [label="Arrumar\n(tidy)"];
-  COM [label="Comunicar" fillcolor="#e3dccd"];
+  IMP [label="Importar\nreadr"];
+  ARR [label="Arrumar\ntidyr"];
+  COM [label="Comunicar\nquarto" fillcolor="#e3dccd"];
 
   subgraph cluster_ex {
     label="Explorar"; fontname="Helvetica"; fontsize=18;
     color="#c9bfa8"; style="rounded"; margin=14;
-    TRA [label="Transformar"];
-    VIS [label="Visualizar"];
-    MOD [label="Modelar"];
+    TRA [label="Transformar\ndplyr"];
+    VIS [label="Visualizar\nggplot2"];
+    // O R4DS 2e não atribui um pacote ao passo Modelar; `stats` é escolha
+    // nossa, porque é de lá que vêm lm() e glm(), que o curso usa.
+    MOD [label="Modelar\nstats"];
     TRA -> VIS [dir=both];
     VIS -> MOD [dir=both];
     MOD -> TRA [dir=both constraint=false];
@@ -117,8 +179,8 @@ digraph ciclo {
 
 ::: {.citacao}
 Esquema baseado em Wickham, Çetinkaya-Rundel & Grolemund,
-*R for Data Science* (2ª ed.). A aula de hoje é a seta **Arrumar**; a de
-amanhã, o laço **Explorar**.
+*R for Data Science* (2ª ed.), com o pacote que faz cada passo. A aula de
+hoje é o hexágono **tidyr**; a de amanhã, o laço **Explorar**.
 :::
 
 ## Onde estudar
