@@ -360,22 +360,107 @@ minha.media
 - O objeto aparece no painel **Environment** assim que é criado
 :::
 
-## Tipos de objeto {.smaller}
+## Tipos de objeto
 
-A organização é mais simples do que parece — são duas perguntas:
-**quantas dimensões?** e **todos os elementos do mesmo tipo?**
+Duas perguntas resolvem: **quantas dimensões?** e **todos os elementos do
+mesmo tipo?** Cada cor abaixo é um tipo de dado.
 
-|  | Homogêneo | Heterogêneo |
-|---|---|---|
-| **1 dimensão** | vetor | **lista** |
-| **2 dimensões** | matriz | **data frame** |
-| **n dimensões** | array | — |
+```{dot}
+//| echo: false
+//| fig-width: 9
+digraph estruturas {
+  bgcolor="transparent"; rankdir=TB; ranksep=0.30; nodesep=0.55;
+  graph [size="9,4.3!"];
+  node [shape=plaintext fontname="Helvetica" margin="0.02,0.02"];
+  edge [style=invis];
 
-. . .
+  // Cabeçalhos das colunas e rótulos das linhas.
+  h0 [label=""];
+  h1 [label=<<FONT POINT-SIZE="20" COLOR="#144f64"><B>Homogêneo</B></FONT>>];
+  h2 [label=<<FONT POINT-SIZE="20" COLOR="#144f64"><B>Heterogêneo</B></FONT>>];
+  r1 [label=<<FONT POINT-SIZE="18" COLOR="#144f64"><B>1 dimensão</B></FONT>>];
+  r2 [label=<<FONT POINT-SIZE="18" COLOR="#144f64"><B>2 dimensões</B></FONT>>];
+  r3 [label=<<FONT POINT-SIZE="18" COLOR="#144f64"><B>n dimensões</B></FONT>>];
+
+  // Cada célula da grade é um nó: um desenho de quadradinhos com a legenda
+  // embaixo. Uma cor = um tipo de dado, então "tudo azul" quer dizer
+  // "todos do mesmo tipo".
+  c11 [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2"><TR><TD>
+      <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" COLOR="#1c6e8c"><TR>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD>
+      </TR></TABLE>
+    </TD></TR><TR><TD><FONT POINT-SIZE="18" COLOR="#144f64"><B>vetor</B></FONT></TD></TR></TABLE>>];
+
+  c12 [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2"><TR><TD>
+      <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" COLOR="#1c6e8c"><TR>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"></TD>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"></TD>
+        <TD WIDTH="44" HEIGHT="30" FIXEDSIZE="TRUE" BGCOLOR="#ecd6d6"></TD>
+      </TR></TABLE>
+    </TD></TR><TR><TD><FONT POINT-SIZE="18" COLOR="#144f64"><B>lista</B></FONT></TD></TR></TABLE>>];
+
+  c21 [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2"><TR><TD>
+      <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" COLOR="#1c6e8c">
+        <TR><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD></TR>
+        <TR><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD></TR>
+        <TR><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD></TR>
+      </TABLE>
+    </TD></TR><TR><TD><FONT POINT-SIZE="18" COLOR="#144f64"><B>matriz</B></FONT></TD></TR></TABLE>>];
+
+  // No data frame cada COLUNA tem a sua cor: é o ponto todo do formato.
+  c22 [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2"><TR><TD>
+      <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" COLOR="#1c6e8c">
+        <TR><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#ecd6d6"></TD></TR>
+        <TR><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#ecd6d6"></TD></TR>
+        <TR><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#f0dfc0"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#d9e7cf"></TD><TD WIDTH="44" HEIGHT="24" FIXEDSIZE="TRUE" BGCOLOR="#ecd6d6"></TD></TR>
+      </TABLE>
+    </TD></TR><TR><TD><FONT POINT-SIZE="18" COLOR="#144f64"><B>data frame</B></FONT></TD></TR></TABLE>>];
+
+  // O array são matrizes empilhadas. O empilhamento é fingido com duas grades
+  // deslocadas: a primeira linha, de células vazias, fixa a largura da coluna
+  // em 12px, e cada grade ocupa 11 dessas colunas (COLSPAN) — daí o degrau.
+  c31 [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2"><TR><TD>
+      <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
+        <TR><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD><TD WIDTH="12" HEIGHT="1" FIXEDSIZE="TRUE"></TD></TR>
+        <TR><TD></TD><TD COLSPAN="11">
+          <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" COLOR="#8fbccb">
+            <TR><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e7f1f5"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e7f1f5"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e7f1f5"></TD></TR>
+            <TR><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e7f1f5"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e7f1f5"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#e7f1f5"></TD></TR>
+          </TABLE>
+        </TD></TR>
+        <TR><TD COLSPAN="11">
+          <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="0" COLOR="#1c6e8c">
+            <TR><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD></TR>
+            <TR><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD><TD WIDTH="44" HEIGHT="22" FIXEDSIZE="TRUE" BGCOLOR="#cfe3ea"></TD></TR>
+          </TABLE>
+        </TD><TD></TD></TR>
+      </TABLE>
+    </TD></TR><TR><TD><FONT POINT-SIZE="18" COLOR="#144f64"><B>array</B></FONT></TD></TR></TABLE>>];
+
+  c32 [label=<<FONT POINT-SIZE="18" COLOR="#566470">—</FONT>>];
+
+  // Arestas invisíveis só para alinhar a grade — linhas e depois colunas.
+  {rank=same; h0; h1; h2;}   h0 -> h1 -> h2;
+  {rank=same; r1; c11; c12;} r1 -> c11 -> c12;
+  {rank=same; r2; c21; c22;} r2 -> c21 -> c22;
+  {rank=same; r3; c31; c32;} r3 -> c31 -> c32;
+  h0 -> r1 -> r2 -> r3;
+  h1 -> c11 -> c21 -> c31;
+  h2 -> c12 -> c22 -> c32;
+}
+```
 
 ::: {.citacao}
-O **data frame** é o formato dos seus dados de campo: cada coluna pode ser de
-um tipo diferente. É com ele que vocês vão trabalhar a semana inteira.
+O **data frame** é o formato dos seus dados de campo: uma coluna de cada tipo.
 :::
 
 ## Os tipos dentro de um vetor {.smaller}
