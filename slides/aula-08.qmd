@@ -82,6 +82,45 @@ Baker, M. (2016). **1,500 scientists lift the lid on reproducibility.**
 - Mais da metade falhou em reproduzir **o próprio** experimento
 :::
 
+## O diagnóstico veio de dentro da área {.smaller}
+
+::: {.incremental}
+- Métodos e resultados relatados com detalhe insuficiente para interpretar ou
+  para entrar numa meta-análise
+- Muitos resultados simplesmente não são relatados — e os que ficam de fora
+  são um **subconjunto enviesado**
+- Logo, a conclusão que se tira da literatura publicada também é enviesada,
+  e às vezes está inteiramente errada
+:::
+
+::: {.citacao}
+Parker, T.H.; Forstmeier, W.; Koricheva, J.; Fidler, F.; Hadfield, J.D.;
+Chee, Y.E.; Kelly, C.D.; Gurevitch, J.; Nakagawa, S. (2016).
+**Transparency in Ecology and Evolution: Real Problems, Real Solutions.**
+*Trends in Ecology & Evolution* 31(9): 711–719.
+[doi:10.1016/j.tree.2016.07.002](https://doi.org/10.1016/j.tree.2016.07.002)
+:::
+
+## Dez anos depois, o gargalo é o código {.smaller}
+
+Amostra aleatória de 346 artigos não moleculares de ecologia, publicados
+entre 2015 e 2019 em revistas que já exigiam ou encorajavam compartilhar
+código.
+
+::: {.incremental}
+- **Dados** disponíveis em 79% dos artigos elegíveis
+- **Código** disponível em 27%
+- Revistas de ecologia com política de código: 15% em 2015, 75% em 2020.
+  A política veio; a adesão, não
+:::
+
+::: {.citacao}
+Culina, A.; van den Berg, I.; Evans, S.; Sánchez-Tójar, A. (2020).
+**Low availability of code in ecology: a call for urgent action.**
+*PLOS Biology* 18(7): e3000763.
+[doi:10.1371/journal.pbio.3000763](https://doi.org/10.1371/journal.pbio.3000763)
+:::
+
 # Os conceitos
 
 ## Repetível {.smaller}
@@ -228,6 +267,35 @@ Gelman, A. & Loken, E. (2014). *American Scientist* 102(6).
 Não é preciso haver má-fé: basta que as escolhas dependam dos dados.
 :::
 
+## Os mesmos dados, 174 análises {.smaller .diagrama-menor}
+
+174 equipes de análise — 246 analistas — receberam dois conjuntos de dados
+inéditos e a mesma pergunta. **A**: irmãos e crescimento dos ninhegos em
+*Cyanistes caeruleus* (141 efeitos). **B**: gramíneas e recrutamento de
+*Eucalyptus* (85 efeitos).
+
+![](img/a08-gould-2025.png){width=78%}
+
+::: {.citacao}
+Figura 2 de Gould, E.; Fraser, H.S.; Parker, T.H.; Nakagawa, S. *et al.* (2025).
+**Same data, different analysts.** *BMC Biology* 23: 35.
+[doi:10.1186/s12915-024-02101-x](https://doi.org/10.1186/s12915-024-02101-x)
+— CC BY.
+:::
+
+## O que essa figura quer dizer {.smaller}
+
+::: {.incremental}
+- Em **A** o efeito médio é convincentemente negativo, mas as estimativas vão
+  de fortemente negativas até perto de zero — e algumas cruzam o limiar de
+  significância no sentido **oposto**
+- Em **B** a média mal se distingue de zero, e cerca de um terço dos efeitos
+  cruza o limiar de significância — para um lado ou para o outro
+- Análises longe da média não usaram variáveis mais esquisitas, nem efeitos
+  aleatórios diferentes, nem receberam notas piores na revisão por pares.
+  **Não dá para separar a "análise errada" pela forma dela**
+:::
+
 # O que fazer
 
 ## O seu melhor colaborador
@@ -248,6 +316,28 @@ consegue rodar isto de novo e chegar ao mesmo número?**
 - **Reportar incerteza** — intervalos de confiança, não só valores-p
 - **Não dicotomizar** — evitar "o efeito existe" com p = 0,049 e
   "não existe" com p = 0,051
+:::
+
+## Onde essa conversa acontece {.smaller}
+
+::: {.incremental}
+- **SORTEE** — Society for Open, Reliable, and Transparent Ecology and
+  Evolutionary biology. Criada por pesquisadores da própria área e apresentada
+  em 2021, com conferência anual e grupos de trabalho —
+  [sortee.org](https://www.sortee.org/)
+- **EcoEvoRxiv** — o servidor oficial de preprints da SORTEE, para ecologia e
+  evolução — [ecoevorxiv.org](https://ecoevorxiv.org/)
+- **FORRT** — Framework for Open and Reproducible Research Training. Material
+  pronto para ensinar ciência aberta na graduação e na pós —
+  [forrt.org](https://forrt.org/)
+:::
+
+::: {.citacao}
+O'Dea, R.E.; Parker, T.H.; Chee, Y.E.; Culina, A.; Drobniak, S.M.;
+Duncan, D.H.; Fidler, F.; Gould, E. *et al.* (2021).
+**Towards open, reliable, and transparent ecology and evolutionary biology.**
+*BMC Biology* 19: 68.
+[doi:10.1186/s12915-021-01006-3](https://doi.org/10.1186/s12915-021-01006-3)
 :::
 
 ## Dez regras simples

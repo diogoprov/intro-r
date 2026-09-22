@@ -111,9 +111,12 @@ $code-block-border-color: #e3dccd;
   // vence a disputa e o teto é ignorado.
   max-height: 430px !important;
 }
-// Modificador de slide: use `## Título {.diagrama-menor}` quando o diagrama
-// couber, mas o resto do slide não deixar. 430px é o teto geral; aqui, 380px.
+// Modificador de slide: use `## Título {.diagrama-menor}` quando a figura
+// couber, mas o resto do slide não deixar. O teto geral é 430px; aqui, 380px
+// para diagramas Graphviz e 340px para imagens, que costumam vir com uma
+// referência comprida embaixo.
 .reveal .slide.diagrama-menor div.cell-output-display svg { max-height: 380px !important; }
+.reveal .slide.diagrama-menor img:not(.r-stretch) { max-height: 340px; }
 
 // --- Árvore de pastas -----------------------------------------------------
 // Um bloco ``` sem linguagem não vira .sourceCode, então não ganha o cartão
