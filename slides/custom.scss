@@ -53,14 +53,17 @@ $code-block-border-color: #e3dccd;
   background: #f3eee3;
   padding: .6rem .9rem;
   font-size: .9em;
+  // Sem esta linha o texto herda o #6b80a3 do tema e fica em 3.46:1 sobre o
+  // creme do próprio bloco — o pior contraste do curso. Este dá 8.07:1.
+  color: #38485c;
 }
 
 // Nota de rodapé do slide. O cinza precisa alcançar pelo menos 4.5:1 de
 // contraste com o fundo (#faf7f0) para passar no WCAG AA — o #6c757d
-// que estava aqui dava 4.38:1 e sumia no projetor. Este dá 5.68:1.
+// que estava aqui dava 4.38:1 e sumia no projetor. Este dá 7.47:1.
 .reveal .citacao {
-  font-size: .8em;
-  color: #566470;
+  font-size: .85em;
+  color: #455260;
 }
 
 // Slide de encerramento (só na última aula do curso).
@@ -103,4 +106,29 @@ $code-block-border-color: #e3dccd;
   // O !important é necessário: sem ele o `height: auto !important` acima
   // vence a disputa e o teto é ignorado.
   max-height: 430px !important;
+}
+// Modificador de slide: use `## Título {.diagrama-menor}` quando o diagrama
+// couber, mas o resto do slide não deixar. 430px é o teto geral; aqui, 380px.
+.reveal .slide.diagrama-menor div.cell-output-display svg { max-height: 380px !important; }
+
+// --- Árvore de pastas -----------------------------------------------------
+// Um bloco ``` sem linguagem não vira .sourceCode, então não ganha o cartão
+// branco dos blocos de código e fica solto no meio do slide. Este modificador
+// devolve a moldura e centraliza o desenho.
+.reveal .slide.arvore pre {
+  display: inline-block;
+  width: auto;
+  background: #ffffff;
+  border: 1px solid #e3dccd;
+  border-radius: 6px;
+  padding: .9rem 1.6rem;
+  box-shadow: none;
+}
+.reveal .slide.arvore pre code {
+  font-size: .95em;
+  line-height: 1.45;
+  // O tema desenha um segundo fundo dentro do <pre>; sem isto ficam dois
+  // retângulos, um dentro do outro.
+  background: transparent;
+  padding: 0;
 }

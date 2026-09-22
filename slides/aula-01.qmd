@@ -360,7 +360,7 @@ minha.media
 - O objeto aparece no painel **Environment** assim que é criado
 :::
 
-## Tipos de objeto
+## Tipos de objeto {.smaller .diagrama-menor}
 
 Duas perguntas resolvem: **quantas dimensões?** e **todos os elementos do
 mesmo tipo?** Cada cor abaixo é um tipo de dado.
@@ -580,16 +580,17 @@ Dados reais, publicados, com os problemas que dados reais têm. É o mesmo
 arquivo de hoje até sexta-feira.
 :::
 
-## Monte a pasta agora
+## Monte a pasta agora {.arvore}
 
 ```
-intro-r.Rproj
-dados/
-  anuros_altitude.csv          <- baixe da página da aula
-  processados/                 <- o que o seu script produzir
-scripts/
-  aula-01.R
-figuras/
+intro-r/
+├── intro-r.Rproj
+├── dados/
+│   ├── anuros_altitude.csv     <- baixe da página da aula
+│   └── processados/            <- o que o seu script produzir
+├── scripts/
+│   └── aula-01.R
+└── figuras/
 ```
 
 . . .
