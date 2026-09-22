@@ -430,7 +430,7 @@ Ferramentas: **R Markdown** e **Quarto** no R · **Pluto.jl** em Julia ·
 **Jupyter** em Python
 :::
 
-## O ecossistema {.smaller}
+## O ecossistema {.smaller .diagrama-menor}
 
 ```{dot}
 //| echo: false
@@ -456,6 +456,13 @@ digraph ecossistema {
 O Quarto sucede o R Markdown e absorve o que antes eram pacotes separados —
 `bookdown`, `blogdown`, `xaringan`. **Estes slides são um `.qmd`.**
 :::
+
+<!-- A linhagem, na faixa livre embaixo. São `.absolute` de propósito: em
+     fluxo normal a fileira somaria uns 110px e o slide estouraria os 700px
+     do palco. As medidas são em px do palco (1050x700). -->
+![](img/hex-rmarkdown.png){.absolute top=582 left=0 width=96}
+![](img/hex-knitr.png){.absolute top=582 left=108 width=96}
+![](img/hex-quarto.png){.absolute top=582 left=216 width=96}
 
 ## Anatomia de um `.qmd` {.smaller}
 

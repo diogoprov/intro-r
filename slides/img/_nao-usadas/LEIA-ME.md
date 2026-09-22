@@ -18,6 +18,10 @@ O `_` no início do nome da pasta faz o Quarto ignorá-la no `render`.
 - `a05-boxplot-anatomia.png` — versão alternativa da anatomia do boxplot;
   o deck usa `a05-boxplot-iqr.png`.
 - `a05-galeria-5.jpeg` — figura da galeria que não entrou no recorte final.
-- `a08-hex-*` — hexágonos de pacotes que não foram usados no deck 08.
+- `a08-hex-47.png`, `a08-hex-48.png`, `a08-hex-knitr.png` — os hexágonos do
+  rmarkdown, do quarto e do knitr. **Voltaram ao uso** em setembro de 2026:
+  estão recortados e normalizados em `img/hex-rmarkdown.png`,
+  `img/hex-quarto.png` e `img/hex-knitr.png`, no slide "O ecossistema" da
+  aula 08. Estes aqui são os originais, com a moldura branca em volta.
 - `lsb-simbolo.png` — variante do logotipo; os decks usam
   `lsb-canto.png` e `lsb-logo.png`.
