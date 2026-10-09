@@ -39,6 +39,13 @@ alto do gradiente vem de uma serra diferente do resto da amostra.
 Automatizar o ajuste não automatiza o julgamento.
 :::
 
+## Exercício interativo (swirl)
+
+Depois da aula, pratique no console com a lição **Rudimentos de Programação** (~30 min): o
+swirl faz as perguntas e confere cada resposta.
+
+[{{< fa solid terminal >}} Como instalar e fazer as lições](../exercicios-swirl.qmd){.btn .btn-outline-primary}
+
 ## Recursos externos
 
 - [Vídeo da aula — rudimentos de programação](https://www.youtube.com/watch?v=4nACCtC-PnI&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=8)

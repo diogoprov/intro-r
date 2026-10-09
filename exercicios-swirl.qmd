@@ -1,0 +1,116 @@
+---
+title: "Exercícios interativos no swirl"
+subtitle: "Lições para fazer no próprio console do R, com correção a cada resposta"
+toc: true
+---
+
+O [swirl](https://swirlstats.com) é um pacote que ensina R dentro do console:
+ele faz uma pergunta, você digita o comando, e ele confere a resposta antes de
+seguir. As lições abaixo acompanham as aulas da disciplina e usam os mesmos
+dados das aulas práticas: anuros ao longo de gradientes altitudinais na Mata
+Atlântica (Bovo et al. 2023, *Integrative Organismal Biology* 5: obad009).
+
+```{=html}
+<figure class="figure">
+<video src="swirl-demo.mp4" poster="swirl-demo.jpg" autoplay loop muted
+       playsinline controls style="width:100%; max-width:720px; border-radius:6px;">
+</video>
+<figcaption class="figure-caption">
+Início da lição Primeiros Passos. Repare no erro em <code>2ˆ10</code>: em
+teclados com acentuação o circunflexo pode sair como outro caractere, que o R
+não reconhece. Se acontecer, tecle <code>^</code> e depois espaço.
+</figcaption>
+</figure>
+```
+
+Faça cada lição **depois** da aula correspondente. Elas não substituem o
+script da aula; servem para você praticar sozinho(a) e descobrir onde
+travou.
+
+## Lições
+
+| Aula | Lição no swirl | Duração | O que pratica |
+|:----:|---|:---:|---|
+| [01](aula-01-intro-r/index.qmd) | Primeiros Passos | ~20 min | R como calculadora, atribuição, coerção, `read.csv()`, `head()`/`dim()`/`str()`/`summary()`, `table()`, NAs, pacotes |
+| [02](aula-02-curadoria-dados/index.qmd) | Curadoria de Dados | ~30 min | auditoria de uma planilha mal feita e de um arquivo publicado: cabeçalho fora do lugar, tipos, categorias, duplicatas, datas, ausentes, metadados |
+| [04](aula-04-tidyverse/index.qmd) | Manuseio de Dados com dplyr | ~25 min | pipe (`\|>` e `%>%`), `rename()`, `select()`, `mutate()`, `filter()`, `group_by()` + `summarise()`, `count()` |
+| [06](aula-06-modelos-lineares/index.qmd) | Modelos Lineares | ~35 min | ciclo PPDAC: desenho amostral, exploração, `lm()`, diagnose com `plot()` e `performance`, interpretação com `anova()` e `broom` |
+| [07](aula-07-programacao/index.qmd) | Rudimentos de Programação | ~30 min | funções, argumento padrão, escopo, `if`/`ifelse`/`for`, `purrr::map()`, um modelo por espécie com `split()` + `map()` |
+
+: {tbl-colwidths="[8,24,10,58]"}
+
+As aulas 03 (git), 05 (ggplot2) e 08 (Quarto) não têm lição no swirl: o que
+se pratica nelas acontece fora do console.
+
+## Instalação (uma vez só)
+
+Rode no console do R ou do RStudio:
+
+```r
+install.packages("swirl")
+library(swirl)
+select_language("portuguese", append_rprofile = TRUE)
+install_course_url("https://github.com/diogoprov/Introducao_a_Linguagem_R/zipball/main")
+```
+
+- O `append_rprofile = TRUE` grava a escolha do idioma no seu `.Rprofile`.
+  Sem ele, os menus e as mensagens do swirl voltam para o inglês quando o R
+  é reiniciado.
+- Use `install_course_url()` com o endereço acima, e **não**
+  `install_course_github()`: esta última monta o endereço com `http://` e
+  pode falhar por tempo esgotado.
+
+Algumas lições usam pacotes extras (`dplyr`, `broom`, `performance`,
+`purrr`). Se faltar algum, o swirl oferece instalar ao abrir a lição; para
+evitar a espera nessa hora, instale antes:
+
+```r
+install.packages(c("dplyr", "purrr", "broom", "performance"))
+```
+
+## Como fazer uma lição
+
+```r
+library(swirl)
+swirl()
+```
+
+O swirl pergunta seu nome, mostra a lista de cursos e você escolhe
+**Introducao a Linguagem R** e depois a lição. Dentro dela:
+
+| Quando aparece | Faça |
+|---|---|
+| `...` no fim do texto | aperte Enter para seguir |
+| o sinal `>` | digite o comando e aperte Enter |
+| alternativas numeradas | digite o número da resposta |
+
+Comandos úteis durante a lição:
+
+| Comando | O que faz |
+|---|---|
+| `skip()` | pula a pergunta atual (o swirl roda a resposta por você) |
+| `play()` / `nxt()` | sai da lição para experimentar à vontade no console, e volta |
+| `bye()` | sai guardando o progresso; na próxima vez você retoma de onde parou |
+| `main()` | volta ao menu principal |
+
+Para atualizar as lições quando houver versão nova, desinstale e instale de
+novo:
+
+```r
+uninstall_course("Introducao_a_Linguagem_R")
+install_course_url("https://github.com/diogoprov/Introducao_a_Linguagem_R/zipball/main")
+```
+
+## Código-fonte e citação
+
+As lições ficam no repositório
+[{{< fa brands github >}} diogoprov/Introducao_a_Linguagem_R](https://github.com/diogoprov/Introducao_a_Linguagem_R),
+sob licença CC BY 4.0. Erros e sugestões podem ser enviados como *issue*
+lá. Para citar:
+
+> Provete, D.B. *Introdução à Linguagem R — lições interativas no swirl*.
+> Zenodo. <https://doi.org/10.5281/zenodo.22782697>
+
+---
+
+*Volta para o [índice do curso](index.qmd).*

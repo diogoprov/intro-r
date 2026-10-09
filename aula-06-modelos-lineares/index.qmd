@@ -59,6 +59,13 @@ comparação. É uma aula de desenho amostral que dado sintético nenhum dá.
 - [{{< fa solid file-pdf >}} `extra-regressao-linear.pdf`](extra-regressao-linear.pdf)
 - [{{< fa solid file-pdf >}} `extra-teste-hipotese.pdf`](extra-teste-hipotese.pdf)
 
+## Exercício interativo (swirl)
+
+Depois da aula, pratique no console com a lição **Modelos Lineares** (~35 min): o
+swirl faz as perguntas e confere cada resposta.
+
+[{{< fa solid terminal >}} Como instalar e fazer as lições](../exercicios-swirl.qmd){.btn .btn-outline-primary}
+
 ## Recursos externos
 
 - [Vídeo da aula — modelos lineares, uma recapitulação](https://www.youtube.com/watch?v=GXJOdV-NfjM&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=7)

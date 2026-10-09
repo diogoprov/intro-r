@@ -41,6 +41,13 @@ Crie um Projeto do RStudio, e dentro dele uma pasta `dados/`. Baixe o
 encontrá-lo em `dados/anuros_altitude.csv`.
 :::
 
+## Exercício interativo (swirl)
+
+Depois da aula, pratique no console com a lição **Primeiros Passos** (~20 min): o
+swirl faz as perguntas e confere cada resposta.
+
+[{{< fa solid terminal >}} Como instalar e fazer as lições](../exercicios-swirl.qmd){.btn .btn-outline-primary}
+
 ## Recursos externos
 
 - [Vídeo da aula — parte 1](https://www.youtube.com/watch?v=9m_vO20whgE&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=1)

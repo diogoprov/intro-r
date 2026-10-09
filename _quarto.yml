@@ -3,6 +3,8 @@ project:
   output-dir: docs
   resources:
     - dados/
+    - swirl-demo.mp4
+    - swirl-demo.jpg
 
 website:
   title: "Introdução à Linguagem R"
@@ -17,6 +19,8 @@ website:
     left:
       - href: index.qmd
         text: Início
+      - href: exercicios-swirl.qmd
+        text: Exercícios swirl
     right:
       - text: "Biodiversity Synthesis Lab"
         href: "https://provetelab.org/"

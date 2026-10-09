@@ -64,7 +64,9 @@ ferramentas de fluxo de trabalho profissional (git, Quarto).
 ## Metodologia e avaliação
 
 A disciplina combina **aulas expositivas** e **exercícios práticos**
-feitos em sala. A avaliação é um **trabalho final** apresentando uma
+feitos em sala. Para praticar fora da aula, cinco aulas têm uma lição
+correspondente no [swirl](exercicios-swirl.qmd), feita no próprio console
+do R com correção a cada resposta. A avaliação é um **trabalho final** apresentando uma
 análise de dados à escolha do(a) aluno(a), em formato Markdown ou
 Quarto, contendo:
 

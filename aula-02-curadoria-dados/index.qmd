@@ -38,6 +38,13 @@ nome do arquivo. Os dados são **fictícios**, inventados para o exercício.
 O contraponto: um arquivo **real e publicado**, que acerta quase tudo — e
 cujos poucos defeitos são justamente os que o `aula-02.R` procura.
 
+## Exercício interativo (swirl)
+
+Depois da aula, pratique no console com a lição **Curadoria de Dados** (~30 min): o
+swirl faz as perguntas e confere cada resposta.
+
+[{{< fa solid terminal >}} Como instalar e fazer as lições](../exercicios-swirl.qmd){.btn .btn-outline-primary}
+
 ## Recursos externos
 
 - [Vídeo da aula — curadoria de dados](https://www.youtube.com/watch?v=kfnslKpY9dE&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=3)
