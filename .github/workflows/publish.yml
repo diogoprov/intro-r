@@ -45,7 +45,7 @@ jobs:
 
       - name: Install R packages
         run: |
-          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2", "broom", "purrr", "performance", "see"))'
+          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2", "broom", "purrr", "performance", "see", "learnr2"))'
 
       - name: Render site
         run: quarto render

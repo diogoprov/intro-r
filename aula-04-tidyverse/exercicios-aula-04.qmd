@@ -1,0 +1,418 @@
+---
+title: "Aula 04 — Exercícios no navegador"
+subtitle: "dplyr com os dados de anuros, sem instalar nada"
+format: live-html
+engine: knitr
+toc: true
+resources:
+  - ../dados/anuros_altitude.csv
+webr:
+  packages:
+    - dplyr
+---
+
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+
+{{< include ../_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{r}
+#| label: botoes-em-portugues
+#| include: false
+# learnr2::question() com os textos dos botões em português
+pergunta <- function(...) {
+  learnr2::question(
+    ...,
+    correct = "Correto!", incorrect = "Incorreto.",
+    submit_button = "Enviar", try_again_button = "Tentar de novo",
+    edit_button = "Editar"
+  )
+}
+```
+
+Esta página roda R dentro do seu navegador ([webR](https://docs.r-wasm.org/webr/)):
+nada a instalar, nada a configurar. Ela acompanha o
+[script da aula 04](aula-04.R) e usa os mesmos dados, anuros ao longo de
+gradientes altitudinais na Mata Atlântica (Bovo et al. 2023, *Integrative
+Organismal Biology* 5: obad009).
+
+- A primeira vez que a página abre, o navegador baixa o R e o `dplyr`
+  (alguns MB). Espere a mensagem de carregamento sumir antes de rodar código.
+- **Run Code** (ou `Ctrl`/`Cmd` + `Enter`) roda a célula. Nos exercícios,
+  o mesmo botão já confere a resposta e mostra um comentário embaixo da saída.
+- **Show Hint** mostra uma dica de cada vez; depois da última aparece
+  **Show Solution**. Tente antes de abrir.
+- O que você digita fica salvo neste navegador; recarregar a página não apaga.
+  Trocar de computador ou de navegador, sim.
+- As seções abrem uma de cada vez. Responda às perguntas de cada seção para
+  liberar o botão **Continue**.
+
+Isto não substitui a [lição do swirl](../exercicios-swirl.qmd), que treina o
+console do R na sua máquina. Use esta página para praticar logo depois da aula
+e o swirl para praticar no ambiente em que você vai trabalhar de verdade.
+
+```{r}
+#| label: identificacao-1
+#| echo: false
+learnr2::student_info(
+  fields = c(name = "Nome:", email = "E-mail:", id = "Matrícula (se pedida):"),
+  submit_button = "Enviar", edit_button = "Editar"
+)
+```
+
+## Os dados
+
+As células abaixo já partem da tabela renomeada no passo 1 do script da aula:
+nomes curtos, em português, sem a unidade no nome. A célula roda sozinha
+quando a página termina de carregar.
+
+```{webr}
+#| label: os-dados-1
+#| edit: false
+library(dplyr)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  rename(
+    id = ID, especie = Species, sexo = Sex,
+    ewl = EWL_Ugcm2s1, wu = WU_Ugcm2s1, massa = Bodymass_g,
+    ctmin = CTmin, ctmax = CTmax, amplitude = Tbr, tol_aquec = WT,
+    serra = Mountain_Range, altitude = Altitude_m, bio5 = BIO_5
+  ) |>
+  select(id, especie, sexo, serra, altitude, massa, ewl, wu,
+         ctmin, ctmax, amplitude, tol_aquec, bio5) |>
+  as_tibble()
+glimpse(anuros)
+```
+
+```{r}
+#| label: os-dados-2
+#| echo: false
+pergunta(
+  "Quantas linhas (indivíduos) tem a tabela `anuros`?",
+  learnr2::answer("225", correct = TRUE),
+  type = "text",
+  allow_retry = TRUE
+)
+```
+
+## Escolher colunas com `select()`
+
+Monte uma tabela só com `especie`, `serra`, `altitude` e `ctmax`, nessa
+ordem. Complete os espaços `____`.
+
+```{webr}
+#| label: escolher-colunas-1
+#| setup: true
+#| exercise: ex_select
+library(dplyr)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  rename(
+    id = ID, especie = Species, sexo = Sex,
+    ewl = EWL_Ugcm2s1, wu = WU_Ugcm2s1, massa = Bodymass_g,
+    ctmin = CTmin, ctmax = CTmax, amplitude = Tbr, tol_aquec = WT,
+    serra = Mountain_Range, altitude = Altitude_m, bio5 = BIO_5
+  ) |>
+  select(id, especie, sexo, serra, altitude, massa, ewl, wu,
+         ctmin, ctmax, amplitude, tol_aquec, bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: escolher-colunas-2
+#| exercise: ex_select
+#| persist: true
+anuros |>
+  ____(especie, ____, altitude, ____)
+```
+
+::: { .hint exercise="ex_select" }
+O verbo que escolhe colunas é `select()`. Os argumentos são os nomes das
+colunas, sem aspas.
+:::
+
+```{webr}
+#| label: escolher-colunas-3
+#| exercise: ex_select
+#| solution: true
+anuros |>
+  select(especie, serra, altitude, ctmax)
+```
+
+```{webr}
+#| label: escolher-colunas-4
+#| exercise: ex_select
+#| check: true
+gradethis::grade_this({
+  gradethis::pass_if_equal(message = "Isso. Quatro colunas, na ordem pedida.")
+  gradethis::fail("Confira os nomes e a ordem das colunas.")
+})
+```
+
+## Filtrar linhas com `filter()`
+
+Fique só com os indivíduos de *Boana faber* que **têm** CTmax medido. Uma
+condição testa a espécie; a outra descarta os `NA` de `ctmax`.
+
+```{webr}
+#| label: filtrar-linhas-1
+#| setup: true
+#| exercise: ex_filter
+library(dplyr)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  rename(
+    id = ID, especie = Species, sexo = Sex,
+    ewl = EWL_Ugcm2s1, wu = WU_Ugcm2s1, massa = Bodymass_g,
+    ctmin = CTmin, ctmax = CTmax, amplitude = Tbr, tol_aquec = WT,
+    serra = Mountain_Range, altitude = Altitude_m, bio5 = BIO_5
+  ) |>
+  select(id, especie, sexo, serra, altitude, massa, ewl, wu,
+         ctmin, ctmax, amplitude, tol_aquec, bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: filtrar-linhas-2
+#| exercise: ex_filter
+#| persist: true
+anuros |>
+  filter(especie ____ "Boana faber", ____(ctmax))
+```
+
+::: { .hint exercise="ex_filter" }
+Para comparar igualdade use `==` (dois sinais). Um `=` só é atribuição de
+argumento.
+:::
+
+::: { .hint exercise="ex_filter" }
+`is.na(ctmax)` é `TRUE` quando falta o valor. Você quer o contrário:
+`!is.na(ctmax)`.
+:::
+
+```{webr}
+#| label: filtrar-linhas-3
+#| exercise: ex_filter
+#| solution: true
+anuros |>
+  filter(especie == "Boana faber", !is.na(ctmax))
+```
+
+```{webr}
+#| label: filtrar-linhas-4
+#| exercise: ex_filter
+#| check: true
+gradethis::grade_this({
+  gradethis::pass_if_equal(message = "Isso: 45 indivíduos de Boana faber com CTmax.")
+  gradethis::fail_if(
+    is.data.frame(.result) && nrow(.result) == 46,
+    "Quase. Ainda tem um indivíduo sem CTmax aí dentro."
+  )
+  gradethis::fail("Confira as duas condições dentro de filter().")
+})
+```
+
+```{r}
+#| label: filtrar-linhas-5
+#| echo: false
+pergunta(
+  "Dentro de `filter()`, separar duas condições por vírgula equivale a qual operador?",
+  learnr2::answer("`&` (E: as duas precisam ser verdadeiras)", correct = TRUE),
+  learnr2::answer("`|` (OU: basta uma ser verdadeira)"),
+  learnr2::answer("`==`"),
+  allow_retry = TRUE
+)
+```
+
+## Criar e recalcular colunas com `mutate()`
+
+A planilha original já traz a amplitude térmica (`amplitude`), mas variável
+derivada copiada de planilha é variável em que não se confia. Recalcule
+`amplitude` como `ctmax - ctmin`, sobrescrevendo a coluna.
+
+```{webr}
+#| label: criar-colunas-1
+#| setup: true
+#| exercise: ex_mutate
+library(dplyr)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  rename(
+    id = ID, especie = Species, sexo = Sex,
+    ewl = EWL_Ugcm2s1, wu = WU_Ugcm2s1, massa = Bodymass_g,
+    ctmin = CTmin, ctmax = CTmax, amplitude = Tbr, tol_aquec = WT,
+    serra = Mountain_Range, altitude = Altitude_m, bio5 = BIO_5
+  ) |>
+  select(id, especie, sexo, serra, altitude, massa, ewl, wu,
+         ctmin, ctmax, amplitude, tol_aquec, bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: criar-colunas-2
+#| exercise: ex_mutate
+#| persist: true
+anuros |>
+  mutate(____ = ____ - ____)
+```
+
+::: { .hint exercise="ex_mutate" }
+Em `mutate(nome = expressão)`, se `nome` já existe a coluna é substituída;
+se não existe, é criada no fim da tabela.
+:::
+
+```{webr}
+#| label: criar-colunas-3
+#| exercise: ex_mutate
+#| solution: true
+anuros |>
+  mutate(amplitude = ctmax - ctmin)
+```
+
+```{webr}
+#| label: criar-colunas-4
+#| exercise: ex_mutate
+#| check: true
+gradethis::grade_this({
+  gradethis::pass_if_equal(message = "Isso. A coluna foi sobrescrita, não duplicada.")
+  gradethis::fail_if(
+    is.data.frame(.result) && ncol(.result) > ncol(anuros),
+    "A tabela ganhou uma coluna nova. Use o mesmo nome, amplitude, para sobrescrever."
+  )
+  gradethis::fail("Confira a conta: ctmax menos ctmin.")
+})
+```
+
+## Resumir por grupo com `group_by()` e `summarise()`
+
+Calcule, para cada espécie, o número de indivíduos (`n`) e o CTmax médio
+(`ctmax_med`). Lembre que `ctmax` tem valores ausentes.
+
+```{webr}
+#| label: resumir-por-grupo-1
+#| setup: true
+#| exercise: ex_resumo
+library(dplyr)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  rename(
+    id = ID, especie = Species, sexo = Sex,
+    ewl = EWL_Ugcm2s1, wu = WU_Ugcm2s1, massa = Bodymass_g,
+    ctmin = CTmin, ctmax = CTmax, amplitude = Tbr, tol_aquec = WT,
+    serra = Mountain_Range, altitude = Altitude_m, bio5 = BIO_5
+  ) |>
+  select(id, especie, sexo, serra, altitude, massa, ewl, wu,
+         ctmin, ctmax, amplitude, tol_aquec, bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: resumir-por-grupo-2
+#| exercise: ex_resumo
+#| persist: true
+anuros |>
+  ____(especie) |>
+  summarise(
+    n = ____,
+    ctmax_med = mean(ctmax, ____)
+  )
+```
+
+::: { .hint exercise="ex_resumo" }
+`n()` conta as linhas de cada grupo; não leva argumento.
+:::
+
+::: { .hint exercise="ex_resumo" }
+Sem `na.rm = TRUE`, a média de um grupo com algum `NA` vira `NA`.
+:::
+
+```{webr}
+#| label: resumir-por-grupo-3
+#| exercise: ex_resumo
+#| solution: true
+anuros |>
+  group_by(especie) |>
+  summarise(
+    n = n(),
+    ctmax_med = mean(ctmax, na.rm = TRUE)
+  )
+```
+
+```{webr}
+#| label: resumir-por-grupo-4
+#| exercise: ex_resumo
+#| check: true
+gradethis::grade_this({
+  gradethis::pass_if_equal(message = "Isso. Cinco espécies, uma linha cada.")
+  gradethis::fail_if(
+    is.data.frame(.result) && anyNA(.result$ctmax_med),
+    "Tem NA na média. Falta um argumento em mean()."
+  )
+  gradethis::fail("Confira o agrupamento e os nomes das colunas do resumo.")
+})
+```
+
+## O desenho amostral em uma linha
+
+Rode a contagem abaixo e olhe com calma para o resultado.
+
+```{webr}
+#| label: desenho-amostral-1
+#| setup: true
+#| exercise: ex_count
+library(dplyr)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  rename(
+    id = ID, especie = Species, sexo = Sex,
+    ewl = EWL_Ugcm2s1, wu = WU_Ugcm2s1, massa = Bodymass_g,
+    ctmin = CTmin, ctmax = CTmax, amplitude = Tbr, tol_aquec = WT,
+    serra = Mountain_Range, altitude = Altitude_m, bio5 = BIO_5
+  ) |>
+  select(id, especie, sexo, serra, altitude, massa, ewl, wu,
+         ctmin, ctmax, amplitude, tol_aquec, bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: desenho-amostral-2
+#| exercise: ex_count
+#| persist: true
+anuros |>
+  count(serra, altitude)
+```
+
+```{r}
+#| label: desenho-amostral-3
+#| echo: false
+pergunta(
+  "O que essa contagem diz sobre o desenho amostral, e por que isso importa
+  para um modelo que use altitude e serra como preditores?",
+  learnr2::answer(
+    "Cada altitude foi amostrada em uma serra só: 550 e 1600 m só na
+    Mantiqueira; 35, 820, 1022 e 1500 m só na Serra do Mar. Altitude e
+    serra estão parcialmente confundidas, e o modelo não consegue separar o
+    efeito de uma do efeito da outra em cada ponto. Voltamos a isso na
+    aula 06.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+## Para entregar
+
+```{r}
+#| label: para-entregar-1
+#| echo: false
+pergunta(
+  "Quantos minutos, aproximadamente, você levou nesta página? Uma hora e
+  meia, por exemplo, são 90 minutos.",
+  type = "reflection_editable",
+  validate = "integer"
+)
+```
+
+O botão abaixo junta suas respostas num arquivo `.json`. Envie esse arquivo
+pelo canal combinado na disciplina.
+
+```{r}
+#| label: para-entregar-2
+#| echo: false
+learnr2::download_answers_button(
+  filename_prefix = "aula-04", label = "Baixar minhas respostas"
+)
+```

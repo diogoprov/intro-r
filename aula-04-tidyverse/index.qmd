@@ -35,6 +35,15 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 O script grava o resultado em `dados/processados/anuros_limpo.csv`. **Rode
 esta aula antes das aulas 05 e 06** — elas partem desse arquivo.
 
+## Exercícios no navegador
+
+Cinco exercícios curtos de `select()`, `filter()`, `mutate()`,
+`group_by()` + `summarise()` e `count()`, com dicas e correção automática.
+O R roda dentro do navegador: não precisa instalar nada. No fim, você baixa
+um arquivo com as suas respostas para entregar.
+
+[{{< fa solid laptop-code >}} Abrir os exercícios](exercicios-aula-04.qmd){.btn .btn-outline-primary}
+
 ## Exercício interativo (swirl)
 
 Depois da aula, pratique no console com a lição **Manuseio de Dados com dplyr** (~25 min): o
