@@ -15,19 +15,7 @@ webr:
 
 {{< include ../_extensions/r-wasm/live/_gradethis.qmd >}}
 
-```{r}
-#| label: botoes-em-portugues
-#| include: false
-# learnr2::question() com os textos dos botões em português
-pergunta <- function(...) {
-  learnr2::question(
-    ...,
-    correct = "Correto!", incorrect = "Incorreto.",
-    submit_button = "Enviar", try_again_button = "Tentar de novo",
-    edit_button = "Editar"
-  )
-}
-```
+{{< include ../_learnr2-pt.qmd >}}
 
 Esta página roda R dentro do seu navegador ([webR](https://docs.r-wasm.org/webr/)):
 nada a instalar, nada a configurar. Ela acompanha o
