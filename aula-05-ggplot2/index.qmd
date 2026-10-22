@@ -29,6 +29,16 @@ imprima pelo navegador escolhendo "Salvar como PDF".*
 [`aula-04.R`](../aula-04-tidyverse/aula-04.R). Se ainda não o rodou, rode
 antes.
 
+## Exercícios no navegador
+
+Cinco exercícios curtos (as três camadas, histograma, cor dentro e fora do
+`aes()`, boxplot, facetas) com dicas e correção automática, e no fim a
+figura do relatório montada por você. O R roda dentro do navegador: não
+precisa instalar nada nem ter rodado a aula 04. No fim, você baixa um
+arquivo com as suas respostas para entregar.
+
+[{{< fa solid laptop-code >}} Abrir os exercícios](exercicios-aula-05.qmd){.btn .btn-outline-primary}
+
 ## Recursos externos
 
 - [Vídeo da aula — gráficos com ggplot2](https://www.youtube.com/watch?v=nfBqNDWWQNY&list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJDuWX&index=6)

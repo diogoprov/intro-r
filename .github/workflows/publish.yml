@@ -43,9 +43,23 @@ jobs:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-rpkgs-${{ hashFiles('.github/workflows/publish.yml') }}
 
+      # O CRAN fica como reserva: um pacote recém-publicado (o learnr2, por
+      # exemplo) pode levar dias para chegar ao snapshot do Posit Package
+      # Manager. E o install.packages() só AVISA quando não acha um pacote; a
+      # checagem logo depois transforma isso em erro aqui, e não no render.
       - name: Install R packages
         run: |
-          Rscript -e 'options(repos = c(CRAN = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))); install.packages(c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2", "broom", "purrr", "performance", "see"))'
+          Rscript -e '
+            options(repos = c(
+              RSPM = Sys.getenv("RSPM", "https://packagemanager.posit.co/cran/__linux__/noble/latest"),
+              CRAN = "https://cloud.r-project.org"
+            ))
+            pkgs <- c("rmarkdown", "knitr", "here", "dplyr", "tidyr", "ggplot2",
+                      "broom", "purrr", "performance", "see", "learnr2")
+            install.packages(pkgs)
+            faltando <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+            if (length(faltando)) stop("Pacotes não instalados: ", toString(faltando))
+          '
 
       - name: Render site
         run: quarto render

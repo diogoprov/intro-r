@@ -1,0 +1,579 @@
+---
+title: "Aula 05 — Exercícios no navegador"
+subtitle: "ggplot2 com os dados de anuros, sem instalar nada"
+format: live-html
+engine: knitr
+toc: true
+resources:
+  - ../dados/anuros_altitude.csv
+webr:
+  packages:
+    - dplyr
+    - ggplot2
+---
+
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+
+{{< include ../_extensions/r-wasm/live/_gradethis.qmd >}}
+
+{{< include ../_learnr2-pt.qmd >}}
+
+```{webr}
+#| label: ajudantes-correcao
+#| include: false
+# Usadas só pelas células de correção: o que o gráfico mapeia e desenha,
+# independente de como o código foi escrito.
+mapeado <- function(p, a) {
+  m <- p$mapping[[a]]
+  if (is.null(m) && length(p$layers) > 0) m <- p$layers[[1]]$mapping[[a]]
+  if (is.null(m)) "" else rlang::as_label(m)
+}
+geoms <- function(p) vapply(p$layers, function(l) class(l$geom)[1], "")
+```
+
+Esta página roda R dentro do seu navegador ([webR](https://docs.r-wasm.org/webr/)):
+nada a instalar, nada a configurar. Ela acompanha o
+[script da aula 05](aula-05.R) e usa os mesmos dados, anuros ao longo de
+gradientes altitudinais na Mata Atlântica (Bovo et al. 2023, *Integrative
+Organismal Biology* 5: obad009).
+
+- A primeira vez que a página abre, o navegador baixa o R, o `dplyr` e o
+  `ggplot2` (alguns MB). Espere a mensagem de carregamento sumir antes de
+  rodar código.
+- **Run Code** (ou `Ctrl`/`Cmd` + `Enter`) roda a célula. Nos exercícios,
+  o mesmo botão já confere a resposta e mostra um comentário embaixo do
+  gráfico. A correção olha o que o gráfico **faz** (que geometria, que
+  variável em cada eixo), não se o código está escrito igual ao nosso.
+- **Show Hint** mostra uma dica de cada vez; depois da última aparece
+  **Show Solution**. Tente antes de abrir.
+- O que você digita fica salvo neste navegador; recarregar a página não apaga.
+  Trocar de computador ou de navegador, sim.
+- As seções abrem uma de cada vez. Responda às perguntas de cada seção para
+  liberar o botão **Continue**.
+
+```{r}
+#| label: identificacao-1
+#| echo: false
+learnr2::student_info(
+  fields = c(name = "Nome:", email = "E-mail:", id = "Matrícula (se pedida):"),
+  submit_button = "Enviar", edit_button = "Editar"
+)
+```
+
+## Os dados
+
+No script da aula, os dados vêm do arquivo limpo que a aula 04 gravou. Aqui
+a página refaz o essencial a partir do arquivo bruto: as colunas que os
+gráficos usam, a tolerância ao aquecimento recalculada e a altitude também
+como fator (`alt_fator`). A célula roda sozinha quando a página termina de
+carregar.
+
+```{webr}
+#| label: os-dados-1
+#| edit: false
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+anuros
+```
+
+```{r}
+#| label: os-dados-2
+#| echo: false
+pergunta(
+  "Qual é a diferença entre as colunas `altitude` e `alt_fator`?",
+  learnr2::answer(
+    "Têm os mesmos valores, mas `altitude` é numérica e `alt_fator` é fator (categórica)",
+    correct = TRUE
+  ),
+  learnr2::answer("`alt_fator` tem as altitudes arredondadas"),
+  learnr2::answer("`alt_fator` é a altitude em categorias baixa/média/alta"),
+  allow_retry = TRUE
+)
+```
+
+## As três camadas
+
+Todo gráfico do `ggplot2` precisa de três coisas: **dados**, **mapeamento**
+(`aes()`: que variável vai em que eixo) e **geometria** (`geom_*()`: como
+desenhar). Faça um gráfico de dispersão com `ctmin` no eixo x e `ctmax` no
+eixo y.
+
+```{webr}
+#| label: as-tres-camadas-1
+#| setup: true
+#| exercise: ex_pontos
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: as-tres-camadas-2
+#| exercise: ex_pontos
+#| persist: true
+ggplot(anuros, aes(x = ____, y = ____)) +
+  ____()
+```
+
+::: { .hint exercise="ex_pontos" }
+Pontos são `geom_point()`. Os parênteses vazios são obrigatórios.
+:::
+
+```{webr}
+#| label: as-tres-camadas-3
+#| exercise: ex_pontos
+#| solution: true
+ggplot(anuros, aes(x = ctmin, y = ctmax)) +
+  geom_point()
+```
+
+```{webr}
+#| label: as-tres-camadas-4
+#| exercise: ex_pontos
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !inherits(.result, "ggplot"),
+    "O resultado não é um gráfico. Comece com ggplot(anuros, aes(...))."
+  )
+  gradethis::fail_if(
+    !"GeomPoint" %in% geoms(.result),
+    "Falta a geometria: sem um geom_*(), o ggplot desenha só os eixos."
+  )
+  gradethis::fail_if(
+    mapeado(.result, "x") == "ctmax" && mapeado(.result, "y") == "ctmin",
+    "Os eixos estão trocados: ctmin vai no x, ctmax no y."
+  )
+  gradethis::pass_if(
+    mapeado(.result, "x") == "ctmin" && mapeado(.result, "y") == "ctmax",
+    "Isso: dados, mapeamento e geometria."
+  )
+  gradethis::fail("Confira as variáveis dentro de aes().")
+})
+```
+
+## Uma variável: a distribuição
+
+Para ver a distribuição de uma variável contínua, o histograma corta o eixo
+em intervalos e conta quantos indivíduos caem em cada um. Faça o histograma
+de `ctmax` com 25 intervalos (`bins`).
+
+```{webr}
+#| label: uma-variavel-1
+#| setup: true
+#| exercise: ex_hist
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: uma-variavel-2
+#| exercise: ex_hist
+#| persist: true
+ggplot(anuros, aes(x = ____)) +
+  geom_histogram(bins = ____)
+```
+
+::: { .hint exercise="ex_hist" }
+O histograma só precisa de `x`: o eixo y é a contagem, que o próprio
+`geom_histogram()` calcula.
+:::
+
+```{webr}
+#| label: uma-variavel-3
+#| exercise: ex_hist
+#| solution: true
+ggplot(anuros, aes(x = ctmax)) +
+  geom_histogram(bins = 25)
+```
+
+```{webr}
+#| label: uma-variavel-4
+#| exercise: ex_hist
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !inherits(.result, "ggplot"),
+    "O resultado não é um gráfico. Comece com ggplot(anuros, aes(...))."
+  )
+  gradethis::fail_if(
+    !"GeomBar" %in% geoms(.result),
+    "Use geom_histogram() para a distribuição."
+  )
+  gradethis::fail_if(
+    mapeado(.result, "x") != "ctmax",
+    "A variável do eixo x deve ser ctmax."
+  )
+  gradethis::pass_if(
+    identical(as.numeric(.result$layers[[1]]$stat_params$bins), 25),
+    "Isso. Os 35 indivíduos sem CTmax ficam de fora, e o R avisa."
+  )
+  gradethis::fail("Quase. Confira o número de intervalos: bins = 25.")
+})
+```
+
+## Dentro ou fora do `aes()`?
+
+Dentro do `aes()` vai o que **vem dos dados**: a cor muda conforme o valor
+de uma coluna, e aparece uma legenda. Fora do `aes()` vai uma **decisão
+sua**, igual para todos os pontos. Pinte os pontos do gráfico de dispersão
+pela espécie.
+
+```{webr}
+#| label: dentro-ou-fora-1
+#| setup: true
+#| exercise: ex_cor
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: dentro-ou-fora-2
+#| exercise: ex_cor
+#| persist: true
+ggplot(anuros, aes(x = ctmin, y = ctmax, ____ = ____)) +
+  geom_point()
+```
+
+::: { .hint exercise="ex_cor" }
+No `ggplot2` o argumento de cor dos pontos é `colour` (ou `color`).
+:::
+
+```{webr}
+#| label: dentro-ou-fora-3
+#| exercise: ex_cor
+#| solution: true
+ggplot(anuros, aes(x = ctmin, y = ctmax, colour = especie)) +
+  geom_point()
+```
+
+```{webr}
+#| label: dentro-ou-fora-4
+#| exercise: ex_cor
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !inherits(.result, "ggplot"),
+    "O resultado não é um gráfico."
+  )
+  gradethis::fail_if(
+    !is.null(.result$layers[[1]]$aes_params$colour),
+    "A cor foi fixada fora do aes(): todos os pontos ficam iguais. Mapeie a cor dentro do aes()."
+  )
+  gradethis::pass_if(
+    mapeado(.result, "colour") == "especie",
+    "Isso. A cor vem da coluna especie, e o ggplot cria a legenda sozinho."
+  )
+  gradethis::fail("A cor deve vir da coluna especie, dentro do aes().")
+})
+```
+
+```{r}
+#| label: dentro-ou-fora-5
+#| echo: false
+pergunta(
+  "O que acontece com `ggplot(anuros, aes(ctmin, ctmax)) +
+  geom_point(aes(colour = \"red\"))`? Rode no exercício acima, se quiser
+  conferir.",
+  learnr2::answer(
+    "Os pontos saem num tom avermelhado padrão do ggplot, e aparece uma legenda escrita \"red\"",
+    correct = TRUE
+  ),
+  learnr2::answer("Os pontos saem vermelhos, sem legenda"),
+  learnr2::answer("O R dá erro, porque \"red\" não é uma coluna"),
+  allow_retry = TRUE
+)
+```
+
+## Discreta ou contínua: o boxplot
+
+O gráfico da pergunta do artigo compara o CTmax entre altitudes, separando
+as espécies. Faça um boxplot com `alt_fator` no x, `ctmax` no y e a cor por
+espécie.
+
+```{webr}
+#| label: boxplot-1
+#| setup: true
+#| exercise: ex_boxplot
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: boxplot-2
+#| exercise: ex_boxplot
+#| persist: true
+#| fig-width: 8
+ggplot(anuros, aes(x = ____, y = ctmax, colour = ____)) +
+  ____() +
+  labs(x = "Altitude (m)", y = "CTmax (°C)", colour = NULL)
+```
+
+::: { .hint exercise="ex_boxplot" }
+A geometria é `geom_boxplot()`.
+:::
+
+::: { .hint exercise="ex_boxplot" }
+Use `alt_fator`, não `altitude`. Rode também com `altitude` e compare.
+:::
+
+```{webr}
+#| label: boxplot-3
+#| exercise: ex_boxplot
+#| solution: true
+ggplot(anuros, aes(x = alt_fator, y = ctmax, colour = especie)) +
+  geom_boxplot() +
+  labs(x = "Altitude (m)", y = "CTmax (°C)", colour = NULL)
+```
+
+```{webr}
+#| label: boxplot-4
+#| exercise: ex_boxplot
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !inherits(.result, "ggplot"),
+    "O resultado não é um gráfico."
+  )
+  gradethis::fail_if(
+    !"GeomBoxplot" %in% geoms(.result),
+    "A geometria deve ser geom_boxplot()."
+  )
+  gradethis::fail_if(
+    mapeado(.result, "x") == "altitude",
+    "Com altitude numérica o ggplot trata o eixo como contínuo e não separa as caixas. Use alt_fator."
+  )
+  gradethis::pass_if(
+    mapeado(.result, "x") == "alt_fator" && mapeado(.result, "y") == "ctmax" &&
+      mapeado(.result, "colour") == "especie",
+    "Isso. Seis altitudes, uma caixa por espécie em cada."
+  )
+  gradethis::fail("Confira o mapeamento: x = alt_fator, y = ctmax, colour = especie.")
+})
+```
+
+```{r}
+#| label: boxplot-5
+#| echo: false
+pergunta(
+  "Repare no eixo x do boxplot: 35, 550, 820, 1022, 1500, 1600 m ficam
+  igualmente espaçados. Por que isso acontece, e o que se perde?",
+  learnr2::answer(
+    "Como `alt_fator` é um fator, o ggplot trata as altitudes como
+    categorias, uma ao lado da outra, e ignora a distância numérica entre
+    elas: o salto de 1022 para 1500 m ocupa o mesmo espaço que o de 1500
+    para 1600 m. Para comparar grupos isso basta; para ler uma tendência ao
+    longo do gradiente, a altitude numérica (como nas facetas da próxima
+    seção) mostra a escala de verdade.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+## Facetas: uma janela por espécie
+
+Quando as cores se sobrepõem demais, separe em painéis. Complete o gráfico
+de CTmax contra altitude com uma reta de regressão (`method = "lm"`) e um
+painel por espécie.
+
+```{webr}
+#| label: facetas-1
+#| setup: true
+#| exercise: ex_facetas
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: facetas-2
+#| exercise: ex_facetas
+#| persist: true
+#| fig-width: 8
+ggplot(anuros, aes(x = altitude, y = ctmax)) +
+  geom_point(alpha = .6) +
+  geom_smooth(method = ____, formula = y ~ x) +
+  facet_wrap(~ ____, scales = "free_y") +
+  labs(x = "Altitude (m)", y = "CTmax (°C)")
+```
+
+::: { .hint exercise="ex_facetas" }
+O método vai entre aspas: `method = "lm"`. A fórmula da faceta usa o nome
+da coluna sem aspas, depois do `~`.
+:::
+
+```{webr}
+#| label: facetas-3
+#| exercise: ex_facetas
+#| solution: true
+ggplot(anuros, aes(x = altitude, y = ctmax)) +
+  geom_point(alpha = .6) +
+  geom_smooth(method = "lm", formula = y ~ x) +
+  facet_wrap(~ especie, scales = "free_y") +
+  labs(x = "Altitude (m)", y = "CTmax (°C)")
+```
+
+```{webr}
+#| label: facetas-4
+#| exercise: ex_facetas
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !inherits(.result, "ggplot"),
+    "O resultado não é um gráfico."
+  )
+  gradethis::fail_if(
+    !all(c("GeomPoint", "GeomSmooth") %in% geoms(.result)),
+    "O gráfico precisa dos pontos e da reta (geom_smooth())."
+  )
+  gradethis::fail_if(
+    !inherits(.result$facet, "FacetWrap"),
+    "Faltam as facetas: facet_wrap(~ especie)."
+  )
+  gradethis::pass_if(
+    identical(names(.result$facet$params$facets), "especie"),
+    "Isso. Cinco painéis, um por espécie, cada um com a própria escala de y."
+  )
+  gradethis::fail("A faceta deve ser pela coluna especie.")
+})
+```
+
+```{r}
+#| label: facetas-5
+#| echo: false
+pergunta(
+  "Com `scales = \"free_y\"`, cada painel tem o próprio eixo y. O que isso
+  muda na leitura?",
+  learnr2::answer(
+    "Fica mais fácil ver a tendência dentro de cada espécie, mas comparar a altura dos pontos entre painéis passa a enganar",
+    correct = TRUE
+  ),
+  learnr2::answer("Nada: só muda a aparência, a comparação entre espécies continua direta"),
+  learnr2::answer("As retas de regressão passam a ser calculadas com todos os dados juntos"),
+  allow_retry = TRUE
+)
+```
+
+## A figura do relatório
+
+Agora sem lacunas. Monte a figura que vai para o relatório: tolerância ao
+aquecimento (`tol_aquec`) contra altitude, cor por espécie, pontos
+semitransparentes, uma reta por espécie, rótulos dos eixos em português e
+um tema limpo. O ponto de partida abaixo já funciona; melhore-o.
+
+```{webr}
+#| label: figura-do-relatorio-1
+#| setup: true
+#| exercise: ex_figura
+library(dplyr)
+library(ggplot2)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, altitude = Altitude_m,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5, alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: figura-do-relatorio-2
+#| exercise: ex_figura
+#| persist: true
+#| fig-width: 8
+#| fig-height: 4.5
+ggplot(anuros, aes(x = altitude, y = tol_aquec)) +
+  geom_point()
+```
+
+::: { .hint exercise="ex_figura" }
+Peças que você vai usar: `colour = especie` no `aes()`, `alpha` no
+`geom_point()`, `geom_smooth(method = "lm", formula = y ~ x)`, `labs()`,
+`theme_minimal()` e `theme(legend.position = "top")`.
+:::
+
+::: { .solution exercise="ex_figura" }
+```r
+ggplot(anuros, aes(x = altitude, y = tol_aquec, colour = especie)) +
+  geom_point(alpha = .65, size = 1.9) +
+  geom_smooth(method = "lm", formula = y ~ x, se = TRUE, linewidth = .8) +
+  labs(x = "Altitude (m)",
+       y = "Tolerância ao aquecimento (°C)",
+       colour = NULL,
+       caption = "Dados: Bovo et al. (2023), doi:10.1093/iob/obad009") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+```
+:::
+
+Tire um print da sua figura e cole na caixa abaixo: `Cmd` + `Shift` + `4`
+no Mac, `Win` + `Shift` + `S` no Windows. Depois clique na caixa e tecle
+`Ctrl`/`Cmd` + `V`.
+
+```{r}
+#| label: figura-do-relatorio-3
+#| echo: false
+pergunta(
+  "Cole aqui o print da sua figura final.",
+  learnr2::answer(
+    "Tolerância ao aquecimento contra altitude, com pontos semitransparentes
+    coloridos por espécie, uma reta de regressão por espécie com o intervalo
+    de confiança, eixos rotulados com unidade, legenda no topo, tema
+    minimalista e a fonte dos dados na legenda da figura.",
+    correct = TRUE
+  ),
+  type = "reflection",
+  allow_image = TRUE
+)
+```
+
+## Para entregar
+
+```{r}
+#| label: para-entregar-1
+#| echo: false
+pergunta(
+  "Quantos minutos, aproximadamente, você levou nesta página? Uma hora e
+  meia, por exemplo, são 90 minutos.",
+  type = "reflection_editable",
+  validate = "integer"
+)
+```
+
+O botão abaixo junta suas respostas, incluindo o print da figura, num
+arquivo `.json`. Envie esse arquivo pelo canal combinado na disciplina.
+
+```{r}
+#| label: para-entregar-2
+#| echo: false
+learnr2::download_answers_button(
+  filename_prefix = "aula-05", label = "Baixar minhas respostas"
+)
+```

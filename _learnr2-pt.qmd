@@ -1,0 +1,13 @@
+```{r}
+#| label: botoes-em-portugues
+#| include: false
+# learnr2::question() com os textos dos botões em português
+pergunta <- function(...) {
+  learnr2::question(
+    ...,
+    correct = "Correto!", incorrect = "Incorreto.",
+    submit_button = "Enviar", try_again_button = "Tentar de novo",
+    edit_button = "Editar"
+  )
+}
+```
