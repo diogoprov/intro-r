@@ -655,6 +655,19 @@ para isso, e são tão parte da gramática quanto a geometria.
 
 ## Onde mora cada elemento do tema {.smaller}
 
+![](img/a05-elementos-tema.png){.r-stretch}
+
+::: {.citacao}
+Ideia de [Henry Wang](https://henrywang.nl/ggplot2-theme-elements-demonstration/)
+e [Isabella Benabaye](https://isabella-b.com/blog/ggplot2-theme-elements-reference/),
+refeita com a figura final desta aula. A cor diz a função de cada
+elemento: <code style="color:#144f64">element_text()</code>,
+<code style="color:#c2701c">element_line()</code>,
+<code style="color:#5b7f3a">element_rect()</code>.
+:::
+
+## Mexendo no tema {.smaller}
+
 Cada pedaço do gráfico que não vem dos dados tem um nome no `theme()`:
 
 ```r
@@ -667,10 +680,9 @@ theme(
 
 . . .
 
-Não decorem os nomes. Consultem a
-[**folha de referência dos elementos do tema**](https://isabella-b.com/blog/ggplot2-theme-elements-reference/)
-de Isabella Benabaye: um gráfico com cada elemento apontado pelo nome, e o
-código ao lado (tem em PDF).
+Não decorem os nomes: voltem ao slide anterior, ou à
+[folha de Isabella Benabaye](https://isabella-b.com/blog/ggplot2-theme-elements-reference/),
+que tem o código de cada elemento em PDF.
 
 ::: {.citacao}
 Na dúvida entre `element_text()`, `element_line()` e `element_rect()`:
