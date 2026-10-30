@@ -142,28 +142,31 @@ errar em vez de um.
 duas linhas: a ideia é simples, escrever isso certo à mão é que não era.
 :::
 
-## O ciclo da ciência de dados {.smaller}
+## O ciclo da ciência de dados
 
 ::: {.ciclo}
-<div class="passo"><img src="img/hex-readr.png"><b>Importar</b></div>
+<div class="linha">
+<div class="passo"><img src="img/hex-readr.png"><b>Importar</b><code>read_csv()</code><span class="aula">aula 04</span></div>
 <div class="seta">→</div>
-<div class="passo"><img src="img/hex-tidyr.png"><b>Arrumar</b></div>
+<div class="passo"><img src="img/hex-tidyr.png"><b>Arrumar</b><code>pivot_longer()</code><code>drop_na()</code><span class="aula">aula 04</span></div>
 <div class="seta">→</div>
 <div class="explorar">
-<div class="passo"><img src="img/hex-dplyr.png"><b>Transformar</b></div>
-<div class="seta">↔</div>
-<div class="passo"><img src="img/hex-ggplot2.png"><b>Visualizar</b></div>
-<div class="seta">↔</div>
-<div class="passo"><div class="sem-hex">stats</div><b>Modelar</b></div>
+<div class="passo"><img src="img/hex-dplyr.png"><b>Transformar</b><code>filter()</code><code>summarise()</code><span class="aula">aula 04</span></div>
+<div class="seta">→</div>
+<div class="passo"><img src="img/hex-ggplot2.png"><b>Visualizar</b><code>ggplot()</code><code>geom_*()</code><span class="aula">aula 05</span></div>
+<div class="seta">→</div>
+<div class="passo"><div class="sem-hex">stats</div><b>Modelar</b><code>lm()</code><code>tidy()</code><span class="aula">aula 06</span></div>
+<div class="volta"><span>e de volta, quantas vezes for preciso</span></div>
 </div>
 <div class="seta">→</div>
-<div class="passo"><img src="img/hex-quarto.png"><b>Comunicar</b></div>
+<div class="passo"><img src="img/hex-quarto.png"><b>Comunicar</b><code>quarto render</code><span class="aula">aula 08</span></div>
+</div>
+<div class="programar"><b>Programar</b>: funções, <code>for</code> e <code>purrr::map()</code> para não repetir nenhum passo à mão <span class="aula">aula 07</span></div>
 :::
 
 ::: {.citacao}
-Esquema baseado em Wickham, Çetinkaya-Rundel & Grolemund,
-*R for Data Science* (2ª ed.), com o pacote que faz cada passo. A aula de
-hoje é o hexágono **tidyr**; a de amanhã, o laço **Explorar**.
+Baseado em Wickham, Çetinkaya-Rundel & Grolemund, *R for Data Science*
+(2ª ed.). Hoje: **Importar**, **Arrumar** e **Transformar**.
 :::
 
 ## Onde estudar
