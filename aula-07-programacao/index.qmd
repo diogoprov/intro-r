@@ -39,6 +39,17 @@ alto do gradiente vem de uma serra diferente do resto da amostra.
 Automatizar o ajuste não automatiza o julgamento.
 :::
 
+## Exercícios no navegador
+
+Cinco exercícios curtos (sua primeira função, `case_when()`, `for`,
+`map_dbl()` e um modelo por espécie) com dicas e correção automática. Quando
+o exercício é escrever uma função, a correção chama a sua função com
+vetores de teste, inclusive com `NA`. O R roda dentro do navegador: não
+precisa instalar nada nem ter rodado a aula 04. No fim, você baixa um
+arquivo com as suas respostas para entregar.
+
+[{{< fa solid laptop-code >}} Abrir os exercícios](exercicios-aula-07.qmd){.btn .btn-outline-primary}
+
 ## Exercício interativo (swirl)
 
 Depois da aula, pratique no console com a lição **Rudimentos de Programação** (~30 min): o

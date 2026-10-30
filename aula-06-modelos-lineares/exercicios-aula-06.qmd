@@ -1,0 +1,607 @@
+---
+title: "Aula 06 — Exercícios no navegador"
+subtitle: "Modelos lineares com os dados de anuros, sem instalar nada"
+format: live-html
+engine: knitr
+toc: true
+resources:
+  - ../dados/anuros_altitude.csv
+webr:
+  packages:
+    - dplyr
+    - broom
+---
+
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+
+{{< include ../_extensions/r-wasm/live/_gradethis.qmd >}}
+
+{{< include ../_learnr2-pt.qmd >}}
+
+Esta página roda R dentro do seu navegador ([webR](https://docs.r-wasm.org/webr/)):
+nada a instalar, nada a configurar. Ela acompanha o
+[script da aula 06](aula-06.R) e usa os mesmos dados, anuros ao longo de
+gradientes altitudinais na Mata Atlântica (Bovo et al. 2023, *Integrative
+Organismal Biology* 5: obad009).
+
+- A primeira vez que a página abre, o navegador baixa o R, o `dplyr` e o
+  `broom` (alguns MB). Espere a mensagem de carregamento sumir antes de
+  rodar código.
+- **Run Code** (ou `Ctrl`/`Cmd` + `Enter`) roda a célula. Nos exercícios,
+  o mesmo botão já confere a resposta e mostra um comentário embaixo.
+- A correção automática confere só **o modelo que você ajustou**: a resposta,
+  as preditoras, os coeficientes. A **interpretação** fica nas perguntas
+  abertas, com uma resposta-modelo para comparar depois que você escrever a
+  sua. Um coeficiente "certo" não diz nada se o modelo não se sustenta.
+- **Show Hint** mostra uma dica de cada vez; depois da última aparece
+  **Show Solution**. Tente antes de abrir.
+- O que você digita fica salvo neste navegador; recarregar a página não apaga.
+  Trocar de computador ou de navegador, sim.
+- As seções abrem uma de cada vez. Responda às perguntas de cada seção para
+  liberar o botão **Continue**.
+
+```{r}
+#| label: identificacao-1
+#| echo: false
+learnr2::student_info(
+  fields = c(name = "Nome:", email = "E-mail:", id = "Matrícula (se pedida):"),
+  submit_button = "Enviar", edit_button = "Editar"
+)
+```
+
+## Os dados
+
+No script da aula, os dados vêm do arquivo limpo que a aula 04 gravou. Aqui
+a página refaz o essencial a partir do arquivo bruto: espécie e serra como
+fatores, a tolerância ao aquecimento (`tol_aquec = ctmax - bio5`, em que
+`bio5` é a temperatura máxima do mês mais quente) e a altitude também como
+fator (`alt_fator`). A célula roda sozinha quando a página termina de
+carregar.
+
+```{webr}
+#| label: os-dados-1
+#| edit: false
+library(dplyr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5,
+         especie = factor(especie), serra = factor(serra),
+         alt_fator = factor(altitude)) |>
+  as_tibble()
+anuros
+```
+
+A pergunta da aula: a tolerância ao aquecimento muda com a altitude? Quem
+vive no alto tem mais ou menos margem térmica?
+
+```{r}
+#| label: os-dados-2
+#| echo: false
+pergunta(
+  "Em `lm(tol_aquec ~ altitude, data = anuros)`, o que vem antes do `~`?",
+  learnr2::answer("A variável resposta, a que queremos explicar", correct = TRUE),
+  learnr2::answer("A variável preditora"),
+  learnr2::answer("Tanto faz: a ordem não muda o modelo"),
+  allow_retry = TRUE
+)
+```
+
+## O modelo mais simples
+
+Ajuste a regressão da tolerância ao aquecimento contra a altitude e guarde o
+modelo em `m1`.
+
+```{webr}
+#| label: m1-1
+#| setup: true
+#| exercise: ex_m1
+library(dplyr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5,
+         especie = factor(especie), serra = factor(serra),
+         alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: m1-2
+#| exercise: ex_m1
+#| persist: true
+m1 <- lm(____ ~ ____, data = anuros)
+summary(m1)
+```
+
+::: { .hint exercise="ex_m1" }
+A resposta vem antes do `~` e a preditora depois: `tol_aquec ~ altitude`.
+:::
+
+```{webr}
+#| label: m1-3
+#| exercise: ex_m1
+#| solution: true
+m1 <- lm(tol_aquec ~ altitude, data = anuros)
+summary(m1)
+```
+
+```{webr}
+#| label: m1-4
+#| exercise: ex_m1
+#| check: true
+gradethis::grade_this({
+  m <- get0("m1", envir = .envir_result)
+  gradethis::fail_if(
+    !inherits(m, "lm"),
+    "Não achei o modelo. Guarde-o em m1: m1 <- lm(...)."
+  )
+  vars <- all.vars(formula(m))
+  gradethis::fail_if(
+    identical(vars, c("altitude", "tol_aquec")),
+    "O modelo está invertido: a resposta (tol_aquec) vem antes do ~."
+  )
+  gradethis::pass_if(
+    identical(vars, c("tol_aquec", "altitude")),
+    "Isso. Antes de ler os coeficientes, repare na linha das observações removidas no summary."
+  )
+  gradethis::fail("O modelo deve ser tol_aquec ~ altitude.")
+})
+```
+
+```{r}
+#| label: m1-5
+#| echo: false
+pergunta(
+  "A tabela tem 225 linhas, mas `nobs(m1)` dá 190. Por quê?",
+  learnr2::answer(
+    "O `lm()` descarta as linhas com `NA` em alguma variável do modelo: 35 indivíduos não têm CTmax, e portanto não têm `tol_aquec`",
+    correct = TRUE
+  ),
+  learnr2::answer("O `lm()` remove os outliers automaticamente"),
+  learnr2::answer("O `summary()` mostra só uma amostra das observações"),
+  allow_retry = TRUE
+)
+```
+
+## Diagnóstico antes de interpretar
+
+Ainda não olhe o coeficiente com atenção. Primeiro, os quatro gráficos de
+diagnóstico do modelo. Rode a célula.
+
+```{webr}
+#| label: diagnostico-1
+#| fig-height: 7
+#| fig-width: 8
+m1 <- lm(tol_aquec ~ altitude, data = anuros)
+par(mfrow = c(2, 2))
+plot(m1)
+```
+
+```{r}
+#| label: diagnostico-2
+#| echo: false
+pergunta(
+  "Qual dos quatro painéis responde se a variância dos resíduos é constante
+  ao longo dos valores ajustados?",
+  learnr2::answer("Scale-Location", correct = TRUE),
+  learnr2::answer("Q-Q Residuals"),
+  learnr2::answer("Residuals vs Leverage"),
+  learnr2::answer("Residuals vs Fitted"),
+  allow_retry = TRUE
+)
+```
+
+```{r}
+#| label: diagnostico-3
+#| echo: false
+pergunta(
+  "Olhe o painel **Residuals vs Fitted**. Os resíduos formam colunas, e a
+  linha vermelha não é reta. O que cada uma dessas coisas diz sobre o
+  modelo?",
+  learnr2::answer(
+    "As colunas são as seis altitudes amostradas: o modelo dá o mesmo valor
+    ajustado a todos os indivíduos de um sítio. Isso lembra que há 190
+    indivíduos, mas só seis sítios, e indivíduos do mesmo sítio dificilmente
+    são independentes entre si. A linha vermelha em arco (resíduos acima de
+    zero nas altitudes do meio, abaixo nas pontas) sugere que a relação não
+    é bem uma reta. Nenhuma das duas coisas impede o ajuste, mas as duas
+    pedem cautela com o p e com a ideia de que a tolerância muda
+    linearmente com a altitude.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+```{r}
+#| label: diagnostico-4
+#| echo: false
+pergunta(
+  "Com esses cuidados em mente: o coeficiente de `altitude` em `m1` é
+  cerca de 0,0034 (°C por metro). O que ele diz?",
+  learnr2::answer(
+    "Em média, a tolerância ao aquecimento é cerca de 3,4 °C maior a cada 1000 m de altitude",
+    correct = TRUE
+  ),
+  learnr2::answer("A tolerância ao aquecimento diminui com a altitude"),
+  learnr2::answer("Cada sapo ganha 0,0034 °C de tolerância por metro que sobe"),
+  allow_retry = TRUE
+)
+```
+
+## Uma preditora categórica
+
+Com espécie como preditora, o R escolhe uma espécie de referência (a
+primeira em ordem alfabética, *Boana faber*) e cada coeficiente é a
+diferença em relação a ela. Troque a referência para *Rhinella icterica* e
+ajuste `m2`.
+
+```{webr}
+#| label: categorica-1
+#| setup: true
+#| exercise: ex_ref
+library(dplyr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5,
+         especie = factor(especie), serra = factor(serra),
+         alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: categorica-2
+#| exercise: ex_ref
+#| persist: true
+anuros$especie <- relevel(anuros$especie, ref = ____)
+m2 <- lm(tol_aquec ~ especie, data = anuros)
+tidy(m2)
+```
+
+::: { .hint exercise="ex_ref" }
+O nome da espécie vai entre aspas, escrito exatamente como no nível do
+fator: `levels(anuros$especie)` mostra todos.
+:::
+
+```{webr}
+#| label: categorica-3
+#| exercise: ex_ref
+#| solution: true
+anuros$especie <- relevel(anuros$especie, ref = "Rhinella icterica")
+m2 <- lm(tol_aquec ~ especie, data = anuros)
+tidy(m2)
+```
+
+```{webr}
+#| label: categorica-4
+#| exercise: ex_ref
+#| check: true
+gradethis::grade_this({
+  m <- get0("m2", envir = .envir_result)
+  gradethis::fail_if(
+    !inherits(m, "lm"),
+    "Não achei o modelo. Guarde-o em m2."
+  )
+  termos <- names(coef(m))
+  gradethis::fail_if(
+    !"especieBoana faber" %in% termos,
+    "Boana faber ainda é a referência (não aparece como coeficiente). Use relevel() antes de ajustar o modelo."
+  )
+  gradethis::pass_if(
+    length(termos) == 5 && !"especieRhinella icterica" %in% termos,
+    "Isso. Cinco espécies, quatro diferenças: Rhinella icterica virou o intercepto."
+  )
+  gradethis::fail("A referência deve ser Rhinella icterica.")
+})
+```
+
+```{r}
+#| label: categorica-5
+#| echo: false
+pergunta(
+  "Em `m2` com *Rhinella icterica* de referência, o intercepto é 13,2 e o
+  coeficiente de *Dendropsophus minutus* é −6,4. O que esses números são?",
+  learnr2::answer(
+    "A tolerância média de *R. icterica* é 13,2 °C, e a de *D. minutus* é 6,4 °C menor que a dela (cerca de 6,8 °C)",
+    correct = TRUE
+  ),
+  learnr2::answer("A tolerância média de *D. minutus* é −6,4 °C"),
+  learnr2::answer("*D. minutus* perde 6,4 °C de tolerância por metro de altitude"),
+  allow_retry = TRUE
+)
+```
+
+## O desenho amostral decide o modelo
+
+A pergunta óbvia: o efeito da altitude é diferente nas duas serras? Antes de
+ajustar qualquer coisa, olhe onde cada altitude foi amostrada.
+
+```{webr}
+#| label: aninhado-1
+with(anuros, table(serra, altitude))
+```
+
+Agora ajuste o modelo com a altitude como **fator** (`alt_fator`), em
+interação com a serra, e guarde em `m4`.
+
+```{webr}
+#| label: aninhado-2
+#| setup: true
+#| exercise: ex_aninhado
+library(dplyr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5,
+         especie = factor(especie), serra = factor(serra),
+         alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: aninhado-3
+#| exercise: ex_aninhado
+#| persist: true
+m4 <- lm(tol_aquec ~ ____ * ____, data = anuros)
+coef(m4)
+```
+
+::: { .hint exercise="ex_aninhado" }
+`a * b` na fórmula quer dizer os dois efeitos e a interação entre eles.
+Use `alt_fator` e `serra`.
+:::
+
+```{webr}
+#| label: aninhado-4
+#| exercise: ex_aninhado
+#| solution: true
+m4 <- lm(tol_aquec ~ alt_fator * serra, data = anuros)
+coef(m4)
+```
+
+```{webr}
+#| label: aninhado-5
+#| exercise: ex_aninhado
+#| check: true
+gradethis::grade_this({
+  m <- get0("m4", envir = .envir_result)
+  gradethis::fail_if(
+    !inherits(m, "lm"),
+    "Não achei o modelo. Guarde-o em m4."
+  )
+  gradethis::fail_if(
+    "altitude" %in% all.vars(formula(m)),
+    "Aqui a altitude entra como fator: use alt_fator. A altitude numérica vem na próxima seção."
+  )
+  gradethis::pass_if(
+    setequal(all.vars(formula(m)), c("tol_aquec", "alt_fator", "serra")) &&
+      any(grepl(":", names(coef(m)))),
+    "O modelo rodou, mas olhe os coeficientes: todos os termos de serra saíram NA."
+  )
+  gradethis::fail("O modelo deve ser tol_aquec ~ alt_fator * serra.")
+})
+```
+
+```{r}
+#| label: aninhado-6
+#| echo: false
+pergunta(
+  "Por que todos os coeficientes que envolvem `serra` saíram `NA`? É falta
+  de dados?",
+  learnr2::answer(
+    "Não é falta de dados nem erro do R. Cada altitude foi amostrada em uma
+    serra só (35, 820, 1022 e 1500 m na Serra do Mar; 550 e 1600 m na
+    Mantiqueira): a altitude está aninhada na serra, não cruzada com ela.
+    Com a altitude como fator, saber o sítio já diz a serra, e nenhum dado
+    separa o efeito de um do efeito do outro. O `alias(m4)` mostra cada
+    termo de serra como combinação dos de altitude. Mais indivíduos nos
+    mesmos sítios não resolveriam; só sítios na mesma altitude nas duas
+    serras.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+## Altitude contínua: o modelo ajusta. Cuidado.
+
+Com a altitude como **número**, o mesmo modelo ajusta sem nenhum `NA`. Rode:
+
+```{webr}
+#| label: continua-1
+tidy(lm(tol_aquec ~ altitude * serra, data = anuros))
+```
+
+O coeficiente `serraSerra do Mar` é a diferença entre as serras na altitude
+zero, fora da faixa amostrada nas duas. Centralize a altitude em 1000 m
+(`alt_c = altitude - 1000`) e ajuste de novo.
+
+```{webr}
+#| label: continua-2
+#| setup: true
+#| exercise: ex_centra
+library(dplyr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5,
+         especie = factor(especie), serra = factor(serra),
+         alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: continua-3
+#| exercise: ex_centra
+#| persist: true
+anuros <- anuros |> mutate(alt_c = altitude - ____)
+m5c <- lm(tol_aquec ~ ____ * serra, data = anuros)
+tidy(m5c)
+```
+
+::: { .hint exercise="ex_centra" }
+Subtraia 1000 e use a coluna nova, `alt_c`, no lugar de `altitude`.
+:::
+
+```{webr}
+#| label: continua-4
+#| exercise: ex_centra
+#| solution: true
+anuros <- anuros |> mutate(alt_c = altitude - 1000)
+m5c <- lm(tol_aquec ~ alt_c * serra, data = anuros)
+tidy(m5c)
+```
+
+```{webr}
+#| label: continua-5
+#| exercise: ex_centra
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !is.data.frame(.result) || !"term" %in% names(.result),
+    "O resultado deve ser a tabela do tidy(m5c)."
+  )
+  gradethis::fail_if(
+    "altitude" %in% .result$term,
+    "O modelo ainda usa altitude. Troque por alt_c."
+  )
+  serra_aluno <- .result$estimate[.result$term == "serraSerra do Mar"]
+  serra_sol <- .solution$estimate[.solution$term == "serraSerra do Mar"]
+  gradethis::pass_if(
+    length(serra_aluno) == 1 && isTRUE(all.equal(serra_aluno, serra_sol)),
+    "Isso. A inclinação e a interação não mudaram; o coeficiente de serra mudou de sinal."
+  )
+  gradethis::fail("O coeficiente de serra não bate. Confira se alt_c é altitude - 1000.")
+})
+```
+
+```{r}
+#| label: continua-6
+#| echo: false
+pergunta(
+  "Sem centralizar, o coeficiente de serra é −1,64 (p = 0,13); centralizado
+  em 1000 m, é +1,09 (p = 0,02). R², resíduos e graus de liberdade são
+  idênticos. Qual dos dois está certo?",
+  learnr2::answer(
+    "Os dois: é o mesmo ajuste, e cada coeficiente responde a uma pergunta diferente (a diferença entre as serras a 0 m e a 1000 m). Só o segundo cai dentro da faixa amostrada",
+    correct = TRUE
+  ),
+  learnr2::answer("O centralizado, porque o p é menor"),
+  learnr2::answer("O sem centralizar, porque usa a altitude original"),
+  allow_retry = TRUE
+)
+```
+
+## Trocando a resposta
+
+O exercício (a) do script: ajuste a regressão de `ctmax` (e não de
+`tol_aquec`) contra a altitude e veja a tabela de coeficientes.
+
+```{webr}
+#| label: ctmax-1
+#| setup: true
+#| exercise: ex_ctmax
+library(dplyr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(tol_aquec = ctmax - bio5,
+         especie = factor(especie), serra = factor(serra),
+         alt_fator = factor(altitude)) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: ctmax-2
+#| exercise: ex_ctmax
+#| persist: true
+m_ctmax <- lm(____ ~ altitude, data = anuros)
+tidy(m_ctmax, conf.int = TRUE)
+```
+
+```{webr}
+#| label: ctmax-3
+#| exercise: ex_ctmax
+#| solution: true
+m_ctmax <- lm(ctmax ~ altitude, data = anuros)
+tidy(m_ctmax, conf.int = TRUE)
+```
+
+```{webr}
+#| label: ctmax-4
+#| exercise: ex_ctmax
+#| check: true
+gradethis::grade_this({
+  m <- get0("m_ctmax", envir = .envir_result)
+  gradethis::fail_if(
+    !inherits(m, "lm"),
+    "Não achei o modelo. Guarde-o em m_ctmax."
+  )
+  gradethis::pass_if(
+    identical(all.vars(formula(m)), c("ctmax", "altitude")),
+    "Isso. Compare a inclinação com a de m1: o sinal mudou, e o intervalo de confiança agora inclui o zero."
+  )
+  gradethis::fail("O modelo deve ser ctmax ~ altitude.")
+})
+```
+
+A temperatura máxima do mês mais quente (`bio5`) em cada altitude:
+
+```{webr}
+#| label: ctmax-5
+anuros |>
+  group_by(altitude) |>
+  summarise(bio5 = mean(bio5), ctmax = mean(ctmax, na.rm = TRUE))
+```
+
+```{r}
+#| label: ctmax-6
+#| echo: false
+pergunta(
+  "A tolerância ao aquecimento aumenta com a altitude, mas o CTmax quase
+  não muda. Como as duas coisas podem ser verdade ao mesmo tempo?",
+  learnr2::answer(
+    "Porque `tol_aquec = ctmax - bio5`, e quem muda com a altitude é o
+    `bio5`: a temperatura máxima do mês mais quente cai de cerca de 30 °C a
+    35 m para 24–25 °C de 820 m para cima. O CTmax médio oscila entre 35,8
+    e 38,1 °C sem tendência (inclinação de −0,0003 °C/m, com intervalo que
+    inclui o zero). A margem aumenta porque o ambiente esfria, não porque os
+    animais do alto toleram mais calor. Uma variável derivada carrega as
+    duas partes da conta, e vale olhar cada parte antes de interpretar.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+## Para entregar
+
+```{r}
+#| label: para-entregar-1
+#| echo: false
+pergunta(
+  "Quantos minutos, aproximadamente, você levou nesta página? Uma hora e
+  meia, por exemplo, são 90 minutos.",
+  type = "reflection_editable",
+  validate = "integer"
+)
+```
+
+O botão abaixo junta suas respostas num arquivo `.json`. Envie esse arquivo
+pelo canal combinado na disciplina.
+
+```{r}
+#| label: para-entregar-2
+#| echo: false
+learnr2::download_answers_button(
+  filename_prefix = "aula-06", label = "Baixar minhas respostas"
+)
+```

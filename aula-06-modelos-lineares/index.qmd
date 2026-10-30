@@ -59,6 +59,18 @@ comparação. É uma aula de desenho amostral que dado sintético nenhum dá.
 - [{{< fa solid file-pdf >}} `extra-regressao-linear.pdf`](extra-regressao-linear.pdf)
 - [{{< fa solid file-pdf >}} `extra-teste-hipotese.pdf`](extra-teste-hipotese.pdf)
 
+## Exercícios no navegador
+
+Cinco exercícios curtos (o modelo simples, a referência de um fator, o
+modelo com altitude aninhada em serra, a altitude centralizada e a troca da
+resposta) com diagnóstico antes da interpretação. A correção automática
+confere o modelo ajustado; a interpretação fica em perguntas abertas, com
+resposta-modelo. O R roda dentro do navegador: não precisa instalar nada nem
+ter rodado a aula 04. No fim, você baixa um arquivo com as suas respostas
+para entregar.
+
+[{{< fa solid laptop-code >}} Abrir os exercícios](exercicios-aula-06.qmd){.btn .btn-outline-primary}
+
 ## Exercício interativo (swirl)
 
 Depois da aula, pratique no console com a lição **Modelos Lineares** (~35 min): o

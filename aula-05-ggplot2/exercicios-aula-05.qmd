@@ -519,6 +519,13 @@ Peças que você vai usar: `colour = especie` no `aes()`, `alpha` no
 `theme_minimal()` e `theme(legend.position = "top")`.
 :::
 
+::: { .hint exercise="ex_figura" }
+Quer mexer em mais coisas do tema (grade, fonte do eixo, fundo)? A
+[folha de referência dos elementos do tema](https://isabella-b.com/blog/ggplot2-theme-elements-reference/),
+de Isabella Benabaye, mostra o nome de cada pedaço do gráfico dentro do
+`theme()`.
+:::
+
 ::: { .solution exercise="ex_figura" }
 ```r
 ggplot(anuros, aes(x = altitude, y = tol_aquec, colour = especie)) +

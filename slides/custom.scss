@@ -149,31 +149,70 @@ $code-block-border-color: #e3dccd;
 // Estas regras vêm DEPOIS das regras de imagem lá em cima de propósito:
 // `.reveal .ciclo .passo img` e `.reveal .slide img:not(.r-stretch)` têm a
 // mesma especificidade, então quem ganha é a última do arquivo.
-.reveal .ciclo {
-  display: flex; align-items: center; justify-content: center;
-  gap: .35rem; margin: 1.4rem 0 .8rem;
+.reveal .ciclo { margin: 1.1rem 0 .6rem; }
+.reveal .ciclo .linha {
+  display: flex; align-items: flex-start; justify-content: center; gap: .3rem;
 }
-.reveal .ciclo .passo { display: flex; flex-direction: column; align-items: center; width: 142px; }
-.reveal .ciclo .passo img { width: 130px; height: auto; max-height: none; margin: 0 0 .3rem; }
-.reveal .ciclo .passo b { font-size: .6em; color: #144f64; line-height: 1.1; }
-.reveal .ciclo .seta { font-size: 1.1em; color: #8a8375; padding: 0 .1rem; }
+.reveal .ciclo .passo { display: flex; flex-direction: column; align-items: center; width: 138px; flex-shrink: 0; }
+.reveal .ciclo .passo img { width: 118px; height: auto; max-height: none; margin: 0 0 .3rem; }
+.reveal .ciclo .passo b { font-size: .62em; color: #144f64; line-height: 1.1; margin-bottom: .2rem; }
+.reveal .ciclo .passo code {
+  font-size: .46em; line-height: 1.35; color: #2d3748; background: none; padding: 0;
+  white-space: nowrap;
+}
+// A aula em que cada passo aparece, como etiqueta embaixo do passo.
+.reveal .ciclo .aula {
+  display: inline-block; margin-top: .3rem; padding: .05rem .5rem;
+  border-radius: 999px; background: #144f64; color: #faf7f0;
+  font-size: .42em; font-weight: 600; letter-spacing: .02em;
+}
+// As setas ficam na altura do meio dos hexágonos, não no meio do passo
+// inteiro (que agora tem funções e etiqueta embaixo).
+.reveal .ciclo .seta { font-size: 1.1em; color: #8a8375; padding: 0 .05rem; margin-top: 50px; }
 
 // O laço Explorar é uma caixa em volta dos três passos do meio; o rótulo
 // entra no ::before, montado sobre a borda, com o fundo do slide por trás.
 .reveal .ciclo .explorar {
-  display: flex; align-items: center; gap: .35rem; position: relative;
-  border: 1px solid #c9bfa8; border-radius: 10px; padding: .6rem .6rem .35rem;
+  display: flex; align-items: flex-start; gap: .3rem; position: relative;
+  border: 1px solid #c9bfa8; border-radius: 10px;
+  padding: .7rem .4rem 2.2rem; margin-top: -.7rem;
 }
+.reveal .ciclo .explorar > .seta { margin-top: 50px; }
 .reveal .ciclo .explorar::before {
   content: "Explorar"; position: absolute; top: -.62em; left: 50%;
   transform: translateX(-50%); background: #faf7f0; padding: 0 .45rem;
   font-size: .5em; color: #455260;
 }
+// A volta do laço: um U do Modelar de volta ao Transformar, com a ponta da
+// seta (▲) na chegada, embaixo do Transformar.
+.reveal .ciclo .volta {
+  position: absolute; left: 69px; right: 69px; bottom: .45rem; height: 1.15rem;
+  border: 1.5px solid #c2701c; border-top: none; border-radius: 0 0 14px 14px;
+}
+.reveal .ciclo .volta::before {
+  content: "▲"; position: absolute; left: -.42em; top: -.75em;
+  color: #c2701c; font-size: .5em;
+}
+.reveal .ciclo .volta span {
+  position: absolute; left: 50%; bottom: -.62em; transform: translateX(-50%);
+  background: #faf7f0; padding: 0 .4rem; white-space: nowrap;
+  font-size: .44em; color: #c2701c; font-style: italic;
+}
+// Programar envolve o ciclo inteiro no R4DS; aqui é a faixa que passa por
+// baixo de todos os passos.
+.reveal .ciclo .programar {
+  margin: .8rem auto 0; padding: .3rem .8rem; max-width: 1040px;
+  border: 1px dashed #8a8375; border-radius: 10px; text-align: center;
+  font-size: .56em; color: #455260;
+}
+.reveal .ciclo .programar b { color: #144f64; }
+.reveal .ciclo .programar code { font-size: .92em; background: none; padding: 0; }
+.reveal .ciclo .programar .aula { margin: 0 0 0 .4rem; font-size: .8em; vertical-align: .1em; }
 
 // O passo Modelar não tem hex sticker — `stats` é um pacote base, sem
 // logotipo. Este hexágono é desenhado em CSS, no tamanho dos outros.
 .reveal .ciclo .sem-hex {
-  width: 130px; height: 150px; margin: 0 0 .3rem;
+  width: 118px; height: 136px; margin: 0 0 .3rem;
   display: flex; align-items: center; justify-content: center;
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   background: #e3dccd; color: #144f64; font-size: .58em; font-weight: 600;

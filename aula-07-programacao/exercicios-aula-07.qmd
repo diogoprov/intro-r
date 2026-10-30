@@ -1,0 +1,643 @@
+---
+title: "Aula 07 — Exercícios no navegador"
+subtitle: "Funções, controle de fluxo e map com os dados de anuros, sem instalar nada"
+format: live-html
+engine: knitr
+toc: true
+resources:
+  - ../dados/anuros_altitude.csv
+webr:
+  packages:
+    - dplyr
+    - purrr
+    - broom
+---
+
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+
+{{< include ../_extensions/r-wasm/live/_gradethis.qmd >}}
+
+{{< include ../_learnr2-pt.qmd >}}
+
+Esta página roda R dentro do seu navegador ([webR](https://docs.r-wasm.org/webr/)):
+nada a instalar, nada a configurar. Ela acompanha o
+[script da aula 07](aula-07.R) e usa os mesmos dados, anuros ao longo de
+gradientes altitudinais na Mata Atlântica (Bovo et al. 2023, *Integrative
+Organismal Biology* 5: obad009).
+
+- A primeira vez que a página abre, o navegador baixa o R, o `dplyr`, o
+  `purrr` e o `broom` (alguns MB). Espere a mensagem de carregamento sumir
+  antes de rodar código.
+- **Run Code** (ou `Ctrl`/`Cmd` + `Enter`) roda a célula. Nos exercícios,
+  o mesmo botão já confere a resposta e mostra um comentário embaixo. Quando
+  o exercício é escrever uma função, a correção **chama a sua função** com
+  vetores de teste (inclusive com `NA`) e confere o que ela devolve.
+- **Show Hint** mostra uma dica de cada vez; depois da última aparece
+  **Show Solution**. Tente antes de abrir.
+- O que você digita fica salvo neste navegador; recarregar a página não apaga.
+  Trocar de computador ou de navegador, sim.
+- As seções abrem uma de cada vez. Responda às perguntas de cada seção para
+  liberar o botão **Continue**.
+
+```{r}
+#| label: identificacao-1
+#| echo: false
+learnr2::student_info(
+  fields = c(name = "Nome:", email = "E-mail:", id = "Matrícula (se pedida):"),
+  submit_button = "Enviar", edit_button = "Editar"
+)
+```
+
+## Os dados
+
+No script da aula, os dados vêm do arquivo limpo que a aula 04 gravou. Aqui
+a página refaz o essencial a partir do arquivo bruto: as colunas usadas
+hoje, com a amplitude térmica e a tolerância ao aquecimento recalculadas. A
+célula roda sozinha quando a página termina de carregar.
+
+```{webr}
+#| label: os-dados-1
+#| edit: false
+library(dplyr)
+library(purrr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         massa = Bodymass_g, ewl = EWL_Ugcm2s1,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(amplitude = ctmax - ctmin, tol_aquec = ctmax - bio5) |>
+  as_tibble()
+anuros
+```
+
+Na aula 04, o resumo de cada variável foi escrito copiando e colando:
+
+```r
+mean(anuros$ctmax, na.rm = TRUE); sd(anuros$ctmax, na.rm = TRUE)
+mean(anuros$ctmin, na.rm = TRUE); sd(anuros$ctmin, na.rm = TRUE)
+mean(anuros$ewl,   na.rm = TRUE); sd(anuros$ctmin, na.rm = TRUE)
+```
+
+```{r}
+#| label: os-dados-2
+#| echo: false
+pergunta(
+  "O trecho acima roda sem nenhuma mensagem de erro. Ele está certo?",
+  learnr2::answer(
+    "Não: na terceira linha o `sd()` ainda usa `ctmin`, e o R não tem como saber que era para ser `ewl`",
+    correct = TRUE
+  ),
+  learnr2::answer("Sim: se estivesse errado, o R daria um erro"),
+  learnr2::answer("Não: o `;` não pode separar dois comandos na mesma linha"),
+  allow_retry = TRUE
+)
+```
+
+## Sua primeira função
+
+O erro padrão da média é o desvio padrão dividido pela raiz do tamanho da
+amostra, $s / \sqrt{n}$. Escreva a função `erro_padrao(x)`, que **ignora os
+`NA`**: eles não entram no desvio padrão e também não contam no $n$.
+
+```{webr}
+#| label: primeira-funcao-1
+#| setup: true
+#| exercise: ex_ep
+library(dplyr)
+library(purrr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         massa = Bodymass_g, ewl = EWL_Ugcm2s1,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(amplitude = ctmax - ctmin, tol_aquec = ctmax - bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: primeira-funcao-2
+#| exercise: ex_ep
+#| persist: true
+erro_padrao <- function(x) {
+  n <- ____
+  sd(x, na.rm = TRUE) / sqrt(n)
+}
+
+erro_padrao(anuros$ctmax)
+```
+
+::: { .hint exercise="ex_ep" }
+`is.na(x)` devolve `TRUE` onde há `NA`; `!is.na(x)`, onde **não** há. E a
+soma de um vetor lógico conta quantos `TRUE` ele tem.
+:::
+
+::: { .hint exercise="ex_ep" }
+Cuidado com `length(x)`: ele conta os `NA` também.
+:::
+
+```{webr}
+#| label: primeira-funcao-3
+#| exercise: ex_ep
+#| solution: true
+erro_padrao <- function(x) {
+  n <- sum(!is.na(x))
+  sd(x, na.rm = TRUE) / sqrt(n)
+}
+
+erro_padrao(anuros$ctmax)
+```
+
+```{webr}
+#| label: primeira-funcao-4
+#| exercise: ex_ep
+#| check: true
+gradethis::grade_this({
+  ep <- get0("erro_padrao", envir = .envir_result)
+  gradethis::fail_if(
+    !is.function(ep),
+    "Não achei a função. Ela deve ser criada com erro_padrao <- function(x) { ... }."
+  )
+  x <- c(2, 4, 6, 8)
+  esperado <- sd(x) / sqrt(length(x))
+  r1 <- tryCatch(ep(x), error = function(e) NULL)
+  gradethis::fail_if(
+    is.null(r1),
+    "A função dá erro quando recebe c(2, 4, 6, 8). Rode erro_padrao(c(2, 4, 6, 8)) e leia a mensagem."
+  )
+  gradethis::fail_if(
+    !isTRUE(all.equal(r1, esperado)),
+    "Sem NA, erro_padrao(c(2, 4, 6, 8)) deveria dar sd/raiz(4), cerca de 1,29. Confira a conta."
+  )
+  r2 <- tryCatch(ep(c(x, NA)), error = function(e) NULL)
+  gradethis::fail_if(
+    is.null(r2) || is.na(r2),
+    "Com um NA no vetor, a função devolve NA. O sd() precisa de na.rm = TRUE."
+  )
+  gradethis::fail_if(
+    isTRUE(all.equal(r2, sd(x) / sqrt(5))),
+    "Quase: o sd() já ignora o NA, mas o n ainda o conta. length(x) inclui os NA; use sum(!is.na(x))."
+  )
+  gradethis::pass_if(
+    isTRUE(all.equal(r2, esperado)),
+    "Isso. A correção chamou a sua função com c(2, 4, 6, 8) e com um NA a mais, e o resultado foi o mesmo, como deve ser."
+  )
+  gradethis::fail("A função roda, mas com NA o resultado não bate. Confira o n.")
+})
+```
+
+## Escopo: o que acontece dentro, fica dentro
+
+Rode a célula abaixo antes de responder. Pode mexer nela à vontade.
+
+```{webr}
+#| label: escopo-1
+x <- 10
+troca <- function(x) {
+  x <- 999
+  x
+}
+troca(x)
+```
+
+```{r}
+#| label: escopo-2
+#| echo: false
+pergunta(
+  "Depois de rodar a célula acima, quanto vale `x`? Acrescente uma linha
+  com `x` na célula para conferir.",
+  learnr2::answer(
+    "10: a função trabalhou com uma cópia de `x`, e o que ela muda lá dentro não sai dela",
+    correct = TRUE
+  ),
+  learnr2::answer("999: a função mudou o `x`"),
+  learnr2::answer("Dá erro, porque `x` foi usado dentro e fora da função"),
+  allow_retry = TRUE
+)
+```
+
+```{r}
+#| label: escopo-3
+#| echo: false
+pergunta(
+  "Se o que acontece dentro de uma função fica dentro dela, como o resultado
+  de uma função chega ao resto do seu script?",
+  learnr2::answer(
+    "Pelo valor que ela devolve, que é o da última expressão do corpo (ou o
+    de `return()`). Para guardar esse valor, você o atribui a um objeto lá
+    fora: `ep <- erro_padrao(anuros$ctmax)`. Uma função que tenta mudar
+    objetos fora dela esconde de onde vêm as mudanças e cria bugs difíceis
+    de achar.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+## `if` decide um valor; `case_when()`, uma coluna
+
+O script da aula traz a função `classifica_altitude()`, que usa `if`/`else`
+para dizer se **uma** altitude é baixa, média ou alta. Mas `if` aceita um
+valor só. Para classificar a coluna inteira, use o `case_when()`, que testa
+as condições em ordem e para na primeira verdadeira. Complete: abaixo de
+500 m é baixa, abaixo de 1200 m é média, o resto é alta.
+
+```{webr}
+#| label: case-when-1
+#| setup: true
+#| exercise: ex_faixa
+library(dplyr)
+library(purrr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         massa = Bodymass_g, ewl = EWL_Ugcm2s1,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(amplitude = ctmax - ctmin, tol_aquec = ctmax - bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: case-when-2
+#| exercise: ex_faixa
+#| persist: true
+anuros |>
+  mutate(faixa = case_when(
+    altitude < ____ ~ "baixa",
+    altitude < ____ ~ "média",
+    TRUE            ~ ____
+  )) |>
+  count(faixa)
+```
+
+::: { .hint exercise="ex_faixa" }
+Os limites são números, sem aspas: `500` e `1200`. O último rótulo é texto,
+com aspas.
+:::
+
+::: { .hint exercise="ex_faixa" }
+O `TRUE ~` no fim pega tudo o que não caiu nas condições anteriores. Sem ele,
+o que sobra vira `NA`.
+:::
+
+```{webr}
+#| label: case-when-3
+#| exercise: ex_faixa
+#| solution: true
+anuros |>
+  mutate(faixa = case_when(
+    altitude <  500 ~ "baixa",
+    altitude < 1200 ~ "média",
+    TRUE            ~ "alta"
+  )) |>
+  count(faixa)
+```
+
+```{webr}
+#| label: case-when-4
+#| exercise: ex_faixa
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !is.data.frame(.result) || !all(c("faixa", "n") %in% names(.result)),
+    "O resultado deve ser a contagem por faixa. Termine com count(faixa)."
+  )
+  gradethis::fail_if(
+    anyNA(.result$faixa),
+    "Algumas linhas ficaram sem faixa (NA). Faltou o rótulo da última linha, TRUE ~ \"alta\"."
+  )
+  gradethis::fail_if(
+    !setequal(.result$faixa, c("baixa", "média", "alta")),
+    "Use exatamente os rótulos baixa, média e alta (com acento)."
+  )
+  gradethis::pass_if_equal(
+    .solution,
+    "Isso: 39 indivíduos na faixa baixa, 108 na média e 78 na alta."
+  )
+  gradethis::fail("A contagem não bate. Confira os limites: abaixo de 500 m é baixa, abaixo de 1200 m é média.")
+})
+```
+
+```{r}
+#| label: case-when-5
+#| echo: false
+pergunta(
+  "Por que `mutate(faixa = classifica_altitude(altitude))` não funciona,
+  se a função dá a resposta certa para uma altitude?",
+  learnr2::answer(
+    "Porque dentro do `mutate()` a função recebe a coluna inteira, e o `if` só aceita um valor: o R para com um erro",
+    correct = TRUE
+  ),
+  learnr2::answer("Porque funções escritas por nós não podem ser usadas dentro do `mutate()`"),
+  learnr2::answer("Funciona, só é mais lento que o `case_when()`"),
+  allow_retry = TRUE
+)
+```
+
+## `for`: reserve o espaço antes
+
+Calcule a média de cada coluna da lista `colunas` com um `for`. O vetor
+`res` já foi criado com o tamanho certo; o laço só preenche cada posição.
+
+```{webr}
+#| label: for-1
+#| setup: true
+#| exercise: ex_for
+library(dplyr)
+library(purrr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         massa = Bodymass_g, ewl = EWL_Ugcm2s1,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(amplitude = ctmax - ctmin, tol_aquec = ctmax - bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: for-2
+#| exercise: ex_for
+#| persist: true
+colunas <- c("ctmin", "ctmax", "amplitude", "tol_aquec", "ewl", "massa")
+
+res <- numeric(length(colunas))
+names(res) <- colunas
+for (i in seq_along(____)) {
+  res[i] <- mean(anuros[[____]], na.rm = TRUE)
+}
+round(res, 2)
+```
+
+::: { .hint exercise="ex_for" }
+`i` vale 1, 2, 3... O nome da i-ésima coluna é `colunas[i]`, e
+`anuros[[nome]]` pega a coluna com aquele nome.
+:::
+
+```{webr}
+#| label: for-3
+#| exercise: ex_for
+#| solution: true
+colunas <- c("ctmin", "ctmax", "amplitude", "tol_aquec", "ewl", "massa")
+
+res <- numeric(length(colunas))
+names(res) <- colunas
+for (i in seq_along(colunas)) {
+  res[i] <- mean(anuros[[colunas[i]]], na.rm = TRUE)
+}
+round(res, 2)
+```
+
+```{webr}
+#| label: for-4
+#| exercise: ex_for
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !is.numeric(.result) || length(.result) != 6,
+    "O resultado deve ser o vetor res, com uma média para cada uma das seis colunas."
+  )
+  gradethis::fail_if(
+    anyNA(.result),
+    "Alguma média deu NA. anuros[[i]] pega a i-ésima coluna da TABELA (a primeira é especie), não a da lista colunas. Use anuros[[colunas[i]]]."
+  )
+  gradethis::pass_if_equal(
+    .solution,
+    "Isso. Seis médias, cada uma na sua posição, sem o vetor crescer dentro do laço."
+  )
+  gradethis::fail("As médias não batem. O laço deve percorrer seq_along(colunas) e usar colunas[i].")
+})
+```
+
+```{r}
+#| label: for-5
+#| echo: false
+pergunta(
+  "Por que `seq_along(colunas)` e não `1:length(colunas)`?",
+  learnr2::answer(
+    "Se `colunas` estiver vazio, `1:length(colunas)` vira `1:0`, que é `c(1, 0)`, e o laço roda duas vezes com índices inválidos; `seq_along()` não devolve nada e o laço não roda",
+    correct = TRUE
+  ),
+  learnr2::answer("`seq_along()` é mais rápido"),
+  learnr2::answer("`1:length()` não funciona com vetores de texto"),
+  allow_retry = TRUE
+)
+```
+
+## `map()`: o mesmo, sem laço
+
+O `purrr::map_dbl()` aplica uma função a cada elemento de uma lista (as
+colunas de uma tabela são uma lista) e devolve um vetor numérico. Aplique a
+`erro_padrao()` a todas as colunas de `colunas`. A função e o vetor
+`colunas` já estão definidos neste exercício.
+
+```{webr}
+#| label: map-1
+#| setup: true
+#| exercise: ex_map
+library(dplyr)
+library(purrr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         massa = Bodymass_g, ewl = EWL_Ugcm2s1,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(amplitude = ctmax - ctmin, tol_aquec = ctmax - bio5) |>
+  as_tibble()
+colunas <- c("ctmin", "ctmax", "amplitude", "tol_aquec", "ewl", "massa")
+erro_padrao <- function(x) sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x)))
+```
+
+```{webr}
+#| label: map-2
+#| exercise: ex_map
+#| persist: true
+map_dbl(anuros[____], ____)
+```
+
+::: { .hint exercise="ex_map" }
+O primeiro argumento são as colunas, `anuros[colunas]`. O segundo é o
+**nome** da função, sem parênteses: o `map_dbl()` é que vai chamá-la.
+:::
+
+```{webr}
+#| label: map-3
+#| exercise: ex_map
+#| solution: true
+map_dbl(anuros[colunas], erro_padrao)
+```
+
+```{webr}
+#| label: map-4
+#| exercise: ex_map
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    is.list(.result),
+    "O resultado é uma lista: isso é o map(). Para um vetor numérico, use map_dbl()."
+  )
+  gradethis::pass_if_equal(
+    .solution,
+    "Isso. Uma linha no lugar das quatro do for, e com os nomes das colunas de brinde."
+  )
+  gradethis::fail("Os valores não batem. Aplique erro_padrao a anuros[colunas].")
+})
+```
+
+```{r}
+#| label: map-5
+#| echo: false
+pergunta(
+  "O que acontece com `map_dbl(anuros[c(\"especie\", \"serra\")], \\(x) x[1])`,
+  que devolve o primeiro valor de duas colunas de texto?",
+  learnr2::answer(
+    "Dá erro: `map_dbl()` promete um vetor numérico e reclama assim que o resultado não é número",
+    correct = TRUE
+  ),
+  learnr2::answer("Devolve um vetor de texto com os dois valores"),
+  learnr2::answer("Devolve `NA` nas duas posições"),
+  allow_retry = TRUE
+)
+```
+
+## Um modelo por espécie
+
+Na aula 06 ajustamos um modelo por serra. Agora, a tolerância ao aquecimento
+contra a altitude **para cada espécie**, sem escrever `lm()` cinco vezes:
+`split()` separa a tabela em uma lista com uma tabela por espécie, `map()`
+ajusta um modelo em cada uma, e `tidy()` (do `broom`) transforma os
+coeficientes em tabela. Complete e fique só com a inclinação da altitude.
+
+```{webr}
+#| label: modelos-1
+#| setup: true
+#| exercise: ex_modelos
+library(dplyr)
+library(purrr)
+library(broom)
+anuros <- read.csv("dados/anuros_altitude.csv") |>
+  select(especie = Species, serra = Mountain_Range, altitude = Altitude_m,
+         massa = Bodymass_g, ewl = EWL_Ugcm2s1,
+         ctmin = CTmin, ctmax = CTmax, bio5 = BIO_5) |>
+  mutate(amplitude = ctmax - ctmin, tol_aquec = ctmax - bio5) |>
+  as_tibble()
+```
+
+```{webr}
+#| label: modelos-2
+#| exercise: ex_modelos
+#| persist: true
+modelos <- anuros |>
+  filter(!is.na(tol_aquec)) |>
+  split(~ ____) |>
+  map(~ lm(tol_aquec ~ altitude, data = .x))
+
+modelos |>
+  map_dfr(tidy, .id = "especie") |>
+  filter(term == ____)
+```
+
+::: { .hint exercise="ex_modelos" }
+`split(~ coluna)` separa por uma coluna; aqui, `especie`. O `.x` dentro do
+`map()` é cada uma das tabelas da lista.
+:::
+
+::: { .hint exercise="ex_modelos" }
+A coluna `term` do `tidy()` tem `"(Intercept)"` e `"altitude"`. Você quer
+a segunda, com aspas.
+:::
+
+```{webr}
+#| label: modelos-3
+#| exercise: ex_modelos
+#| solution: true
+modelos <- anuros |>
+  filter(!is.na(tol_aquec)) |>
+  split(~ especie) |>
+  map(~ lm(tol_aquec ~ altitude, data = .x))
+
+modelos |>
+  map_dfr(tidy, .id = "especie") |>
+  filter(term == "altitude")
+```
+
+```{webr}
+#| label: modelos-4
+#| exercise: ex_modelos
+#| check: true
+gradethis::grade_this({
+  gradethis::fail_if(
+    !is.data.frame(.result) || !"estimate" %in% names(.result),
+    "O resultado deve ser a tabela de coeficientes que sai do tidy()."
+  )
+  gradethis::fail_if(
+    nrow(.result) == 10,
+    "Saíram dez linhas: o intercepto e a inclinação de cada espécie. Filtre term == \"altitude\"."
+  )
+  gradethis::fail_if(
+    nrow(.result) == 2,
+    "Saíram dois modelos, um por serra. O pedido é um por espécie."
+  )
+  gradethis::pass_if(
+    nrow(.result) == 5 &&
+      isTRUE(all.equal(.result$estimate, .solution$estimate)),
+    "Isso: cinco modelos, uma linha por espécie. Repare que em Physalaemus cuvieri a inclinação não se distingue de zero (p = 0,40)."
+  )
+  gradethis::fail("A tabela não bate. Confira o split(~ especie) e o filtro.")
+})
+```
+
+Automatizar o ajuste não automatiza o julgamento. Rode a contagem abaixo e
+veja quantas altitudes cada espécie tem em **cada** serra.
+
+```{webr}
+#| label: modelos-5
+anuros |>
+  filter(!is.na(tol_aquec)) |>
+  count(especie, serra, altitude) |>
+  print(n = 22)
+```
+
+```{r}
+#| label: modelos-6
+#| echo: false
+pergunta(
+  "Em *Dendropsophus minutus* e *Leptodactylus latrans*, o ponto mais alto
+  do gradiente (1600 m) é o único que vem da Serra da Mantiqueira; todos os
+  outros são da Serra do Mar. O que isso faz com a inclinação estimada
+  para essas duas espécies?",
+  learnr2::answer(
+    "Nessas espécies, altitude e serra andam juntas: só o ponto de 1600 m
+    vem da Mantiqueira. Qualquer diferença entre as serras que não seja a
+    altitude (clima, população, data de coleta) entra na inclinação como se
+    fosse efeito da altitude, e o modelo não tem como separar as duas
+    coisas. Como esse ponto está numa ponta do gradiente, ele também pesa
+    muito na inclinação. O `map()` ajustou os cinco modelos do mesmo jeito,
+    mas os dados não sustentam a mesma leitura nas cinco espécies.",
+    correct = TRUE
+  ),
+  type = "reflection"
+)
+```
+
+## Para entregar
+
+```{r}
+#| label: para-entregar-1
+#| echo: false
+pergunta(
+  "Quantos minutos, aproximadamente, você levou nesta página? Uma hora e
+  meia, por exemplo, são 90 minutos.",
+  type = "reflection_editable",
+  validate = "integer"
+)
+```
+
+O botão abaixo junta suas respostas num arquivo `.json`. Envie esse arquivo
+pelo canal combinado na disciplina.
+
+```{r}
+#| label: para-entregar-2
+#| echo: false
+learnr2::download_answers_button(
+  filename_prefix = "aula-07", label = "Baixar minhas respostas"
+)
+```
