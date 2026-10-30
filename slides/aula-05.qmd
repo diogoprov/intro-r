@@ -653,6 +653,30 @@ O ponto pedagógico: a camada de tema e a de escala existem justamente
 para isso, e são tão parte da gramática quanto a geometria.
 :::
 
+## Onde mora cada elemento do tema {.smaller}
+
+Cada pedaço do gráfico que não vem dos dados tem um nome no `theme()`:
+
+```r
+theme(
+  axis.text.x      = element_text(angle = 90, hjust = 1),  # texto
+  panel.grid.minor = element_blank(),                      # some
+  legend.position  = "top"                                 # posição
+)
+```
+
+. . .
+
+Não decorem os nomes. Consultem a
+[**folha de referência dos elementos do tema**](https://isabella-b.com/blog/ggplot2-theme-elements-reference/)
+de Isabella Benabaye: um gráfico com cada elemento apontado pelo nome, e o
+código ao lado (tem em PDF).
+
+::: {.citacao}
+Na dúvida entre `element_text()`, `element_line()` e `element_rect()`:
+é o tipo de coisa desenhada. `element_blank()` apaga.
+:::
+
 ## Exercitando {.smaller}
 
 Em [Análises Ecológicas no R](https://analises-ecologicas.com/cap6.html), capítulo 6:

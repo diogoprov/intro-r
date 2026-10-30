@@ -48,6 +48,7 @@ arquivo com as suas respostas para entregar.
 - [Ten Simple Rules for Better Figures](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003833)
 - [Compêndio de dicas sobre visualização de dados](https://www.data-to-viz.com/)
 - [Quadro resumo ggplot2 (cheatsheet)](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
+- [Folha de referência dos elementos do `theme()`](https://isabella-b.com/blog/ggplot2-theme-elements-reference/) (Isabella Benabaye) — onde fica cada elemento no gráfico e como se chama
 - [R Graph Gallery](https://r-graph-gallery.com/)
 - [Plotly R gallery](https://plotly.com/r/)
 - [Cedric Scherer — código para gráficos limpos](https://www.cedricscherer.com/)
