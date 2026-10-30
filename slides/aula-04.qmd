@@ -28,6 +28,16 @@ options(width = 74, pillar.print_max = 8)
 bruto <- read.csv(here::here("dados", "anuros_altitude.csv"))
 ```
 
+## Roteiro de hoje
+
+::: {.roteiro}
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>verbos do <code>dplyr</code></div>
+<div class="bloco pratica" style="flex: 25"><span class="min">25 min</span><b>Prática 1</b>pipelines e página no navegador</div>
+<div class="bloco expo" style="flex: 10"><span class="min">10 min</span><b>Exposição</b>verbos do <code>tidyr</code></div>
+<div class="bloco pratica" style="flex: 20"><span class="min">20 min</span><b>Prática 2</b>desenho amostral, <code>NA</code> e o script</div>
+<div class="bloco correcao" style="flex: 20"><span class="min">20 min</span><b>Correção</b>juntos, no fim</div>
+:::
+
 ## A estratégia *split-apply-combine* {.smaller}
 
 ```{dot}
@@ -345,55 +355,28 @@ anuros %>%
             ctmax_dp  = round(sd(ctmax,   na.rm = TRUE), 2))
 ```
 
-## Agora vocês
+## Prática 1 · 25 min {.smaller .pratica}
 
-::: {.callout-note icon=false}
-## 10 minutos — encadeie os verbos
-
-Escreva **um** pipeline, do `anuros` até a resposta, para cada pergunta:
+::: {.columns}
+::: {.column width="55%"}
+**No RStudio**, abra o [`aula-04.R`](../aula-04-tidyverse/aula-04.R) e
+escreva **um** pipeline, do `anuros` até a resposta, para cada pergunta:
 
 1. Qual espécie tem o maior CTmax médio?
 2. Quantos indivíduos há por serra, contando só os que têm `ctmax` medido?
 3. Qual a massa mediana de cada espécie em cada altitude?
 :::
 
-. . .
+::: {.column width="45%"}
+**No navegador**, faça as seções de `select()` a `group_by()` da
+[página de exercícios](../aula-04-tidyverse/exercicios-aula-04.html). A
+correção é automática: errou, a página diz onde.
+:::
+:::
 
 ::: {.citacao}
 Regra: **um `%>%` por linha.** Quando der erro, apague a última linha e rode
 de novo — assim você descobre em qual verbo quebrou, em vez de adivinhar.
-:::
-
-## A armadilha do `.groups`
-
-```{r}
-anuros %>%
-  group_by(especie, serra) %>%
-  summarise(n = n(), .groups = "drop") %>%
-  head(4)
-```
-
-. . .
-
-::: {.citacao}
-**Sem `.groups = "drop"`**, o resultado sai ainda agrupado por `especie`, e
-a próxima operação age dentro de cada espécie **sem avisar**. É a fonte
-silenciosa de resultado errado mais comum do `dplyr`.
-:::
-
-## O desenho amostral, em uma linha
-
-```{r}
-anuros %>% count(serra, altitude)
-```
-
-. . .
-
-Leiam com atenção: **cada altitude aparece em uma serra só.**
-
-::: {.citacao}
-Isso não é defeito do arquivo — é como a coleta foi feita. E vai decidir
-quais modelos são possíveis na aula 06. Guardem.
 :::
 
 # Verbos do `tidyr`
@@ -458,12 +441,112 @@ a maioria dos modelos.
 . . .
 
 ::: {.citacao}
-Cuidado com `drop_na()` sem argumento: ele apaga a linha se **qualquer**
-coluna tiver `NA`. Aqui isso jogaria fora os 107 indivíduos sem sexo, mesmo
-numa análise que nem usa sexo. Diga em qual coluna: `drop_na(ctmax)`.
+`drop_na()` sem argumento parece inofensivo. Na prática 2 vocês vão medir
+quanto ele custa neste arquivo.
 :::
 
-## Onde isso dá errado de verdade
+## Prática 2 · 20 min {.smaller .pratica}
+
+a) Com `count()`, descubra **em quantas serras cada altitude aparece**.
+   Guarde a resposta: ela vai decidir que modelos são possíveis na aula 06.
+
+b) Compare `nrow(anuros)`, `nrow(drop_na(anuros))` e
+   `nrow(drop_na(anuros, ctmax))`. De onde vem a diferença?
+
+c) Os exercícios do fim do `aula-04.R`:
+   1. Quantas espécies ocorrem em **ambas** as serras? Responda com `dplyr`,
+      não contando na tabela.
+   2. Monte um resumo de `ewl` por `serra` e `sexo`. O que fazer com a linha
+      dos `NA`?
+   3. `amplitude` tem 35 ausentes, os mesmos de `ctmax`. Mostre **com código**
+      que são os mesmos indivíduos.
+
+::: {.citacao}
+Terminou antes? Volte à página no navegador e faça a última seção, sobre o
+desenho amostral.
+:::
+
+# Correção {.correcao}
+
+Juntos, na ordem em que vocês fizeram.
+
+## P1 · 1. o maior CTmax médio {.smaller .correcao}
+
+```{r}
+anuros %>%
+  group_by(especie) %>%
+  summarise(ctmax_med = mean(ctmax, na.rm = TRUE)) %>%
+  arrange(desc(ctmax_med))
+```
+
+. . .
+
+::: {.citacao}
+Com uma casa decimal, *L. latrans* e *R. icterica* empatam. Antes de
+responder "a maior", olhe quantas casas o resultado sustenta.
+:::
+
+## P1 · 2. indivíduos por serra {.smaller .correcao}
+
+```{r}
+anuros %>%
+  filter(!is.na(ctmax)) %>%
+  count(serra)
+```
+
+. . .
+
+::: {.citacao}
+`count(serra)` é atalho para `group_by(serra) %>% summarise(n = n())`. O
+`filter()` vem **antes**: a ordem dos verbos muda a resposta.
+:::
+
+## P1 · 3. massa mediana {.smaller .correcao}
+
+```{r}
+massa_med <- anuros %>%
+  group_by(especie, altitude) %>%
+  summarise(massa_med = median(massa))
+massa_med
+```
+
+## O erro que mais aparece: o `.groups` {.smaller .correcao}
+
+```{r}
+group_vars(massa_med)
+```
+
+. . .
+
+O resultado anterior **ainda está agrupado** por `especie`. A próxima
+operação vai agir dentro de cada espécie, sem avisar.
+
+```{r}
+#| eval: false
+anuros %>%
+  group_by(especie, altitude) %>%
+  summarise(massa_med = median(massa), .groups = "drop")
+```
+
+::: {.citacao}
+É a fonte silenciosa de resultado errado mais comum do `dplyr`. Escreva
+`.groups = "drop"` sempre que agrupar por mais de uma variável.
+:::
+
+## P2 · a) o desenho amostral {.correcao}
+
+```{r}
+anuros %>% count(serra, altitude)
+```
+
+. . .
+
+::: {.citacao}
+**Cada altitude aparece em uma serra só.** Não é defeito do arquivo — é como
+a coleta foi feita. E vai decidir quais modelos são possíveis na aula 06.
+:::
+
+## P2 · b) o custo do `drop_na()` {.correcao}
 
 ```{r}
 nrow(anuros)
@@ -474,11 +557,34 @@ nrow(tidyr::drop_na(anuros, ctmax))
 . . .
 
 ::: {.citacao}
-O primeiro `drop_na()` custou mais da metade da amostra para nada. Silêncio
-total: nenhum aviso, nenhum erro. Só um `n` menor lá na frente.
+Sem argumento, o `drop_na()` apaga a linha se **qualquer** coluna tiver
+`NA`: aqui, os 107 indivíduos sem sexo, numa análise que nem usa sexo. Mais
+da metade da amostra, sem aviso nenhum. Diga a coluna: `drop_na(ctmax)`.
 :::
 
-# Fechando o ciclo
+## P2 · c) os exercícios do script {.smaller .correcao}
+
+```{r}
+# 1. espécies nas duas serras
+anuros %>% distinct(especie, serra) %>% count(especie) %>% filter(n == 2)
+```
+
+. . .
+
+```{r}
+# 3. os NA de amplitude são os de ctmax?
+identical(is.na(anuros$amplitude), is.na(anuros$ctmax))
+```
+
+. . .
+
+::: {.citacao}
+O 2 (`ewl` por serra e sexo) não tem resposta única: a linha dos `NA` de
+sexo tem mais indivíduos que as fêmeas. Descartar, manter à parte ou
+reportar? Quem fez o quê, e por quê?
+:::
+
+# Antes de sair
 
 ## Gravar o resultado
 
@@ -515,20 +621,10 @@ Sempre na versão mais recente, direto da fonte:
 Posit Software, PBC · CC BY-SA
 :::
 
-## Exercícios {.smaller}
+## Para casa
 
-**Com o dado da semana** — abram o [`aula-04.R`](../aula-04-tidyverse/aula-04.R):
-
-::: {.incremental}
-1. Quantas espécies ocorrem em **ambas** as serras? Responda com `dplyr`,
-   não contando na tabela.
-2. Monte um resumo de `ewl` por `serra` e `sexo`. O que fazer com a linha
-   dos `NA`?
-3. `amplitude` tem 35 ausentes, os mesmos de `ctmax`. Mostre **com código**
-   que são os mesmos indivíduos.
-:::
-
-. . .
-
-No livro [*Análises Ecológicas no R*](https://analises-ecologicas.com),
-capítulo 5: leiam o **tópico 5.6** e façam do **5.7.6 ao 5.8.17**.
+- Terminar a [página de exercícios](../aula-04-tidyverse/exercicios-aula-04.html)
+  e enviar o arquivo de respostas
+- No livro [*Análises Ecológicas no R*](https://analises-ecologicas.com),
+  capítulo 5: leiam o **tópico 5.6** e façam do **5.7.6 ao 5.8.17**
+- A lição do swirl, se quiser praticar mais no console

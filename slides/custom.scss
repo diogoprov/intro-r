@@ -217,3 +217,38 @@ $code-block-border-color: #e3dccd;
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   background: #e3dccd; color: #144f64; font-size: .58em; font-weight: 600;
 }
+
+// --- Roteiro da aula ----------------------------------------------------
+// Uma faixa com os blocos da aula; a largura de cada bloco é proporcional ao
+// tempo dele, dado no próprio HTML (`style="flex: 15"` para 15 min). As cores repetem o fundo dos slides de prática e de correção,
+// para o aluno reconhecer em que parte da aula está.
+.reveal .roteiro { display: flex; gap: .4rem; margin: 1.2rem 0 1rem; }
+.reveal .roteiro .bloco {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: .7rem .6rem; border-radius: 10px; min-height: 150px;
+  font-size: .62em; line-height: 1.25; color: #2d3748;
+}
+.reveal .roteiro .bloco b {
+  font-size: 1.12em; color: #144f64; margin: .15rem 0 .25rem; white-space: nowrap;
+}
+// Com sete blocos, os de 5 ou 10 min ficariam estreitos demais para o título:
+// a largura mínima garante o título numa linha só, e o resto da faixa
+// continua proporcional ao tempo.
+.reveal .roteiro .bloco { min-width: 116px; padding: .7rem .5rem; }
+.reveal .roteiro .bloco .min { font-size: .9em; font-weight: 600; color: #8a8375; }
+.reveal .roteiro .bloco code { font-size: .95em; background: none; padding: 0; white-space: nowrap; }
+.reveal .roteiro .expo     { background: #faf7f0; border: 1px solid #c9bfa8; }
+.reveal .roteiro .pratica  { background: #d3e5ec; }
+.reveal .roteiro .correcao { background: #efdfbf; }
+
+// Slides de prática e de correção viram um painel colorido, com as cores do
+// roteiro. É uma classe no próprio slide, e não `background-color`: assim a
+// cor sai igual na tela, na impressão em PDF e em qualquer navegador.
+.reveal .slides section.pratica,
+.reveal .slides section.correcao {
+  border-radius: 18px; padding: 18px 34px !important; box-sizing: border-box;
+  height: 100% !important;
+}
+.reveal .slides section.pratica  { background: #d3e5ec; }
+.reveal .slides section.correcao { background: #efdfbf; }
+.reveal .slides section.correcao .citacao { background: rgba(255, 255, 255, .45); }

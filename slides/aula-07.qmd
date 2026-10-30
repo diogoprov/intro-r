@@ -30,6 +30,18 @@ anuros <- read.csv(here::here("dados", "anuros_altitude.csv")) %>%
   mutate(across(c(especie, serra), factor), tol_aquec = ctmax - BIO_5)
 ```
 
+## Roteiro de hoje
+
+::: {.roteiro}
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>funções e escopo</div>
+<div class="bloco pratica" style="flex: 15"><span class="min">15 min</span><b>Prática 1</b>sua primeira função</div>
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>controle de fluxo e <code>map()</code></div>
+<div class="bloco pratica" style="flex: 25"><span class="min">25 min</span><b>Prática 2</b>um modelo por grupo</div>
+<div class="bloco expo" style="flex: 5"><span class="min">5 min</span><b>Exposição</b>LLMs</div>
+<div class="bloco pratica" style="flex: 15"><span class="min">15 min</span><b>Prática 3</b>com um LLM</div>
+<div class="bloco correcao" style="flex: 20"><span class="min">20 min</span><b>Correção</b>juntos, no fim</div>
+:::
+
 # Por que escrever uma função
 
 ## O custo escondido do copiar-e-colar
@@ -68,22 +80,6 @@ Regra prática: copiou e colou **três vezes**, escreva uma função. Duas vezes
 comece a desconfiar.
 :::
 
-## Agora vocês
-
-::: {.callout-note icon=false}
-## 10 minutos
-
-1. Rode `resumo()` em `ctmin`, `ewl` e `massa`
-2. Escreva `erro_padrao(x)` que devolva `sd(x)/sqrt(n)`, ignorando `NA`
-3. Acrescente o erro-padrão ao vetor que a `resumo()` devolve
-:::
-
-. . .
-
-::: {.citacao}
-No item 3: você vai precisar mexer em **um** lugar só. Era esse o ponto.
-:::
-
 ## Escopo: o que entra é cópia
 
 ```{r}
@@ -98,6 +94,28 @@ x
 ::: {.citacao}
 É por isso que a função precisa **devolver** o resultado. Mexer no objeto de
 fora, de dentro da função, é possível — e é fábrica de bug.
+:::
+
+## Prática 1 · 15 min {.smaller .pratica}
+
+::: {.columns}
+::: {.column width="55%"}
+**No RStudio**, no [`aula-07.R`](../aula-07-programacao/aula-07.R):
+
+1. Rode `resumo()` em `ctmin`, `ewl` e `massa`
+2. Escreva `erro_padrao(x)` que devolva `sd(x)/sqrt(n)`, ignorando `NA`
+3. Acrescente o erro-padrão ao vetor que a `resumo()` devolve
+:::
+
+::: {.column width="45%"}
+**No navegador**, as seções *Sua primeira função* e *Escopo* da
+[página de exercícios](../aula-07-programacao/exercicios-aula-07.html). A
+correção chama a sua função com vetores de teste, inclusive com `NA`.
+:::
+:::
+
+::: {.citacao}
+No item 3: você vai precisar mexer em **um** lugar só. Era esse o ponto.
 :::
 
 # Controle de fluxo
@@ -184,10 +202,11 @@ map_dfr(modelos, tidy, .id = "especie") %>%
 
 Cinco modelos, **nenhum** `lm()` repetido.
 
-## Agora vocês
+## Prática 2 · 25 min {.smaller .pratica}
 
-::: {.callout-note icon=false}
-## 15 minutos
+::: {.columns}
+::: {.column width="58%"}
+**No RStudio:**
 
 1. Refaçam o slide anterior trocando `especie` por `serra`.
    **Quantas linhas do seu código mudaram?** Se foi mais de uma, generalize
@@ -197,20 +216,16 @@ Cinco modelos, **nenhum** `lm()` repetido.
    do resto. O que isso faz com a inclinação que vocês acabaram de estimar?
 :::
 
-. . .
+::: {.column width="42%"}
+**No navegador**, as seções de `case_when()` até *Um modelo por espécie* da
+[página de exercícios](../aula-07-programacao/exercicios-aula-07.html).
+:::
+:::
 
 ::: {.citacao}
 O item 3 não é sobre `purrr`. É a aula 06 voltando: automatizar o ajuste não
 automatiza o julgamento.
 :::
-
-## Para ler depois
-
-- [Landeiro — *Introdução ao uso do programa R*](https://cran.r-project.org/doc/contrib/Landeiro-Introducao.pdf),
-  páginas 36 a 41 — lógica de programação no R base
-- [Introdução ao R, capítulo sobre `purrr`](https://pedropark99.github.io/Introducao_R/Cap%C3%ADtulos/18-purrr.html#introdu%C3%A7%C3%A3o) —
-  tópicos 16.1, 16.2 e 16.4
-- [*Advanced R*, programação funcional](https://adv-r.hadley.nz/fp.html)
 
 ## Tirando vantagem de LLMs para programação científica
 
@@ -223,7 +238,7 @@ automatiza o julgamento.
 > *Methods in Ecology and Evolution.*
 > [doi:10.1111/2041-210X.14325](https://doi.org/10.1111/2041-210X.14325)
 
-## Fluxo de trabalho com Gemini e ChatGPT {.smaller}
+## Prática 3 · 15 min — com Gemini ou ChatGPT {.smaller .pratica}
 
 **2 exercícios**
 
@@ -238,3 +253,126 @@ automatiza o julgamento.
    tenha as etiquetas a 45 graus, use o tema `minimal` e mude a paleta de
    cores para uma que seja amigável para daltônicos
    (*colorblind-friendly*).
+
+# Correção {.correcao}
+
+Juntos, na ordem em que vocês fizeram.
+
+## P1 · 1. `resumo()` em outras colunas {.smaller .correcao}
+
+```{r}
+resumo(anuros$ctmin)
+resumo(anuros$ewl)
+resumo(anuros$massa)
+```
+
+. . .
+
+::: {.citacao}
+Três chamadas, nenhuma linha copiada do corpo da função. Repare na coluna
+`na`: cada variável tem os seus ausentes.
+:::
+
+## P1 · 2 e 3. o erro-padrão, num lugar só {.smaller .correcao}
+
+```{r}
+erro_padrao <- function(x) sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x)))
+
+resumo <- function(x, digitos = 2) {
+  c(n   = sum(!is.na(x)),
+    na  = sum(is.na(x)),
+    med = round(mean(x, na.rm = TRUE), digitos),
+    dp  = round(sd(x,   na.rm = TRUE), digitos),
+    ep  = round(erro_padrao(x), digitos))     # a única linha nova
+}
+resumo(anuros$ctmax)
+```
+
+. . .
+
+::: {.citacao}
+O erro comum: `sqrt(length(x))`. O `length()` conta os `NA`, e o *n* sai
+maior do que a amostra que entrou no `sd()`.
+:::
+
+## P2 · 1. por serra, e generalizando {.smaller .correcao}
+
+```{r}
+ajusta_por <- function(dados, grupo) {
+  dados %>%
+    filter(!is.na(tol_aquec)) %>%
+    split(.[[grupo]]) %>%
+    map(~ lm(tol_aquec ~ altitude, data = .x))
+}
+
+ajusta_por(anuros, "serra") %>%
+  map_dfr(tidy, .id = "serra") %>%
+  filter(term == "altitude") %>%
+  select(serra, estimate, p.value)
+```
+
+. . .
+
+::: {.citacao}
+Trocar `especie` por `serra` muda uma linha. Se mudou mais de uma, o grupo
+virou argumento: `ajusta_por(anuros, "especie")` refaz o slide anterior.
+:::
+
+## P2 · 2. o R² de cada modelo {.smaller .correcao}
+
+```{r}
+map_dfr(modelos, glance, .id = "especie") %>%
+  select(especie, r.squared, p.value, nobs)
+```
+
+. . .
+
+::: {.citacao}
+`tidy()` devolve uma linha por coeficiente; `glance()`, uma linha por
+modelo. O `.id` guarda de qual elemento da lista veio cada linha.
+:::
+
+## P2 · 3. o julgamento que o `map()` não faz {.smaller .correcao}
+
+```{r}
+anuros %>%
+  filter(!is.na(tol_aquec),
+         especie %in% c("Dendropsophus minutus", "Leptodactylus latrans")) %>%
+  count(especie, serra, altitude)
+```
+
+. . .
+
+::: {.citacao}
+Nessas duas espécies, só o ponto de 1600 m vem da Mantiqueira. Qualquer
+diferença entre as serras que não seja a altitude entra na inclinação como
+se fosse efeito da altitude, e o modelo não tem como separar as duas coisas.
+O `map()` ajustou os cinco modelos do mesmo jeito; os dados não sustentam a
+mesma leitura nos cinco.
+:::
+
+## P3 · o que conferir no que o LLM devolveu {.smaller .correcao}
+
+::: {.incremental}
+- **Exercício 1:** rodem as duas versões, a original e a traduzida, e
+  comparem a saída com `all.equal()`. Mesma tabela? Mesmo número de linhas?
+- **Exercício 2:** o gráfico mudou só no que vocês pediram — eixo, tema,
+  paleta — ou o LLM mexeu em outra coisa no caminho?
+- O que ele inventou: alguma função ou argumento que não existe?
+:::
+
+. . .
+
+::: {.citacao}
+O LLM acelera o andaime. Conferir continua sendo trabalho seu.
+:::
+
+# Antes de sair
+
+## Para ler depois
+
+- [Landeiro — *Introdução ao uso do programa R*](https://cran.r-project.org/doc/contrib/Landeiro-Introducao.pdf),
+  páginas 36 a 41 — lógica de programação no R base
+- [Introdução ao R, capítulo sobre `purrr`](https://pedropark99.github.io/Introducao_R/Cap%C3%ADtulos/18-purrr.html#introdu%C3%A7%C3%A3o) —
+  tópicos 16.1, 16.2 e 16.4
+- [*Advanced R*, programação funcional](https://adv-r.hadley.nz/fp.html)

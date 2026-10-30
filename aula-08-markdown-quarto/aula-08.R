@@ -173,7 +173,8 @@ lm(tol_aquec ~ altitude, data = anuros) %>%
 #      revisando esses dados.
 #
 # O que está lá: 219 indivíduos nos dois, 9 só na versão de trabalho, e
-# 4 com massa corporal diferente — um deles de 2,73 g para 1,75 g.
+# 3 com massa corporal diferente — um deles de 2,73 g para 1,75 g (e outro,
+# de 0,6 para 0,6007 g, provavelmente só arredondamento).
 # Nada disso está anunciado em lugar nenhum: só aparece se alguém comparar.
 #
 # Revisar dado de campo é normal. Revisar sem deixar rastro é que não é.
