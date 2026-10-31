@@ -16,6 +16,18 @@ format:
       data-background-position: 94% 88%
 ---
 
+## Roteiro de hoje
+
+::: {.roteiro}
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>por que e como o git funciona</div>
+<div class="bloco pratica" style="flex: 25"><span class="min">25 min</span><b>Prática 1</b>o git no terminal</div>
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>o painel Git do RStudio</div>
+<div class="bloco pratica" style="flex: 25"><span class="min">25 min</span><b>Prática 2</b>o ciclo, no painel</div>
+<div class="bloco expo" style="flex: 10"><span class="min">10 min</span><b>Exposição</b><code>.gitignore</code> e conflitos</div>
+<div class="bloco pratica" style="flex: 10"><span class="min">10 min</span><b>Prática 3</b>o seu <code>.gitignore</code></div>
+<div class="bloco correcao" style="flex: 15"><span class="min">15 min</span><b>Correção</b>juntos, no fim</div>
+:::
+
 ## Para quê controle de versão? {.smaller}
 
 ::: {.incremental}
@@ -124,6 +136,21 @@ digraph fluxo {
 - `git config` — define seu nome e e-mail nos commits
 - `git help` — a ajuda do git
 
+## Prática 1 · 25 min {.smaller .pratica}
+
+No [Curso de R intermediário — IPEA](https://ipeadata-lab.github.io/curso_r_intermediario_202501/git-github.html#introdução):
+
+- Leiam do **tópico 5.1 ao 5.5** e façam os exercícios **5.3.1, 5.4.1 e 5.5.2**
+
+Ao terminar, respondam sem olhar os slides:
+
+1. Em que ordem vêm `git add`, `git commit` e `git push`? O que cada um faz?
+2. Que comando responde "onde eu estou?"
+
+::: {.citacao}
+Travou num exercício? Anote em qual: as dúvidas entram na correção.
+:::
+
 # O painel Git do RStudio
 
 ## Você provavelmente nunca vai abrir o terminal {.smaller}
@@ -197,6 +224,20 @@ Mensagem de commit boa completa a frase "este commit vai…":
 *"…corrigir a leitura de datas na planilha de campo"*. Não *"ajustes"*.
 :::
 
+## Prática 2 · 25 min {.smaller .pratica}
+
+No mesmo curso do IPEA, leiam os **tópicos 5.7 e 5.8** e façam os exercícios
+**5.7.6 e 5.8.6**
+([conectar com o RStudio](https://ipeadata-lab.github.io/curso_r_intermediario_202501/git-github.html#conectar-com-o-rstudio)).
+
+Depois, no **painel Git** do seu Projeto, façam o ciclo completo com um
+arquivo de vocês:
+
+1. Alterem e salvem o arquivo. Que letrinha aparece ao lado dele?
+2. Marquem **Staged**, abram **Commit** e **leiam o diff** antes de confirmar
+3. Escrevam uma mensagem que complete a frase "este commit vai…"
+4. **↓ Pull**, depois **↑ Push**. O commit apareceu no GitHub?
+
 # Duas coisas que ninguém avisa
 
 ## O que NÃO colocar no git {.smaller}
@@ -223,25 +264,6 @@ que não existe:
 /docs/
 dados/processados/
 ```
-
-## Volte ao painel de agora há pouco {.smaller}
-
-Naquele screenshot, **tudo** estava marcado com **?** — arquivo novo, que o
-git ainda não rastreia. E o que era?
-
-::: {.incremental}
-- `Aula2.pptx`, `Aula3.pptx`, … — binários pesados que o git não sabe comparar
-- `Aula2.pdf`, `Aula5.pdf`, … — **gerados** a partir dos .pptx
-- `0003936-200221144449610.zip` — um zip solto
-- `.Rproj.user`, `.Rhistory` — configuração da máquina
-:::
-
-. . .
-
-::: {.citacao}
-É exatamente esse o momento de escrever o `.gitignore` — **antes** do primeiro
-`git add .`. Depois, o peso já entrou na história.
-:::
 
 ## Uma história real {.smaller}
 
@@ -286,16 +308,78 @@ Não é erro, não quebrou nada, e não precisa de ajuda para resolver.
 O pânico é opcional.
 :::
 
+## Prática 3 · 10 min {.smaller .pratica}
+
+Voltem ao slide **O painel**: no screenshot, todos os arquivos estão marcados
+com **?**.
+
+1. Quais deles vocês **não** colocariam no git? Por quê?
+2. Escrevam o `.gitignore` do repositório de vocês, com o que não deve entrar
+   nele, e confiram no painel que esses arquivos sumiram da lista.
+
+# Correção {.correcao}
+
+Juntos, na ordem em que vocês fizeram.
+
+## P1 · o fluxo {.smaller .correcao}
+
+1. **`git add`** prepara as alterações (*stage*); **`git commit`** registra
+   no repositório local; **`git push`** envia para o remoto.
+2. **`git status`**: o que mudou, o que está preparado, o que falta.
+
+. . .
+
+```
+working directory  →  stage  →  repositório local  →  remoto
+              add          commit                push
+```
+
+::: {.citacao}
+E os exercícios do IPEA: em qual vocês travaram?
+:::
+
+## P2 · o ciclo, no painel {.smaller .correcao}
+
+::: {.incremental}
+- Arquivo alterado: **M** azul. Arquivo novo: **?** amarelo; depois de
+  marcado em *Staged*, **A** verde.
+- O quadradinho da **esquerda** é o que já está preparado; o da **direita**,
+  o que mudou e ainda não foi preparado.
+- O diff pega o `print()` de teste que ficou e a linha apagada sem querer.
+- **↓ Pull** antes de **↑ Push** evita a maior parte dos conflitos.
+:::
+
+. . .
+
+::: {.citacao}
+Leiam em voz alta duas mensagens de commit da turma. Elas completam a frase
+"este commit vai…"? *"…corrigir a leitura de datas na planilha de campo"*,
+não *"ajustes"*.
+:::
+
+## P3 · o `.gitignore` {.smaller .correcao}
+
+Naquele screenshot, **tudo** estava marcado com **?** — arquivo novo, que o
+git ainda não rastreia. E o que era?
+
+::: {.incremental}
+- `Aula2.pptx`, `Aula3.pptx`, … — binários pesados que o git não sabe comparar
+- `Aula2.pdf`, `Aula5.pdf`, … — **gerados** a partir dos .pptx
+- `0003936-200221144449610.zip` — um zip solto
+- `.Rproj.user`, `.Rhistory` — configuração da máquina
+:::
+
+. . .
+
+::: {.citacao}
+É exatamente esse o momento de escrever o `.gitignore` — **antes** do primeiro
+`git add .`. Depois, o peso já entrou na história.
+:::
+
+# Antes de sair
+
 ## Onde aprender mais
 
 [git-scm.com](https://git-scm.com){.r-fit-text}
 
 A documentação oficial, incluindo o livro *Pro Git* completo e gratuito.
-
-## Exercitando
-
-No [Curso de R intermediário — IPEA](https://ipeadata-lab.github.io/curso_r_intermediario_202501/git-github.html#introdução):
-
-- Leiam do **tópico 5.1 ao 5.5** e façam os exercícios **5.3.1, 5.4.1 e 5.5.2**
-- Leiam os **tópicos 5.7 e 5.8** e façam os exercícios **5.7.6 e 5.8.6**
-  ([conectar com o RStudio](https://ipeadata-lab.github.io/curso_r_intermediario_202501/git-github.html#conectar-com-o-rstudio))

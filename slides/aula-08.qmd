@@ -16,13 +16,22 @@ format:
       data-background-position: 94% 88%
 ---
 
-## Roteiro
+```{r}
+#| include: false
+library(dplyr)
+options(width = 74)
+```
 
-::: {.incremental}
-- Por que reprodutibilidade é o cerne da ciência
-- Como uma análise honesta sai do trilho
-- O que fazer com os dados e com o código
-- Programação literária: Markdown, knitr e Quarto
+## Roteiro de hoje
+
+::: {.roteiro}
+<div class="bloco expo" style="flex: 30"><span class="min">30 min</span><b>Exposição</b>por que importa, os conceitos e como a análise sai do trilho</div>
+<div class="bloco pratica" style="flex: 10"><span class="min">10 min</span><b>Prática 1</b>degraus e decisões</div>
+<div class="bloco expo" style="flex: 10"><span class="min">10 min</span><b>Exposição</b>o que fazer com os dados</div>
+<div class="bloco pratica" style="flex: 20"><span class="min">20 min</span><b>Prática 2</b>duas versões do mesmo dado</div>
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>programação literária</div>
+<div class="bloco pratica" style="flex: 20"><span class="min">20 min</span><b>Prática 3</b>o trabalho final e um LLM</div>
+<div class="bloco correcao" style="flex: 15"><span class="min">15 min</span><b>Correção</b>juntos, no fim</div>
 :::
 
 # Por que isso importa
@@ -296,6 +305,22 @@ Figura 2 de Gould, E.; Fraser, H.S.; Parker, T.H.; Nakagawa, S. *et al.* (2025).
   **Não dá para separar a "análise errada" pela forma dela**
 :::
 
+## Prática 1 · 10 min {.smaller .pratica}
+
+a) Para cada caso, qual degrau — **repetível**, **reprodutível** ou
+   **replicável**?
+   1. Você roda o seu `aula-06.R` de novo amanhã e chega ao mesmo número
+   2. Um colega roda o seu script, com os seus dados, no computador dele
+   3. Outro grupo mede anuros em outra serra, com o mesmo protocolo
+
+b) Listem as decisões que **vocês** tomaram com o dado de anuros nesta semana
+   que poderiam ter sido outras. Quais delas mudariam o resultado?
+
+::: {.citacao}
+Vale tudo o que foi escolha: o que filtrar, o que fazer com os `NA`, como
+entrar com a altitude no modelo.
+:::
+
 # O que fazer
 
 ## O seu melhor colaborador
@@ -394,6 +419,28 @@ E "tratado para análise" tem um nome, que vocês já conhecem: **tidy data**.
 O exemplo completo está na **Figura 1** de Hart et al. (2016) —
 [ver figura](https://journals.plos.org/ploscompbiol/article/figures?id=10.1371/journal.pcbi.1005097) ·
 PLOS Comp Biol · CC BY
+:::
+
+## Prática 2 · 20 min — o que mudou entre duas versões {.smaller .pratica}
+
+Em `dados/historico/` há a planilha de trabalho que circulou **antes** da
+publicação. O arquivo que usamos a semana toda é o publicado.
+
+```{r}
+#| eval: false
+velho <- read.delim("dados/historico/anuros_altitude_versao-trabalho.txt")
+novo  <- read.csv("dados/anuros_altitude.csv")
+dim(velho); dim(novo)
+```
+
+. . .
+
+::: {.callout-note icon=false}
+## Descubram, com código, o que mudou
+
+1. Quantos indivíduos estão nos dois arquivos? Só num deles?
+2. Para os que estão nos dois: **alguma medida mudou de valor?**
+3. Escrevam a resposta como um `.qmd` que compila
 :::
 
 # Programação literária
@@ -592,9 +639,7 @@ e diz em voz alta o que está fazendo.
   biológica**?
 :::
 
-# Exercícios
-
-## Exercício 1 — o trabalho final {.smaller}
+## Prática 3 · 20 min — o trabalho final {.smaller .pratica}
 
 Abram o [`relatorio-modelo.qmd`](../aula-08-markdown-quarto/relatorio-modelo.qmd).
 Ele já compila. **Troquem a pergunta.**
@@ -612,44 +657,77 @@ O teste de aceitação: reinicie o R, apague o `.html` e o `_files`, renderize.
 Compilou sem você tocar em nada? Está pronto.
 :::
 
-## Exercício 2 — o que mudou entre duas versões {.smaller}
+## Prática 3 · e usando um LLM {.smaller .pratica}
 
-Em `dados/historico/` há a planilha de trabalho que circulou **antes** da
-publicação. O arquivo que usamos a semana toda é o publicado.
+Peçam a um modelo de linguagem:
 
-```{r}
-#| eval: false
-velho <- read.delim("dados/historico/anuros_altitude_versao-trabalho.txt")
-novo  <- read.csv("dados/anuros_altitude.csv")
-dim(velho); dim(novo)
-```
+> "Crie um template de Quarto que inclua uma seção de importação de dados,
+> uma análise exploratória com gráficos e uma tabela formatada com os
+> resultados de um modelo linear."
 
 . . .
 
-::: {.callout-note icon=false}
-## Descubram, com código, o que mudou
+Depois: **rodem**. O que quebrou? O que ele inventou?
 
-1. Quantos indivíduos estão nos dois arquivos? Só num deles?
-2. Para os que estão nos dois: **alguma medida mudou de valor?**
-3. Escrevam a resposta como um `.qmd` que compila
-:::
+# Correção {.correcao}
 
-## O que vocês vão encontrar {.smaller}
+Juntos, na ordem em que vocês fizeram.
+
+## P1 · os degraus e as decisões {.smaller .correcao}
 
 ::: {.incremental}
-- **219** indivíduos nos dois arquivos; **9** só na versão de trabalho
-- **4 indivíduos com massa corporal diferente** entre as versões —
-  um deles, `RPB 166`, de 2,73 g para 1,75 g
-- a espécie mudou de nome: `Hypsiboas_faber` virou `Boana faber`
+- a) **1** é repetível: mesma pessoa, mesmo código, mesmos dados, mesma
+  máquina. **2** é reprodutível: outra pessoa, mesmo código, mesmos dados.
+  **3** é replicável: mesmo método, dados novos
+- b) Algumas que vocês já viram mudar o resultado: `drop_na()` sem
+  argumento contra `drop_na(ctmax)` (aula 04); altitude como fator ou como
+  número, e centralizada ou não (aula 06); ajustar um modelo por espécie
+  ignorando a serra (aula 07)
 :::
 
 . . .
 
 ::: {.citacao}
+Cada decisão dessas é defensável **sozinha**. É por isso que elas precisam
+estar no script, à vista: para que outra pessoa possa refazê-las — ou
+discordar delas.
+:::
+
+## P2 · o que vocês vão encontrar {.smaller .correcao}
+
+```{r}
+velho <- read.delim(here::here("dados", "historico",
+                               "anuros_altitude_versao-trabalho.txt")) %>%
+  transmute(id = gsub("_", " ", Code), especie = Species, massa = Body_mass)
+novo <- read.csv(here::here("dados", "anuros_altitude.csv")) %>%
+  transmute(id = ID, especie = Species, massa = Bodymass_g)
+
+# "sem RPB" se repete nos dois arquivos: não serve de chave
+unico <- function(d) d %>% group_by(id) %>% filter(n() == 1) %>% ungroup()
+pares <- inner_join(unico(velho), unico(novo), by = "id",
+                    suffix = c("_velho", "_novo"))
+c(nos_dois = nrow(pares),
+  so_velho = length(setdiff(velho$id, novo$id)),
+  so_novo  = length(setdiff(novo$id, velho$id)))
+```
+
+## P2 · a massa que mudou {.smaller .correcao}
+
+```{r}
+pares %>% filter(massa_velho != massa_novo) %>%
+  select(id, especie_novo, massa_velho, massa_novo)
+```
+
+. . .
+
+E a espécie mudou de nome: `Hypsiboas_faber` virou `Boana faber`.
+
+
+::: {.citacao}
 Nada disso está anunciado em lugar nenhum. Só aparece porque alguém comparou.
 :::
 
-## O que fazer com isso {.smaller}
+## P2 · o que fazer com isso {.smaller .correcao}
 
 Revisar dado de campo é **normal**: a balança é reconferida, um indivíduo sai
 por um motivo que está no caderno, um código é reconciliado.
@@ -673,17 +751,17 @@ e está num repositório público até hoje. **Não é deboche** — é o que
 acontece com todo mundo que não versiona o dado desde o primeiro dia.
 :::
 
-## Exercício 3 — usando um LLM {.smaller}
+## P3 · o trabalho final e o LLM {.smaller .correcao}
 
-Peçam a um modelo de linguagem:
-
-> "Crie um template de Quarto que inclua uma seção de importação de dados,
-> uma análise exploratória com gráficos e uma tabela formatada com os
-> resultados de um modelo linear."
+::: {.incremental}
+- **Trabalho final:** o teste de aceitação é o mesmo para todos — reinicie
+  o R, apague o `.html` e o `_files`, renderize. Algum número ficou digitado
+  à mão no texto? Ele não mudou quando a pergunta mudou
+- **LLM:** o que quebrou quando vocês rodaram? O que ele inventou — uma
+  função, um argumento, um dado?
+:::
 
 . . .
-
-Depois: **rodem**. O que quebrou? O que ele inventou?
 
 ::: {.citacao}
 O LLM acelera o andaime. Conferir continua sendo trabalho seu.

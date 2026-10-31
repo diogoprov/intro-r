@@ -40,6 +40,18 @@ anuros <- read.csv(here::here("dados", "anuros_altitude.csv")) %>%
          tol_aquec = ctmax - bio5)
 ```
 
+## Roteiro de hoje
+
+::: {.roteiro}
+<div class="bloco expo" style="flex: 20"><span class="min">20 min</span><b>Exposição</b>as três camadas e o mapeamento</div>
+<div class="bloco pratica" style="flex: 20"><span class="min">20 min</span><b>Prática 1</b>camadas, histograma, <code>aes()</code></div>
+<div class="bloco expo" style="flex: 15"><span class="min">15 min</span><b>Exposição</b>os cinco gráficos básicos</div>
+<div class="bloco pratica" style="flex: 20"><span class="min">20 min</span><b>Prática 2</b>três gráficos do zero</div>
+<div class="bloco expo" style="flex: 10"><span class="min">10 min</span><b>Exposição</b>camadas, exemplos e tema</div>
+<div class="bloco pratica" style="flex: 20"><span class="min">20 min</span><b>Prática 3</b>facetas e a figura do relatório</div>
+<div class="bloco correcao" style="flex: 15"><span class="min">15 min</span><b>Correção</b>juntos, no fim</div>
+:::
+
 ## De onde vem a ideia {.smaller}
 
 ::: {.citacao}
@@ -304,6 +316,20 @@ ggplot(anuros,
 **depende da pergunta** — nenhum dos dois é o padrão correto.
 :::
 
+## Prática 1 · 20 min {.smaller .pratica}
+
+Na [página de exercícios](../aula-05-ggplot2/exercicios-aula-05.html), façam as três primeiras seções:
+
+1. **As três camadas** — um gráfico de dispersão, do zero
+2. **Uma variável: a distribuição** — o histograma de `ctmax`
+3. **Dentro ou fora do `aes()`?** — e a pergunta que vem logo depois:
+   o que acontece com `geom_point(aes(colour = "red"))`?
+
+::: {.citacao}
+A correção da página é automática: errou, ela diz onde. Na terceira seção,
+**rodem** o `colour = "red"` antes de responder.
+:::
+
 # Os cinco gráficos básicos
 
 ## Qual gráfico usar? {.smaller}
@@ -461,19 +487,17 @@ ordem. Repare no sítio de 1600 m: mais alto e **mais quente** que o de
 1500 m, porque fica na outra serra. Altitude não é temperatura.
 :::
 
-## Agora vocês
+## Prática 2 · 20 min {.smaller .pratica}
 
-::: {.callout-note icon=false}
-## 10 minutos — três gráficos, do zero
-
-Sem copiar dos slides. Se travar, `?geom_boxplot` antes de pedir socorro.
+**No RStudio**, sem copiar dos slides. Se travar, `?geom_boxplot` antes de
+pedir socorro.
 
 1. A distribuição de `ctmin` — escolha a geometria
 2. `ewl` por espécie, com a geometria que mostra os quartis
 3. `massa` contra `ctmax`, colorido por serra
-:::
 
-. . .
+Terminou? Na [página de exercícios](../aula-05-ggplot2/exercicios-aula-05.html), a seção **Discreta ou contínua:
+o boxplot**. Rodem também com `altitude` no lugar de `alt_fator` e comparem.
 
 ::: {.citacao}
 No terceiro: a cor entrou dentro ou fora do `aes()`? Se apareceu legenda,
@@ -550,7 +574,6 @@ ggplot(anuros, aes(ctmin, ctmax)) +
 ::: {.citacao}
 É como empilhar transparências: a última entra na frente.
 :::
-
 
 # Ferramentas e exemplos
 
@@ -688,6 +711,145 @@ que tem o código de cada elemento em PDF.
 Na dúvida entre `element_text()`, `element_line()` e `element_rect()`:
 é o tipo de coisa desenhada. `element_blank()` apaga.
 :::
+
+## Prática 3 · 20 min {.smaller .pratica}
+
+Na [página de exercícios](../aula-05-ggplot2/exercicios-aula-05.html), as duas últimas seções:
+
+1. **Facetas** — uma janela por espécie, com a reta de cada uma
+2. **A figura do relatório** — sem lacunas: cor por espécie, pontos
+   semitransparentes, uma reta por espécie, rótulos em português e um tema
+   limpo
+
+Usem o slide **Onde mora cada elemento do tema** para mexer no `theme()`, e
+colem o print da figura na caixa da página.
+
+# Correção {.correcao}
+
+Juntos, na ordem em que vocês fizeram.
+
+## P1 · `colour = "red"` dentro do `aes()` {.smaller .correcao}
+
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(ctmin, ctmax)) +
+  geom_point(aes(colour = "red"))
+```
+
+. . .
+
+::: {.citacao}
+Dentro do `aes()`, `"red"` virou um **valor dos dados**: uma categoria com
+o nome "red", pintada com a primeira cor da paleta, e com legenda. Para
+pontos vermelhos, a cor vai **fora**: `geom_point(colour = "red")`.
+:::
+
+## P2 · 1. a distribuição de `ctmin` {.smaller .correcao}
+
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.4
+ggplot(anuros, aes(x = ctmin)) +
+  geom_histogram(bins = 25)
+```
+
+::: {.citacao}
+Uma variável contínua: histograma. Só o `x`; a contagem no eixo Y é a
+geometria que calcula.
+:::
+
+## P2 · 2. `ewl` por espécie {.smaller .correcao}
+
+```{r}
+#| output-location: column
+#| fig-width: 5.4
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(x = ewl, y = especie)) +
+  geom_boxplot()
+```
+
+::: {.citacao}
+A geometria dos quartis é o boxplot. Com a espécie em `y`, os nomes
+compridos cabem sem girar rótulo.
+:::
+
+## P2 · 3. `massa` contra `ctmax`, por serra {.smaller .correcao}
+
+```{r}
+#| output-location: column
+#| fig-width: 5.4
+#| fig-height: 3.4
+ggplot(anuros,
+       aes(x = massa, y = ctmax,
+           colour = serra)) +
+  geom_point(alpha = .7)
+```
+
+. . .
+
+::: {.citacao}
+A cor vem de uma coluna, então vai **dentro** do `aes()`, e a legenda aparece
+sozinha.
+:::
+
+## P2 · o boxplot com `altitude` numérica {.smaller .correcao}
+
+```{r}
+#| output-location: column
+#| fig-width: 5
+#| fig-height: 3.2
+ggplot(anuros,
+       aes(x = altitude, y = ctmax)) +
+  geom_boxplot()
+```
+
+. . .
+
+::: {.citacao}
+Com a altitude **numérica**, o eixo é contínuo e o ggplot desenha uma caixa
+só, com todos os indivíduos. Com `alt_fator`, uma caixa por sítio. É o
+interruptor do `factor()` de novo.
+:::
+
+## P3 · a figura do relatório {.smaller .correcao}
+
+```{r}
+#| output-location: column
+#| fig-width: 5.6
+#| fig-height: 4.2
+ggplot(anuros,
+       aes(x = altitude, y = tol_aquec,
+           colour = especie)) +
+  geom_point(alpha = .65) +
+  geom_smooth(method = "lm",
+              formula = y ~ x) +
+  labs(x = "Altitude (m)",
+       y = "Tolerância ao aquecimento (°C)",
+       colour = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+```
+
+## E o gráfico com o eixo ilegível? {.smaller .correcao}
+
+Qualquer uma destas resolve, todas de uma linha:
+
+- `theme(axis.text.x = element_text(angle = 90, hjust = 1))`
+- `scale_x_discrete(breaks = ...)`, para mostrar só alguns meses
+- `coord_flip()`
+- ou converter o eixo para data de verdade e usar `scale_x_date()`
+
+::: {.citacao}
+A camada de tema e a de escala existem justamente para isso, e são tão
+parte da gramática quanto a geometria.
+:::
+
+# Antes de sair
 
 ## Exercitando {.smaller}
 

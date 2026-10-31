@@ -28,6 +28,18 @@ options(width = 76)
 dados <- read.csv(here::here("dados", "anuros_altitude.csv"))
 ```
 
+## Roteiro de hoje
+
+::: {.roteiro}
+<div class="bloco expo" style="flex: 20"><span class="min">20 min</span><b>Exposição</b>a disciplina, instalar, o RStudio</div>
+<div class="bloco pratica" style="flex: 15"><span class="min">15 min</span><b>Prática 1</b>o Projeto e a pasta</div>
+<div class="bloco expo" style="flex: 20"><span class="min">20 min</span><b>Exposição</b>a linguagem</div>
+<div class="bloco pratica" style="flex: 15"><span class="min">15 min</span><b>Prática 2</b>coerção e o arquivo de ajuda</div>
+<div class="bloco expo" style="flex: 10"><span class="min">10 min</span><b>Exposição</b>o dado da semana</div>
+<div class="bloco pratica" style="flex: 15"><span class="min">15 min</span><b>Prática 3</b>importar e conferir</div>
+<div class="bloco correcao" style="flex: 15"><span class="min">15 min</span><b>Correção</b>juntos, no fim</div>
+:::
+
 # A disciplina
 
 ## Programa do curso {.smaller}
@@ -315,6 +327,41 @@ Cada um abre com sessão, histórico e arquivos próprios.
 [Documentação dos snippets](https://docs.posit.co/ide/user/ide/guide/productivity/snippets.html)
 :::
 
+## Monte a pasta agora {.arvore}
+
+```
+intro-r/
+├── intro-r.Rproj
+├── dados/
+│   ├── anuros_altitude.csv     <- baixe da página da aula
+│   └── processados/            <- o que o seu script produzir
+├── scripts/
+│   └── aula-01.R
+└── figuras/
+```
+
+. . .
+
+::: {.citacao}
+Tudo o que vem depois supõe essa estrutura. Cinco minutos agora economizam
+a semana inteira.
+:::
+
+## Prática 1 · 15 min {.smaller .pratica}
+
+No RStudio, **no Source**, não no Console:
+
+1. Crie o Projeto: **File → New Project… → New Directory**
+2. Monte a estrutura de pastas do slide anterior e ponha o
+   `anuros_altitude.csv`, baixado da página da aula, em `dados/`
+3. Abra **Help → Cheat Sheets** e ache as fichas do `dplyr` e do `ggplot2`
+4. Num script novo, digite `rea` e aperte `Tab`. O que aparece?
+
+::: {.citacao}
+Quem terminar antes ajuda o vizinho. Instalação travada se resolve agora,
+não amanhã.
+:::
+
 # A linguagem
 
 ## Seguindo no livro
@@ -495,23 +542,6 @@ Estrutura adaptada de [Advanced R](https://adv-r.hadley.nz/vectors-chap.html),
 de Hadley Wickham.
 :::
 
-## Coerção: o R nunca reclama
-
-Um vetor atômico só guarda **um** tipo. Se você misturar, o R converte tudo
-para o tipo mais permissivo — **em silêncio**.
-
-```{r}
-c(1, 2, "três")      # viraram texto!
-c(TRUE, FALSE, 1)    # viraram número
-```
-
-. . .
-
-::: {.citacao}
-É por isso que uma planilha com `"sem dados"` no meio de uma coluna numérica
-transforma a coluna inteira em texto. Guardem isso para a aula da tarde.
-:::
-
 ## O arquivo de ajuda
 
 ```r
@@ -556,9 +586,27 @@ library(ggplot2)
 - Pacotes vão **todos no começo** do script
 :::
 
-# Entrando e saindo
+## Prática 2 · 15 min {.smaller .pratica}
 
-# O dado da semana
+a) **Antes de rodar**, escreva no script o que você espera de cada linha.
+   Depois rode e compare:
+
+```r
+c(1, 2, "três")
+c(TRUE, FALSE, 1)
+```
+
+b) Abra `?mean`. Para que serve o argumento `na.rm`, e qual é o valor dele
+   se você não disser nada?
+
+c) Com isso, preveja e depois confira: `mean(c(1, NA, 3))`.
+
+::: {.citacao}
+Leia o arquivo de ajuda na ordem do slide anterior: **Usage**,
+**Arguments**, **Examples**.
+:::
+
+# O dado da semana: entrando e saindo
 
 ## Um arquivo, oito aulas {.smaller}
 
@@ -578,26 +626,6 @@ Atlântica. Limites térmicos, perda de água, massa e clima de cada sítio.
 ::: {.citacao}
 Dados reais, publicados, com os problemas que dados reais têm. É o mesmo
 arquivo de hoje até sexta-feira.
-:::
-
-## Monte a pasta agora {.arvore}
-
-```
-intro-r/
-├── intro-r.Rproj
-├── dados/
-│   ├── anuros_altitude.csv     <- baixe da página da aula
-│   └── processados/            <- o que o seu script produzir
-├── scripts/
-│   └── aula-01.R
-└── figuras/
-```
-
-. . .
-
-::: {.citacao}
-Tudo o que vem depois supõe essa estrutura. Cinco minutos agora economizam
-a semana inteira.
 :::
 
 ## Importando dados
@@ -635,7 +663,93 @@ dim(dados)
 names(dados)[1:10]
 ```
 
-## O que o `str()` mostra
+## Exportando
+
+```r
+write.csv(objeto, "dados/processados/anuros_limpo.csv", row.names = FALSE)
+```
+
+. . .
+
+::: {.incremental}
+- Escreva em `.csv` ou `.txt` — formatos abertos
+- `row.names = FALSE` evita aquela primeira coluna de números sem nome
+- O que sai do script vai para `dados/processados/`, nunca por cima do bruto
+:::
+
+## Prática 3 · 15 min {.smaller .pratica}
+
+No **Source**, não no Console, dentro do Projeto da prática 1:
+
+1. Leia o arquivo num objeto chamado `dados`
+2. Rode os quatro: `head()`, `str()`, `dim()`, `summary()`
+3. **Escreva no script, em comentário, uma coisa que você notou** e que
+   não estava nos slides
+
+. . .
+
+::: {.citacao}
+O passo 3 é o que importa. Quem só roda os quatro comandos não viu nada —
+viu a tela. Vou pedir a resposta de três de vocês.
+:::
+
+# Correção {.correcao}
+
+Juntos, na ordem em que vocês fizeram.
+
+## P1 · o Projeto e a pasta {.smaller .correcao}
+
+Se deu certo, o canto superior direito do RStudio mostra `intro-r`, e estas
+duas linhas confirmam:
+
+```r
+getwd()                                # termina em .../intro-r
+file.exists("dados/anuros_altitude.csv")   # TRUE
+```
+
+. . .
+
+::: {.citacao}
+`FALSE` no segundo quase sempre é o arquivo na pasta errada, ou o RStudio
+aberto fora do Projeto. O Projeto define o diretório de trabalho sozinho:
+abra sempre pelo `.Rproj`.
+:::
+
+## P2 · a) coerção: o R nunca reclama {.correcao}
+
+Um vetor atômico só guarda **um** tipo. Se você misturar, o R converte tudo
+para o tipo mais permissivo — **em silêncio**.
+
+```{r}
+c(1, 2, "três")      # viraram texto!
+c(TRUE, FALSE, 1)    # viraram número
+```
+
+. . .
+
+::: {.citacao}
+É por isso que uma planilha com `"sem dados"` no meio de uma coluna numérica
+transforma a coluna inteira em texto. Guardem isso para a aula da tarde.
+:::
+
+## P2 · b) e c) o `na.rm` {.smaller .correcao}
+
+Em `?mean`, **Usage** mostra `na.rm = FALSE`: se você não disser nada, o
+`NA` fica.
+
+```{r}
+mean(c(1, NA, 3))
+mean(c(1, NA, 3), na.rm = TRUE)
+```
+
+. . .
+
+::: {.citacao}
+Um único `NA` contamina a média inteira. É o comportamento certo: o R não
+decide por você que o ausente pode ser ignorado.
+:::
+
+## P3 · o que o `str()` mostra {.correcao}
 
 ```{r}
 str(dados[, 1:8])
@@ -649,26 +763,7 @@ ser numérica entrou como texto. Repare em `ID` e `Sex`: `chr`, texto — e
 está certo. Já `EWL_Ugcm2s1` ser `num` é o que a gente queria ver.
 :::
 
-## Agora vocês
-
-::: {.callout-note icon=false}
-## 5 minutos — no **Source**, não no Console
-
-1. Crie o Projeto e a pasta `dados/`; ponha o `anuros_altitude.csv` lá
-2. Leia o arquivo num objeto chamado `dados`
-3. Rode os quatro: `head()`, `str()`, `dim()`, `summary()`
-4. **Escreva no script, em comentário, uma coisa que você notou** e que
-   não estava neste slide
-:::
-
-. . .
-
-::: {.citacao}
-O passo 4 é o que importa. Quem só roda os quatro comandos não viu nada —
-viu a tela. Vou pedir a resposta de três de vocês.
-:::
-
-## O que o `summary()` mostra
+## P3 · o que o `summary()` mostra {.smaller .correcao}
 
 ```{r}
 summary(dados[, c("Bodymass_g", "CTmin", "CTmax")])
@@ -688,19 +783,7 @@ Nenhum erro, nenhum aviso. Se vocês não tivessem olhado, descobririam esses
 35 ausentes só na quarta-feira, quando um modelo disser `n = 190`.
 :::
 
-## Exportando
-
-```r
-write.csv(objeto, "dados/processados/anuros_limpo.csv", row.names = FALSE)
-```
-
-. . .
-
-::: {.incremental}
-- Escreva em `.csv` ou `.txt` — formatos abertos
-- `row.names = FALSE` evita aquela primeira coluna de números sem nome
-- O que sai do script vai para `dados/processados/`, nunca por cima do bruto
-:::
+# Antes de sair
 
 ## Quais funções você aprendeu hoje?
 

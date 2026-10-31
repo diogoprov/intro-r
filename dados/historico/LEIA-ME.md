@@ -22,7 +22,8 @@ script da disciplina o lê.
 
 - **219 indivíduos** aparecem nos dois arquivos.
 - **9 códigos** existem só na versão de trabalho.
-- **4 indivíduos têm a massa corporal diferente** entre as duas versões.
+- **3 indivíduos têm a massa corporal diferente** entre as duas versões
+  (num deles, de 0,6 para 0,6007 g, provavelmente só arredondamento).
 
 Nenhuma dessas diferenças é anunciada em lugar nenhum. Só aparece se alguém
 comparar — que é exatamente o exercício.
